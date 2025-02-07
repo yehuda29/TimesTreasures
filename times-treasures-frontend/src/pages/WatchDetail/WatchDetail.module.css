@@ -1,0 +1,77 @@
+/* src/pages/WatchDetail/WatchDetail.module.css */
+
+.watchDetailContainer {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    display: flex;
+    gap: 30px;
+  }
+  
+  .watchImage {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+  
+  .watchInfo {
+    flex: 1;
+  }
+  
+  .watchInfo h2 {
+    margin-top: 0;
+  }
+  
+  .price {
+    color: #28a745;
+    font-size: 1.5rem;
+    margin: 10px 0;
+  }
+  
+  .description {
+    margin-bottom: 20px;
+  }
+  
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .actions label {
+    margin-right: 5px;
+  }
+  
+  .actions input {
+    width: 60px;
+    padding: 5px;
+  }
+  
+  .addToCartBtn,
+  .purchaseBtn {
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .addToCartBtn {
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  .addToCartBtn:hover {
+    background-color: #0056b3;
+  }
+  
+  .purchaseBtn {
+    background-color: #28a745;
+    color: #fff;
+  }
+  
+  .purchaseBtn:hover {
+    background-color: #218838;
+  }
+  

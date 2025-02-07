@@ -1,0 +1,233 @@
+/*************************************
+ * Navbar Layout
+ *************************************/
+ .navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--primary-color);
+  color: #ecf0f1;
+  padding: 1rem 2rem;
+  position: relative;
+  z-index: 10;
+}
+
+/* Logo */
+.navbarLogo a {
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--secondary-color);
+}
+
+/*************************************
+ * Search Bar
+ *************************************/
+.navbarSearch {
+  display: flex;
+  align-items: center;
+  margin-left: 1rem;
+}
+
+.navbarSearch input {
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #bdc3c7;
+  width: 200px;
+  color: var(--primary-color);
+}
+
+.searchBtn {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  color: var(--secondary-color);
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.searchBtn:hover {
+  color: #c0392b;
+}
+
+/*************************************
+ * Hamburger Menu (Mobile)
+ *************************************/
+.navbarHamburger {
+  display: none;
+  flex-direction: column;
+  gap: 0.3rem;
+  cursor: pointer;
+}
+
+.hamburgerLine {
+  width: 25px;
+  height: 3px;
+  background-color: #ecf0f1;
+  transition: all 0.3s ease;
+  border-radius: 2px;
+}
+
+.hamburgerLine.open:nth-child(1) {
+  transform: rotate(45deg) translateY(8px);
+}
+
+.hamburgerLine.open:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburgerLine.open:nth-child(3) {
+  transform: rotate(-45deg) translateY(-8px);
+}
+
+/*************************************
+ * Navigation Links
+ *************************************/
+.navbarLinks {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+/* Active Link */
+.active a {
+  color: var(--secondary-color);
+  font-weight: bold;
+}
+
+/* Hover Effects */
+.navbarLinks a {
+  text-decoration: none;
+  color: #ecf0f1;
+  font-weight: 100;
+  font-size: 1rem;
+  transition: color 0.3s;
+}
+
+.navbarLinks a:hover {
+  color: #c0392b;
+}
+
+.welcomeText {
+  color: var(--secondary-color);
+  font-size: 1rem;
+  margin-right: 1rem;
+}
+
+/*************************************
+ * Dropdown Menu
+ *************************************/
+.dropdown {
+  position: relative;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--primary-color);
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  list-style: none;
+  padding: 0.5rem 0;
+  min-width: 150px;
+}
+
+.dropdownMenu li {
+  margin: 0;
+}
+
+.dropdownMenu a {
+  display: block;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  color: #ecf0f1;
+  font-size: 0.88rem;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.dropdownMenu a:hover {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+}
+
+/*************************************
+ * Buttons (Inside navbarLinks)
+ *************************************/
+.navbarBtn {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ecf0f1;
+  background-color: transparent;
+  color: #ecf0f1;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.navbarBtn:hover {
+  background-color: #ecf0f1;
+  color: var(--primary-color);
+}
+
+.navbarBtn.primary {
+  background-color: var(--secondary-color);
+  color: #ecf0f1;
+  border: none;
+}
+
+.navbarBtn.primary:hover {
+  background-color: #c0392b;
+  color: #ecf0f1;
+}
+
+/*************************************
+ * Cart Link
+ *************************************/
+.cartLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.cartIcon {
+  font-size: 1.2rem;
+}
+
+.cartCount {
+  font-size: 0.9rem;
+  color: #ecf0f1;
+}
+
+/*************************************
+ * Responsive
+ *************************************/
+@media (max-width: 768px) {
+  .navbarSearch {
+    display: none; /* Hide search bar on mobile if desired */
+  }
+
+  .navbarHamburger {
+    display: flex; /* Show hamburger icon on mobile */
+  }
+
+  /* Hide nav links by default on mobile */
+  .navbarLinks {
+    display: none;
+    flex-direction: column;
+    background-color: var(--primary-color);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    padding: 1rem 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  .navbarLinks.open {
+    display: flex;
+  }
+}

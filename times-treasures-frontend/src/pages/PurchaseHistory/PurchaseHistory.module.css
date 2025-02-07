@@ -1,0 +1,39 @@
+/* src/pages/PurchaseHistory/PurchaseHistory.module.css */
+
+.purchaseHistoryContainer {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    color: var(--primary-color);
+  }
+  
+  .purchaseList {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .purchaseItem {
+    display: flex;
+    gap: 20px;
+    border-bottom: 1px solid #ddd;
+    padding: 15px 0;
+  }
+  
+  .watchImage {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+  }
+  
+  .purchaseDetails {
+    flex: 1;
+  }
+  
+  .purchaseDetails h3 {
+    margin: 0 0 10px 0;
+  }
+  
+  .purchaseDetails p {
+    margin: 5px 0;
+  }
+  

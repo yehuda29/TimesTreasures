@@ -1,0 +1,43 @@
+/* src/pages/AdminDashboard/AdminDashboard.module.css */
+
+.adminDashboard {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    color: var(--primary-color);
+  }
+  
+  .uploadForm {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .formGroup {
+    margin-bottom: 15px;
+  }
+  
+  .formGroup label {
+    margin-bottom: 5px;
+    display: block;
+  }
+  
+  .formGroup input,
+  .formGroup select,
+  .formGroup textarea {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+  }
+  
+  .uploadBtn {
+    padding: 10px;
+    background-color: #ffc107;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .uploadBtn:hover {
+    background-color: #e0a800;
+  }
+  

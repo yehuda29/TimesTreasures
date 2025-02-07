@@ -1,0 +1,48 @@
+
+/* Featured Watches Section */
+.featured {
+  /* Space above the featured section for visual separation from the hero */
+  margin-top: 40px;
+
+  /* Text color for watchers set to primary color */
+  color: var(--primary-color);
+
+  /* Center align for titles/elements */
+  text-align: center;
+}
+
+/* Example: If you have a class or an element for the featured section title */
+.sectionTitle {
+  margin-bottom: 20px;
+}
+
+/* If you need a grid or layout for the watch cards,
+   you might have a .productGrid or similar in your JS code. 
+   Example for reference: */
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* Error styling, if needed */
+.error {
+  color: red;
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* End-message or loader classes, if used */
+.endMessage,
+.loader {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* If you had a .noImages class previously */
+.noImages {
+  text-align: center;
+  color: #555;
+  font-size: 1.2rem;
+}
