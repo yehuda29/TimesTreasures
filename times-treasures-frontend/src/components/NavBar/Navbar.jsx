@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useContext } from "react";
 import { FaSearch, FaShoppingCart } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./Navbar.module.css";
 import { CartContext } from "../../context/CartContext";
 import { AuthContext } from "../../context/AuthContext";
@@ -13,11 +13,12 @@ const Navbar = () => {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
 
-  // Access cartItems & totalItems from CartContext
+  // Access totalItems from CartContext
   const { totalItems } = useContext(CartContext);
-
-  // Access user & logout from AuthContext
+  // Access user and logout from AuthContext
   const { user, logout } = useContext(AuthContext);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleLocationChange = () => setCurrentPath(window.location.pathname);
@@ -25,30 +26,28 @@ const Navbar = () => {
     return () => window.removeEventListener("popstate", handleLocationChange);
   }, []);
 
-  // Toggle Mobile Menu
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  // Close all menus on item click
   const closeMenus = () => {
     setIsMobileMenuOpen(false);
     setIsDropdownVisible(false);
   };
 
-  // Dropdown hover handlers
   const handleDropdownEnter = () => {
     setIsDropdownVisible(true);
   };
+
   const handleDropdownLeave = () => {
     setIsDropdownVisible(false);
   };
 
-  // Handle logout
   const handleLogout = () => {
-    logout(); // Calls AuthContext's logout
+    logout();
     toast.info("You have been logged out.");
     closeMenus();
+    navigate("/");
   };
 
   return (
@@ -74,29 +73,13 @@ const Navbar = () => {
         onClick={toggleMobileMenu}
         aria-label="Toggle navigation menu"
       >
-        <span
-          className={`${styles.hamburgerLine} ${
-            isMobileMenuOpen ? styles.open : ""
-          }`}
-        ></span>
-        <span
-          className={`${styles.hamburgerLine} ${
-            isMobileMenuOpen ? styles.open : ""
-          }`}
-        ></span>
-        <span
-          className={`${styles.hamburgerLine} ${
-            isMobileMenuOpen ? styles.open : ""
-          }`}
-        ></span>
+        <span className={`${styles.hamburgerLine} ${isMobileMenuOpen ? styles.open : ""}`}></span>
+        <span className={`${styles.hamburgerLine} ${isMobileMenuOpen ? styles.open : ""}`}></span>
+        <span className={`${styles.hamburgerLine} ${isMobileMenuOpen ? styles.open : ""}`}></span>
       </div>
 
       {/* Navigation Links (Desktop & Mobile) */}
-      <ul
-        className={`${styles.navbarLinks} ${
-          isMobileMenuOpen ? styles.open : ""
-        }`}
-      >
+      <ul className={`${styles.navbarLinks} ${isMobileMenuOpen ? styles.open : ""}`}>
         <li className={currentPath === "/" ? styles.active : ""}>
           <Link to="/" onClick={closeMenus}>
             Home
@@ -135,33 +118,27 @@ const Navbar = () => {
             </ul>
           )}
         </li>
-        <li className={currentPath === "/cart" ? styles.active : ""}>
-          <Link to="/cart" onClick={closeMenus} className={styles.cartLink}>
-            <FaShoppingCart className={styles.cartIcon} />
-            {/* Show totalItems from context */}
-            <span className={styles.cartCount}>({totalItems})</span>
-          </Link>
-        </li>
+        {/* Only show the Cart link if a user is logged in */}
+        {user && (
+          <li className={currentPath === "/cart" ? styles.active : ""}>
+            <Link to="/cart" onClick={closeMenus} className={styles.cartLink}>
+              <FaShoppingCart className={styles.cartIcon} />
+              <span className={styles.cartCount}>({totalItems})</span>
+            </Link>
+          </li>
+        )}
         <li className={currentPath === "/contact" ? styles.active : ""}>
           <Link to="/contact" onClick={closeMenus}>
             Contact
           </Link>
         </li>
-
-        {/* Show Purchase History only if user is logged in */}
         {user && (
-          <li
-            className={
-              currentPath === "/purchase-history" ? styles.active : ""
-            }
-          >
+          <li className={currentPath === "/purchase-history" ? styles.active : ""}>
             <Link to="/purchase-history" onClick={closeMenus}>
               Purchase History
             </Link>
           </li>
         )}
-
-        {/* Show Admin link only if user is admin */}
         {user && user.role === "admin" && (
           <li className={currentPath === "/admin" ? styles.active : ""}>
             <Link to="/admin" onClick={closeMenus}>
@@ -169,8 +146,7 @@ const Navbar = () => {
             </Link>
           </li>
         )}
-
-        {/* If user is not logged in, show Login & Sign Up */}
+        {/* If no user is logged in, show Login & Sign Up */}
         {!user && (
           <>
             <li>
@@ -182,28 +158,21 @@ const Navbar = () => {
             </li>
             <li>
               <Link to="/register">
-                <button
-                  className={`${styles.navbarBtn} ${styles.primary}`}
-                  onClick={closeMenus}
-                >
+                <button className={`${styles.navbarBtn} ${styles.primary}`} onClick={closeMenus}>
                   Sign Up
                 </button>
               </Link>
             </li>
           </>
         )}
-
-        {/* If user is logged in, show "Welcome Name" & Logout */}
+        {/* If user is logged in, show welcome text and Logout */}
         {user && (
           <>
             <li className={styles.welcomeText}>
               Welcome {user.name}!
             </li>
             <li>
-              <button
-                className={styles.navbarBtn}
-                onClick={handleLogout}
-              >
+              <button className={styles.navbarBtn} onClick={handleLogout}>
                 Logout
               </button>
             </li>
