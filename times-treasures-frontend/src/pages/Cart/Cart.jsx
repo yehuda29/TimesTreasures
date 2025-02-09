@@ -1,123 +1,114 @@
 // src/pages/Cart/Cart.jsx
 
 import React, { useContext } from 'react';
-// Import AuthContext to access authentication info (user, token)
 import { AuthContext } from '../../context/AuthContext';
-// Import CartContext to access cart-related state and actions
 import { CartContext } from '../../context/CartContext';
 import axios from 'axios';
-// Import toast for displaying notifications
 import { toast } from 'react-toastify';
 import styles from './Cart.module.css';
+import PaymentButton from '../../components/PaymentButton/PaymentButton.jsx';
 
 const Cart = () => {
-  // Retrieve user and token from the AuthContext for authentication
+  // Retrieve user and token from AuthContext
   const { user, token } = useContext(AuthContext);
+  // Retrieve cart items and manipulation functions from CartContext
+  const { cartItems, removeFromCart, clearCart, updateCartItemQuantity } = useContext(CartContext);
 
-  // Retrieve cart items and cart manipulation functions from CartContext
-  const {
-    cartItems,
-    removeFromCart,
-    clearCart,
-    updateCartItemQuantity
-  } = useContext(CartContext);
+  // If user is not logged in, inform them (or you could also redirect to /login)
+  if (!user) {
+    return (
+      <div className={styles.cartContainer}>
+        <h2>Your Cart</h2>
+        <p>Please <a href="/login">login</a> to view your cart.</p>
+      </div>
+    );
+  }
 
-  // Function to handle the purchase process for the items in the cart
+  // Calculate the total price of all cart items.
+  // Assume the backend populates each cart item so that item.watch contains the full watch document.
+  const totalPrice = cartItems.reduce((acc, item) => {
+    // Use optional chaining in case the watch is not populated
+    const price = item.watch?.price ? Number(item.watch.price) : 0;
+    return acc + (price * item.quantity);
+  }, 0);
+
+  // Function to handle purchase (e.g., via PayPal)
   const makePurchase = async () => {
-    // If the user is not logged in, show an error notification
     if (!user) {
       toast.error('Please login to make a purchase');
       return;
     }
     try {
-      // Loop through each item in the cart
       for (const item of cartItems) {
-        // Configure the request headers with content type and authorization token
         const config = {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
           }
         };
-
-        // Send a POST request to the purchase endpoint for each cart item
         await axios.post(
           `${import.meta.env.VITE_API_URL}/purchase`,
           {
-            watchId: item._id, // Use the watch's _id as identifier
+            watchId: item._id, // or item.watch._id if populated
             quantity: item.quantity
           },
           config
         );
       }
-      // If all purchase requests succeed, show a success message and clear the cart
       toast.success('Purchase successful');
-      clearCart(); // Clears the cart in the context (and subsequently in localStorage)
+      clearCart(token);
     } catch (err) {
-      // Log any errors and display an error notification with a message
       console.error('Error making purchase:', err);
       toast.error(err.response?.data?.message || 'Purchase failed');
     }
   };
 
-  // Calculate the total price of all cart items (price multiplied by quantity)
-  const totalPrice = cartItems.reduce((acc, item) => {
-    return acc + (item.price * item.quantity);
-  }, 0);
-
   return (
     <div className={styles.cartContainer}>
       <h2>Your Cart</h2>
-      {/* If the cart is empty, display a message; otherwise, render the cart items */}
       {cartItems.length === 0 ? (
         <p>Your cart is empty.</p>
       ) : (
         <>
-          {/* List of cart items */}
           <ul className={styles.cartList}>
-            {cartItems.map((item, index) => (
-              <li key={index} className={styles.cartItem}>
-                {/* Display the watch image */}
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className={styles.watchImage}
-                />
-                <div className={styles.itemDetails}>
-                  {/* Display the watch name */}
-                  <h3>{item.name}</h3>
-                  {/* Display the watch price formatted to two decimals */}
-                  <p>Price: ${item.price.toFixed(2)}</p>
-                  {/* Quantity selector for the cart item */}
-                  <div className={styles.quantity}>
-                    <label>Quantity:</label>
-                    <input
-                      type="number"
-                      value={item.quantity}
-                      min="1"
-                      // Update the cart item's quantity on change using the context function
-                      onChange={(e) =>
-                        updateCartItemQuantity(item._id, parseInt(e.target.value, 10))
-                      }
-                    />
+            {cartItems.map((item, index) => {
+              // Check if the watch field is populated
+              if (!item.watch || typeof item.watch !== 'object') return null;
+              return (
+                <li key={index} className={styles.cartItem}>
+                  <img
+                    src={item.watch.image}
+                    alt={item.watch.name}
+                    className={styles.watchImage}
+                  />
+                  <div className={styles.itemDetails}>
+                    <h3>{item.watch.name}</h3>
+                    <p>Price: ${item.watch.price ? Number(item.watch.price).toFixed(2) : '0.00'}</p>
+                    <div className={styles.quantity}>
+                      <label>Quantity:</label>
+                      <input
+                        type="number"
+                        value={item.quantity}
+                        min="1"
+                        onChange={(e) =>
+                          updateCartItemQuantity(item.watch._id, parseInt(e.target.value, 10), token)
+                        }
+                      />
+                    </div>
+                    <button
+                      onClick={() => removeFromCart(item.watch._id, token)}
+                      className={styles.removeBtn}
+                    >
+                      Remove
+                    </button>
                   </div>
-                  {/* Button to remove the item from the cart using the context function */}
-                  <button
-                    onClick={() => removeFromCart(item._id)}
-                    className={styles.removeBtn}
-                  >
-                    Remove
-                  </button>
-                </div>
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
-          {/* Cart summary showing the total price and a button to proceed to purchase */}
           <div className={styles.cartSummary}>
             <h3>Total: ${totalPrice.toFixed(2)}</h3>
-            <button onClick={makePurchase} className={styles.purchaseBtn}>
-              Proceed to Purchase
-            </button>
+            <PaymentButton amount={totalPrice.toFixed(2)} onSuccess={() => makePurchase()} />
           </div>
         </>
       )}

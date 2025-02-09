@@ -21,9 +21,10 @@ const Home = () => {
   const [hasMore, setHasMore] = useState(true);
   // State to hold any error messages during fetching
   const [error, setError] = useState(null);
-  
   // State to store the previous page number, to help avoid duplicate fetches
   const [prevPage, setPrevPage] = useState(null);
+  // NEW: State to control how many watches are visible
+  const [visibleWatches, setVisibleWatches] = useState(12);
 
   // useEffect that runs whenever 'page', 'hasMore', 'limit', or 'prevPage' changes.
   // It fetches the watch data from the backend.
@@ -74,7 +75,6 @@ const Home = () => {
           throw new Error('Invalid data format received from API');
         }
       } catch (err) {
-        // Log any errors to the console and update the error state
         console.error('Error fetching watches:', err);
         setError('Failed to fetch watches.');
       }
