@@ -22,6 +22,12 @@ const app = express();
 // Middleware Configuration
 // -----------------------
 
+// CORS Configuration: Allow requests from the specified frontend URL and allow specific HTTP methods
+app.use(cors({
+  origin: 'http://localhost:5173', // Update with your frontend URL if needed
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true                // Allows cookies and authentication headers
+}));
 // Parse incoming JSON bodies in requests
 app.use(express.json());
 
@@ -35,12 +41,6 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// CORS Configuration: Allow requests from the specified frontend URL and allow specific HTTP methods
-app.use(cors({
-  origin: 'http://localhost:5173', // Update with your frontend URL if needed
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true                // Allows cookies and authentication headers
-}));
 
 // -----------------------
 // Database Connection
