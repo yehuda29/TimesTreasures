@@ -75,6 +75,25 @@ const userSchema = new mongoose.Schema({
     enum: ['user', 'admin'],
     default: 'user'
   },
+  // ---------------------------------------
+  // Persistent Cart
+  // ---------------------------------------
+  // The 'cart' field stores the user's current cart as an array of objects.
+  // Each object contains a reference to a Watch and a quantity.
+  cart: [
+    {
+      watch: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Watch',
+        required: true
+      },
+      quantity: {
+        type: Number,
+        default: 1,
+        min: [1, 'Quantity cannot be less than 1']
+      }
+    }
+  ],
   // 'purchaseHistory' is an array of purchase records (each following the purchaseSchema).
   purchaseHistory: [purchaseSchema],
   // 'createdAt' records when the user was created.
@@ -94,17 +113,14 @@ const userSchema = new mongoose.Schema({
 // Before saving a User document, this middleware checks if the password field has been modified.
 // If it has, the middleware generates a salt and hashes the password using bcrypt.
 userSchema.pre('save', async function(next) {
-  // Only hash the password if it is new or has been modified
   if (!this.isModified('password')) return next();
 
   try {
-    // Generate a salt with 10 rounds (default complexity)
     const salt = await bcrypt.genSalt(10);
-    // Hash the password using the generated salt
     this.password = await bcrypt.hash(this.password, salt);
-    next(); // Continue with the save operation
+    next();
   } catch (err) {
-    next(err); // Pass any errors to the next middleware
+    next(err);
   }
 });
 
@@ -117,5 +133,4 @@ userSchema.methods.matchPassword = async function(enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// Export the User model so that it can be imported and used in other parts of the application.
 module.exports = mongoose.model('User', userSchema);

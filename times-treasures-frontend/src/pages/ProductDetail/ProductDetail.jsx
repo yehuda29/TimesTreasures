@@ -9,26 +9,16 @@ import { AuthContext } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 
 const ProductDetail = () => {
-  // Extract the watch ID from the URL using useParams
   const { id } = useParams();
   const navigate = useNavigate();
-
-  // State to store the fetched watch data; initially null
   const [watch, setWatch] = useState(null);
-  // Loading state to indicate if the watch data is being fetched
   const [loading, setLoading] = useState(true);
-  // Error state to track any issues during the fetch process
   const [error, setError] = useState(false);
-
-  // State for managing the quantity of the watch the user wishes to add to the cart
   const [quantity, setQuantity] = useState(1);
 
-  // Retrieve the addToCart function from CartContext so we can add the watch to the cart
   const { addToCart } = useContext(CartContext);
-  // Retrieve the user and token from AuthContext
   const { user, token } = useContext(AuthContext);
 
-  // useEffect to fetch the watch data when the component mounts or when the 'id' changes
   useEffect(() => {
     const fetchWatch = async () => {
       try {
@@ -45,33 +35,24 @@ const ProductDetail = () => {
         setLoading(false);
       }
     };
-
     fetchWatch();
   }, [id]);
 
-  // Function to handle adding the current watch to the cart
   const handleAddToCart = () => {
-    // If no user is logged in, display a toast message and do not add the item
     if (!user) {
       toast.error('Please Login to make a purchase');
+      navigate('/login');
       return;
     }
     if (watch) {
       const validQuantity = quantity < 1 ? 1 : quantity;
-      // Call addToCart from CartContext, passing the watch's details and the selected quantity
-      addToCart({
-        _id: watch._id,
-        name: watch.name,
-        price: watch.price,
-        image: watch.image,
-        quantity: validQuantity,
-      }, token);
+      // Only store the watch's _id and quantity in the persistent cart.
+      addToCart({ _id: watch._id, quantity: validQuantity }, token);
       toast.success(`${watch.name} (x${validQuantity}) added to your cart!`);
     }
   };
 
   if (loading) return <p className={styles.loader}>Loading...</p>;
-
   if (error || !watch) {
     return (
       <div className={styles.productDetail}>
@@ -88,7 +69,6 @@ const ProductDetail = () => {
         <h2 className={styles.productName}>{watch.name}</h2>
         <p className={styles.productPrice}>${Number(watch.price).toFixed(2)}</p>
         <p className={styles.productDescription}>{watch.description}</p>
-
         <div className={styles.quantitySelector}>
           <label htmlFor="quantity">Quantity:</label>
           <input
@@ -101,7 +81,6 @@ const ProductDetail = () => {
             onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
           />
         </div>
-
         <button className={styles.addToCartBtn} onClick={handleAddToCart}>
           Add to Cart
         </button>

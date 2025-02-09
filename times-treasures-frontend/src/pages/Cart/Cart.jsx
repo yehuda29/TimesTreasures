@@ -9,12 +9,13 @@ import styles from './Cart.module.css';
 import PaymentButton from '../../components/PaymentButton/PaymentButton.jsx';
 
 const Cart = () => {
-  // Retrieve user and token from AuthContext
   const { user, token } = useContext(AuthContext);
-  // Retrieve cart items and manipulation functions from CartContext
   const { cartItems, removeFromCart, clearCart, updateCartItemQuantity } = useContext(CartContext);
 
-  // If user is not logged in, inform them (or you could also redirect to /login)
+  // Helper: Extract watch ID
+  const getWatchId = (item) =>
+    typeof item.watch === 'object' ? item.watch._id : item.watch;
+
   if (!user) {
     return (
       <div className={styles.cartContainer}>
@@ -24,15 +25,11 @@ const Cart = () => {
     );
   }
 
-  // Calculate the total price of all cart items.
-  // Assume the backend populates each cart item so that item.watch contains the full watch document.
   const totalPrice = cartItems.reduce((acc, item) => {
-    // Use optional chaining in case the watch is not populated
     const price = item.watch?.price ? Number(item.watch.price) : 0;
-    return acc + (price * item.quantity);
+    return acc + price * item.quantity;
   }, 0);
 
-  // Function to handle purchase (e.g., via PayPal)
   const makePurchase = async () => {
     if (!user) {
       toast.error('Please login to make a purchase');
@@ -43,14 +40,14 @@ const Cart = () => {
         const config = {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         };
         await axios.post(
           `${import.meta.env.VITE_API_URL}/purchase`,
           {
-            watchId: item._id, // or item.watch._id if populated
-            quantity: item.quantity
+            watchId: getWatchId(item),
+            quantity: item.quantity,
           },
           config
         );
@@ -72,7 +69,6 @@ const Cart = () => {
         <>
           <ul className={styles.cartList}>
             {cartItems.map((item, index) => {
-              // Check if the watch field is populated
               if (!item.watch || typeof item.watch !== 'object') return null;
               return (
                 <li key={index} className={styles.cartItem}>
@@ -83,20 +79,19 @@ const Cart = () => {
                   />
                   <div className={styles.itemDetails}>
                     <h3>{item.watch.name}</h3>
-                    <p>Price: ${item.watch.price ? Number(item.watch.price).toFixed(2) : '0.00'}</p>
+                    <p>
+                      Price: $
+                      {item.watch.price
+                        ? Number(item.watch.price).toFixed(2)
+                        : '0.00'}
+                    </p>
                     <div className={styles.quantity}>
                       <label>Quantity:</label>
-                      <input
-                        type="number"
-                        value={item.quantity}
-                        min="1"
-                        onChange={(e) =>
-                          updateCartItemQuantity(item.watch._id, parseInt(e.target.value, 10), token)
-                        }
-                      />
+                      {/* Quantity is now read-only */}
+                      <span>{item.quantity}</span>
                     </div>
                     <button
-                      onClick={() => removeFromCart(item.watch._id, token)}
+                      onClick={() => removeFromCart(getWatchId(item), token)}
                       className={styles.removeBtn}
                     >
                       Remove
