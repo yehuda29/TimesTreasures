@@ -3,16 +3,14 @@
 import React, { useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { CartContext } from '../../context/CartContext';
-import axios from 'axios';
 import { toast } from 'react-toastify';
 import styles from './Cart.module.css';
 import PaymentButton from '../../components/PaymentButton/PaymentButton.jsx';
 
 const Cart = () => {
   const { user, token } = useContext(AuthContext);
-  const { cartItems, removeFromCart, clearCart, updateCartItemQuantity } = useContext(CartContext);
+  const { cartItems, removeFromCart, clearCart } = useContext(CartContext);
 
-  // Helper: Extract watch ID
   const getWatchId = (item) =>
     typeof item.watch === 'object' ? item.watch._id : item.watch;
 
@@ -30,34 +28,9 @@ const Cart = () => {
     return acc + price * item.quantity;
   }, 0);
 
-  const makePurchase = async () => {
-    if (!user) {
-      toast.error('Please login to make a purchase');
-      return;
-    }
-    try {
-      for (const item of cartItems) {
-        const config = {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        };
-        await axios.post(
-          `${import.meta.env.VITE_API_URL}/purchase`,
-          {
-            watchId: getWatchId(item),
-            quantity: item.quantity,
-          },
-          config
-        );
-      }
-      toast.success('Purchase successful');
-      clearCart(token);
-    } catch (err) {
-      console.error('Error making purchase:', err);
-      toast.error(err.response?.data?.message || 'Purchase failed');
-    }
+  const handlePaymentSuccess = () => {
+    toast.success('Purchase successful');
+    clearCart(token);
   };
 
   return (
@@ -87,7 +60,6 @@ const Cart = () => {
                     </p>
                     <div className={styles.quantity}>
                       <label>Quantity:</label>
-                      {/* Quantity is now read-only */}
                       <span>{item.quantity}</span>
                     </div>
                     <button
@@ -103,7 +75,13 @@ const Cart = () => {
           </ul>
           <div className={styles.cartSummary}>
             <h3>Total: ${totalPrice.toFixed(2)}</h3>
-            <PaymentButton amount={totalPrice.toFixed(2)} onSuccess={() => makePurchase()} />
+            {/* Dedicated container for PayPal buttons placed here */}
+            <div id="paypal-button-portal"></div>
+            <PaymentButton 
+              amount={totalPrice.toFixed(2)} 
+              onSuccess={handlePaymentSuccess}
+              containerId="paypal-button-portal"
+            />
           </div>
         </>
       )}

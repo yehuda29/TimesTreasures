@@ -6,11 +6,12 @@ const mongoose = require('mongoose');               // Mongoose for connecting t
 const dotenv = require('dotenv');                   // dotenv for loading environment variables
 const cors = require('cors');                       // CORS middleware for cross-origin resource sharing
 const helmet = require('helmet');                   // Helmet for securing HTTP headers
-const rateLimit = require('express-rate-limit');      // express-rate-limit for limiting repeated requests
+const rateLimit = require('express-rate-limit');    // Rate limiting middleware
 const authRoutes = require('./routes/authRoutes');    // Routes for authentication endpoints
 const userRoutes = require('./routes/userRoutes');    // Routes for user-related endpoints
 const watchRoutes = require('./routes/watchRoutes');  // Routes for watch-related endpoints
-const path = require('path');                         // path module for working with file paths
+const paypalRoutes = require('./routes/paypalRoutes'); // Routes for PayPal REST API endpoints
+const path = require('path');                         // Module for working with file paths
 
 // Load environment variables from a .env file into process.env
 dotenv.config();
@@ -28,6 +29,7 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true                // Allows cookies and authentication headers
 }));
+
 // Parse incoming JSON bodies in requests
 app.use(express.json());
 
@@ -41,7 +43,6 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-
 // -----------------------
 // Database Connection
 // -----------------------
@@ -54,12 +55,15 @@ mongoose.connect(process.env.MONGODB_URI, {
 .then(() => console.log('MongoDB Connected'))
 .catch(err => {
   console.error(err.message);
-  process.exit(1); // Exit the process with failure if the DB connection fails
+  process.exit(1); // Exit the process if the DB connection fails
 });
 
 // -----------------------
 // Routes Setup
 // -----------------------
+
+// Mount the PayPal routes under /api/paypal
+app.use('/api/paypal', paypalRoutes);
 
 // Mount the authentication routes under /api/auth
 app.use('/api/auth', authRoutes);
