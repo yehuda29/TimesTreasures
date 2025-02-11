@@ -5,16 +5,17 @@
   max-width: 1200px;
   margin: 2rem auto;
   padding: 1.5rem;
-  background-color: #ecf0f1; /* light off-white background */
-  border: 1px solid var(--primary-color, #2c3e50);
+  background-color: var(--background-color, #ecf0f1); /* Fallback: light off-white */
+  border: 2px solid var(--primary-color, #2c3e50);
   border-radius: 8px;
+  color: var(--primary-color, #2c3e50);
 }
 
-/* Title styling */
+/* Page title styling */
 .purchaseHistoryContainer h2 {
   text-align: center;
-  color: var(--primary-color, #2c3e50);
   margin-bottom: 1rem;
+  color: var(--primary-color, #2c3e50);
 }
 
 /* Refresh button styling */
@@ -32,21 +33,21 @@
 }
 
 .refreshBtn:hover {
-  background-color: #c0392b; /* slightly darker red */
+  background-color: #c0392b;
 }
 
-/* The purchase list itself (unstyled list) */
+/* Purchase list styling */
 .purchaseList {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-/* Each purchase item */
+/* Each purchase item styling */
 .purchaseItem {
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #bdc3c7;
+  border-bottom: 1px solid var(--primary-color, #2c3e50);
   padding: 1rem 0;
 }
 
@@ -54,7 +55,7 @@
   border-bottom: none;
 }
 
-/* Image styling for each purchased watch */
+/* Styling for the watch image */
 .watchImage {
   width: 120px;
   height: 120px;
@@ -67,10 +68,9 @@
 /* Container for purchase details */
 .purchaseDetails {
   flex: 1;
-  color: var(--primary-color, #2c3e50);
 }
 
-/* Title for the watch in purchase details */
+/* Purchase details title (watch name) */
 .purchaseDetails h3 {
   margin: 0 0 0.5rem 0;
   color: var(--secondary-color, #e74c3c);
@@ -80,4 +80,22 @@
 .purchaseDetails p {
   margin: 0.25rem 0;
   font-size: 0.95rem;
+}
+
+/* Styling for login message when a non-logged-in user visits the page */
+.loginMessage {
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--primary-color, #2c3e50);
+  margin-top: 2rem;
+}
+
+.loginMessage a {
+  color: var(--secondary-color, #e74c3c);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.loginMessage a:hover {
+  text-decoration: underline;
 }
