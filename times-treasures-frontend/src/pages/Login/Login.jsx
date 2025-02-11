@@ -78,7 +78,7 @@ const Login = () => {
         <button type="submit" className={styles.loginBtn}>Login</button>
       </form>
       {/* Link to the registration page */}
-      <p>
+      <p className={styles.registerMsg}>
         Don't have an account? <Link to="/register">Register Here</Link>
       </p>
     </div>

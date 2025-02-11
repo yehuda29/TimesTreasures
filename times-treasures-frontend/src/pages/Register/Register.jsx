@@ -92,7 +92,7 @@ const Register = () => {
         </button>
       </form>
       {/* Link to navigate to the login page if the user already has an account */}
-      <p>
+      <p className={styles.loginMsg}>
         Already have an account? <Link to="/login">Login Here</Link>
       </p>
     </div>
