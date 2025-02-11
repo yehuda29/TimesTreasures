@@ -1,9 +1,11 @@
 // watch-shop-backend/controllers/userController.js
 // Purpose: Contains user-related actions beyond auth, such as purchase history and persistent cart management.
+
 const mongoose = require('mongoose');
 const User = require('../models/User');
 const asyncHandler = require('express-async-handler');
-const Watch = require('../models/Watch'); // Optional: for verifying existence of each watch
+const Watch = require('../models/Watch'); // Used for verifying the existence of each watch
+
 // @desc    Get purchase history for the logged-in user
 // @route   GET /api/users/purchase-history
 // @access  Private
@@ -27,11 +29,9 @@ exports.getCart = asyncHandler(async (req, res, next) => {
   });
 });
 
-/**
- * @desc    Update the persistent cart for the logged-in user
- * @route   POST /api/users/cart
- * @access  Private
- */
+// @desc    Update the persistent cart for the logged-in user
+// @route   POST /api/users/cart
+// @access  Private
 exports.updateCart = asyncHandler(async (req, res, next) => {
   const { cart } = req.body;
   
@@ -43,7 +43,7 @@ exports.updateCart = asyncHandler(async (req, res, next) => {
 
   console.log("Updating cart for user:", req.user.id, "Cart payload:", cart);
 
-  // Validate and cast each cart item using the new keyword
+  // Validate and cast each cart item
   const updatedCart = await Promise.all(
     cart.map(async (item) => {
       if (!item.watch) {
@@ -85,5 +85,43 @@ exports.updateCart = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     data: updatedUser.cart
+  });
+});
+
+// @desc    Purchase all items in the user's persistent cart
+// @route   POST /api/users/purchase
+// @access  Private
+exports.purchaseCart = asyncHandler(async (req, res, next) => {
+  // Retrieve the user and populate the cart to access watch details
+  const user = await User.findById(req.user.id).populate('cart.watch');
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+  if (!user.cart || user.cart.length === 0) {
+    res.status(400);
+    throw new Error('Cart is empty');
+  }
+
+  // For each cart item, create a purchase record in the purchaseHistory array
+  user.cart.forEach((item) => {
+    const totalPrice = item.quantity * (item.watch.price || 0);
+    user.purchaseHistory.push({
+      watch: item.watch._id,   // Store the watch reference
+      quantity: item.quantity,
+      totalPrice: totalPrice,
+      purchaseDate: new Date()
+    });
+  });
+
+  // Clear the cart after processing the purchase
+  user.cart = [];
+  
+  // Save the updated user document (persisting the purchase history and cleared cart)
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    data: user.purchaseHistory
   });
 });

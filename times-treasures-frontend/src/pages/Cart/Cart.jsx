@@ -1,6 +1,7 @@
 // src/pages/Cart/Cart.jsx
 
 import React, { useContext } from 'react';
+import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import { CartContext } from '../../context/CartContext';
 import { toast } from 'react-toastify';
@@ -11,6 +12,7 @@ const Cart = () => {
   const { user, token } = useContext(AuthContext);
   const { cartItems, removeFromCart, clearCart } = useContext(CartContext);
 
+  // Helper: Extract the watch ID from a cart item.
   const getWatchId = (item) =>
     typeof item.watch === 'object' ? item.watch._id : item.watch;
 
@@ -28,9 +30,24 @@ const Cart = () => {
     return acc + price * item.quantity;
   }, 0);
 
-  const handlePaymentSuccess = () => {
-    toast.success('Purchase successful');
-    clearCart(token);
+  // Handle successful payment by calling the purchase endpoint
+  const handlePaymentSuccess = async (orderDetails) => {
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      };
+      // Call the new purchase endpoint to process the purchase and clear the persistent cart.
+      await axios.post(`${import.meta.env.VITE_API_URL}/users/purchase`, {}, config);
+      toast.success('Purchase successful');
+      // Clear the cart in the context (which should reflect the persistent cart being cleared)
+      clearCart(token);
+    } catch (err) {
+      console.error('Error processing purchase:', err);
+      toast.error(err.response?.data?.message || 'Purchase failed');
+    }
   };
 
   return (
@@ -75,7 +92,7 @@ const Cart = () => {
           </ul>
           <div className={styles.cartSummary}>
             <h3>Total: ${totalPrice.toFixed(2)}</h3>
-            {/* Dedicated container for PayPal buttons placed here */}
+            {/* Dedicated container for PayPal buttons */}
             <div id="paypal-button-portal"></div>
             <PaymentButton 
               amount={totalPrice.toFixed(2)} 
