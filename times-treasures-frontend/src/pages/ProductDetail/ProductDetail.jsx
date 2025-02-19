@@ -7,6 +7,7 @@ import axios from 'axios';
 import { CartContext } from '../../context/CartContext';
 import { AuthContext } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
+import { getImageURL } from '../../utils/imageUtil';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -64,7 +65,7 @@ const ProductDetail = () => {
 
   return (
     <div className={styles.productDetail}>
-      <img src={watch.image} alt={watch.name} className={styles.productImage} />
+      <img src={getImageURL(watch.image)} alt={watch.name} className={styles.productImage} />
       <div className={styles.productInfo}>
         <h2 className={styles.productName}>{watch.name}</h2>
         <p className={styles.productPrice}>${Number(watch.price).toFixed(2)}</p>

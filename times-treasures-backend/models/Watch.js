@@ -16,7 +16,7 @@ const WatchSchema = new mongoose.Schema({
     required: [true, 'Please provide watch price'],
     min: [0, 'Price cannot be negative']
   },
-  // 'image' field: a required string representing the URL or path of the watch image.
+  // 'image' field: a required string representing the name of the image itself
   image: {
     type: String, // URL or path to the image
     required: [true, 'Please provide watch image']

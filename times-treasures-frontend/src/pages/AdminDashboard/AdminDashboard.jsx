@@ -118,7 +118,7 @@ const AdminDashboard = () => {
         </div>
         {/* Form group for Image URL */}
         <div className={styles.formGroup}>
-          <label htmlFor="image">Image URL:</label>
+          <label htmlFor="image">Image Name:</label>
           <input 
             type="text" 
             name="image" 
