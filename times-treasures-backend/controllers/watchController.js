@@ -1,5 +1,4 @@
 // watch-shop-backend/controllers/watchController.js
-
 // Import the Watch model (Mongoose schema) for performing database operations
 const Watch = require('../models/Watch');
 // Import asyncHandler to handle errors in async route handlers without using try/catch in every function
@@ -124,7 +123,7 @@ exports.uploadWatch = asyncHandler(async (req, res, next) => {
     });
   }
 
-  // Optional: Validate that the category is one of the allowed values
+  // Validate that the category is one of the allowed values
   const allowedCategories = ['men-watches', 'women-watches', 'luxury-watches', 'smartwatches'];
   if (!allowedCategories.includes(category)) {
     return res.status(400).json({

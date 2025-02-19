@@ -5,10 +5,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 // Import the CSS module for styling this component
 import styles from './ProductCard.module.css';
-
+import { getImageURL } from '../../utils/imageUtil';
 // ProductCard is a presentational component that displays watch information in a card format.
 // It accepts a "watch" object as a prop, which contains data such as _id, image, name, and price.
 const ProductCard = ({ watch }) => {
+  console.log(`URL: ${watch.image}`)
   return (
     <div className={styles.productCard}>
       {/* 
@@ -17,8 +18,8 @@ const ProductCard = ({ watch }) => {
       */}
       <Link to={`/product/${watch._id}`} className={styles.imageLink}>
         <img
-          src={watch.image}          // The image URL of the watch
-          alt={watch.name}           // The watch name for accessibility
+          src = {getImageURL(watch.image)}  // The image URL of the watch
+          alt = {watch.name}           // The watch name for accessibility
           className={styles.productImage}  // CSS class to style the image
           loading="lazy"             // Lazy loading for better performance
         />
