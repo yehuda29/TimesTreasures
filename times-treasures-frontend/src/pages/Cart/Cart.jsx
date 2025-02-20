@@ -7,6 +7,7 @@ import { CartContext } from '../../context/CartContext';
 import { toast } from 'react-toastify';
 import styles from './Cart.module.css';
 import PaymentButton from '../../components/PaymentButton/PaymentButton.jsx';
+import { getImageURL } from '../../utils/imageUtil.js';
 
 const Cart = () => {
   const { user, token } = useContext(AuthContext);
@@ -63,7 +64,7 @@ const Cart = () => {
               return (
                 <li key={index} className={styles.cartItem}>
                   <img
-                    src={item.watch.image}
+                    src={getImageURL(item.watch.image)}
                     alt={item.watch.name}
                     className={styles.watchImage}
                   />

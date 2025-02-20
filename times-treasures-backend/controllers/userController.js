@@ -163,3 +163,33 @@ exports.purchaseCart = asyncHandler(async (req, res, next) => {
     data: user.purchaseHistory
   });
 });
+
+// This endpoint allows updating fields like name, profilePicture, and addresses.
+exports.updateProfile = asyncHandler(async (req, res, next) => {
+  // Destructure fields from the request body; adjust as needed.
+  const { name, profilePicture, addresses } = req.body;
+
+  // Build the update object with only provided fields.
+  const updates = {};
+  if (name) updates.name = name;
+  if (profilePicture) updates.profilePicture = profilePicture;
+  if (addresses) updates.addresses = addresses;
+
+  // Find the user by ID and update using the $set operator.
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user.id,
+    { $set: updates },
+    { new: true, runValidators: true }
+  ).select('-password'); // Exclude the password from the returned document
+
+  if (!updatedUser) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
+  res.status(200).json({
+    success: true,
+    data: updatedUser
+  });
+});
+
