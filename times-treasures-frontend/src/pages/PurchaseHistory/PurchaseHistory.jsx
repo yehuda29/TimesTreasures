@@ -5,6 +5,7 @@ import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import styles from './PurchaseHistory.module.css';
+import { getImageURL } from '../../utils/imageUtil';
 
 const PurchaseHistory = () => {
   // Always call hooks at the top level.
@@ -65,7 +66,7 @@ const PurchaseHistory = () => {
           {purchaseHistory.map((purchase) => (
             <li key={purchase._id} className={styles.purchaseItem}>
               <img
-                src={purchase.watch?.image || '/default-watch.png'}
+                src={getImageURL(purchase.watch?.image)}
                 alt={purchase.watch?.name || 'Watch image'}
                 className={styles.watchImage}
               />

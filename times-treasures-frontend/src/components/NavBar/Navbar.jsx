@@ -139,6 +139,13 @@ const Navbar = () => {
             </Link>
           </li>
         )}
+        {user && (
+          <li className={currentPath === "/profile" ? styles.active : ""}>
+            <Link to="/profile" onClick={closeMenus}>
+              Profile
+            </Link>
+          </li>
+        )}
         {user && user.role === "admin" && (
           <li className={currentPath === "/admin" ? styles.active : ""}>
             <Link to="/admin" onClick={closeMenus}>

@@ -29,6 +29,8 @@ const Login = lazy(() => import('./pages/Login/Login.jsx'));
 const Register = lazy(() => import('./pages/Register/Register.jsx'));
 const PurchaseHistory = lazy(() => import('./pages/PurchaseHistory/PurchaseHistory.jsx'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard/AdminDashboard.jsx'));
+const Profile = lazy(() => import('./pages/Profile/Profile.jsx'));
+const SetAddress = lazy(() => import('./pages/SetAddress/SetAddress.jsx'));
 
 const App = () => {
   return (
@@ -55,6 +57,8 @@ const App = () => {
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/purchase-history" element={<PurchaseHistory />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/address" element={<SetAddress />} />
                     <Route path="/admin" element={<AdminDashboard />} />
                     <Route path="*" element={<h2 style={{ textAlign: 'center', marginTop: '2rem' }}>Page Not Found</h2>} />
                   </Routes>

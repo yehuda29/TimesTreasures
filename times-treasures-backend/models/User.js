@@ -39,6 +39,34 @@ const purchaseSchema = new mongoose.Schema({
 });
 
 // ---------------------------------------
+// Define the Address Schema (User Address)
+// ---------------------------------------
+// This schema defines the structure for an address that a user can have.
+// It includes country, city, homeAddress, zipcode, and phone number.
+const addressSchema = new mongoose.Schema({
+  country: {
+    type: String,
+    required: [true, 'Please provide a country']
+  },
+  city: {
+    type: String,
+    required: [true, 'Please provide a city']
+  },
+  homeAddress: {
+    type: String,
+    required: [true, 'Please provide a home address']
+  },
+  zipcode: {
+    type: String,
+    required: [true, 'Please provide a zipcode']
+  },
+  phoneNumber: {
+    type: String,
+    required: [true, 'Please provide a phone number']
+  }
+}, { _id: false }); // Disable _id for subdocuments if not needed
+
+// ---------------------------------------
 // Define the User Schema
 // ---------------------------------------
 // This schema defines the structure for a User document in MongoDB.
@@ -75,6 +103,12 @@ const userSchema = new mongoose.Schema({
     enum: ['user', 'admin'],
     default: 'user'
   },
+  // NEW: 'profilePicture' stores the filename of the user's profile picture.
+  // If no picture is provided, it defaults to "defaultPFP.jpg".
+  profilePicture: {
+    type: String,
+    default: 'defaultPFP.jpg'
+  },
   // ---------------------------------------
   // Persistent Cart
   // ---------------------------------------
@@ -96,6 +130,8 @@ const userSchema = new mongoose.Schema({
   ],
   // 'purchaseHistory' is an array of purchase records (each following the purchaseSchema).
   purchaseHistory: [purchaseSchema],
+  // NEW: 'addresses' is an array of addresses based on the addressSchema.
+  addresses: [addressSchema],
   // 'createdAt' records when the user was created.
   // Although we enable timestamps below, this field is explicitly defined here as well.
   createdAt: {
@@ -113,14 +149,17 @@ const userSchema = new mongoose.Schema({
 // Before saving a User document, this middleware checks if the password field has been modified.
 // If it has, the middleware generates a salt and hashes the password using bcrypt.
 userSchema.pre('save', async function(next) {
+  // Only hash the password if it is new or has been modified
   if (!this.isModified('password')) return next();
 
   try {
+    // Generate a salt with 10 rounds (default complexity)
     const salt = await bcrypt.genSalt(10);
+    // Hash the password using the generated salt
     this.password = await bcrypt.hash(this.password, salt);
-    next();
+    next(); // Continue with the save operation
   } catch (err) {
-    next(err);
+    next(err); // Pass any errors to the next middleware
   }
 });
 
@@ -133,4 +172,5 @@ userSchema.methods.matchPassword = async function(enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
+// Export the User model so that it can be imported and used in other parts of the application.
 module.exports = mongoose.model('User', userSchema);
