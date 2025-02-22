@@ -72,16 +72,24 @@ export const CartProvider = ({ children }) => {
       if (existingItem) {
         updatedCart = prevItems.map((i) =>
           getWatchId(i).toString() === item._id.toString()
-            ? { watch: item._id, quantity: i.quantity + item.quantity }
+            ? { watch: item, quantity: i.quantity + item.quantity }
             : i
         );
       } else {
-        updatedCart = [...prevItems, { watch: item._id, quantity: item.quantity }];
+        updatedCart = [...prevItems, { watch: item, quantity: item.quantity }];
       }
-      updateCartOnServer(token, updatedCart);
+      // Update the server with only the watch ID and quantity
+      updateCartOnServer(
+        token,
+        updatedCart.map((cartItem) => ({
+          watch: cartItem.watch._id,
+          quantity: cartItem.quantity,
+        }))
+      );
       return updatedCart;
     });
   };
+  
 
   /**
    * Remove an item from the cart.

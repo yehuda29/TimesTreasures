@@ -41,15 +41,33 @@ const ProductDetail = () => {
 
   const handleAddToCart = () => {
     if (!user) {
-      toast.error('Please Login to make a purchase');
+      toast.error('Please login to make a purchase');
       navigate('/login');
       return;
     }
     if (watch) {
       const validQuantity = quantity < 1 ? 1 : quantity;
-      // Only store the watch's _id and quantity in the persistent cart.
       addToCart({ _id: watch._id, quantity: validQuantity }, token);
       toast.success(`${watch.name} (x${validQuantity}) added to your cart!`);
+    }
+  };
+
+  // New: Handler for admin deletion of the watch.
+  const handleDeleteWatch = async () => {
+    if (!window.confirm('Are you sure you want to delete this watch?')) return;
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      await axios.delete(`${import.meta.env.VITE_API_URL}/watches/${id}`, config);
+      toast.success('Watch deleted successfully');
+      // Navigate back to the home page or admin listing
+      navigate('/');
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || 'Failed to delete watch');
     }
   };
 
@@ -81,10 +99,17 @@ const ProductDetail = () => {
             value={quantity}
             onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
           />
+        </div >
+        <div className={styles.buttonGroup}>
+          <button className={styles.addToCartBtn} onClick={handleAddToCart}>
+            Add to Cart
+          </button>
+          {user && user.role === 'admin' && (
+            <button className={styles.deleteBtn} onClick={handleDeleteWatch}>
+              Delete Watch
+            </button>
+          )}
         </div>
-        <button className={styles.addToCartBtn} onClick={handleAddToCart}>
-          Add to Cart
-        </button>
       </div>
     </div>
   );

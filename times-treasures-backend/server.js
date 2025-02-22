@@ -12,6 +12,7 @@ const userRoutes = require('./routes/userRoutes');    // Routes for user-related
 const watchRoutes = require('./routes/watchRoutes');  // Routes for watch-related endpoints
 const paypalRoutes = require('./routes/paypalRoutes'); // Routes for PayPal REST API endpoints
 const path = require('path');                         // Module for working with file paths
+const fileUpload = require('express-fileupload'); // <-- Added file upload middleware
 
 // Load environment variables from a .env file into process.env
 dotenv.config();
@@ -32,6 +33,9 @@ app.use(cors({
 
 // Parse incoming JSON bodies in requests
 app.use(express.json());
+
+// <-- Use express-fileupload middleware with temp files enabled
+app.use(fileUpload({ useTempFiles: true }));
 
 // Security Middleware: Helmet helps secure your app by setting various HTTP headers
 app.use(helmet());

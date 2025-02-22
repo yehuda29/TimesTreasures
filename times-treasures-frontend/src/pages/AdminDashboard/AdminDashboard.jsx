@@ -3,61 +3,67 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import styles from './AdminDashboard.module.css'; 
+import styles from './AdminDashboard.module.css';
 
-// AdminDashboard allows an admin user to upload a new watch to the shop.
-// The form collects watch details like name, price, description, image URL, and category.
 const AdminDashboard = () => {
-  // Initialize state for the upload form with default values.
-  // 'category' defaults to "men-watches", which can be changed via the dropdown.
+  // Form fields for watch details (excluding the image file)
   const [formData, setFormData] = useState({
     name: '',
     price: '',
     description: '',
-    image: '',
     category: 'men-watches'
   });
+  // Store the selected image file
+  const [imageFile, setImageFile] = useState(null);
 
-  // Destructure individual fields from formData for easy access.
-  const { name, price, description, image, category } = formData;
+  const { name, price, description, category } = formData;
 
-  // onChange handler updates formData when the user changes an input.
-  const onChange = e =>
+  const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  // onSubmit handler is called when the form is submitted.
-  const onSubmit = async e => {
-    e.preventDefault(); // Prevent the default form submission behavior (page refresh)
+  // Handle file selection from the file input
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setImageFile(e.target.files[0]);
+    }
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+
     try {
-      // Retrieve the token from localStorage (alternatively, you could use AuthContext)
       const token = localStorage.getItem('token');
-      // Prepare configuration for the Axios request with proper headers
+      // Create a FormData object and append all fields
+      const data = new FormData();
+      data.append('name', name);
+      data.append('price', price);
+      data.append('description', description);
+      data.append('category', category);
+      if (imageFile) {
+        data.append('image', imageFile);
+      }
+
+      // Do not manually set the Content-Type header; let the browser set it
       const config = {
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         }
       };
-      // Send a POST request to the backend to upload the new watch
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/watches`,
-        { name, price, description, image, category },
-        config
-      );
-      // Show a success notification if the upload is successful
+
+      // POST to the watch creation endpoint (which now expects a file upload)
+      await axios.post(`${import.meta.env.VITE_API_URL}/watches`, data, config);
       toast.success('Watch uploaded successfully');
-      // Reset the form to its default state
+
+      // Reset the form
       setFormData({
         name: '',
         price: '',
         description: '',
-        image: '',
         category: 'men-watches'
       });
+      setImageFile(null);
     } catch (err) {
-      // Log the error for debugging purposes
       console.error(err);
-      // Display an error notification using toast, with the error message if available
       toast.error(err.response?.data?.message || 'Failed to upload watch');
     }
   };
@@ -65,39 +71,35 @@ const AdminDashboard = () => {
   return (
     <div className={styles.adminDashboard}>
       <h2>Admin Dashboard</h2>
-      {/* Form for uploading a new watch */}
       <form onSubmit={onSubmit} className={styles.uploadForm}>
-        {/* Form group for Watch Name */}
         <div className={styles.formGroup}>
           <label htmlFor="name">Watch Name:</label>
-          <input 
-            type="text" 
-            name="name" 
-            value={name} 
-            onChange={onChange} 
-            required 
+          <input
+            type="text"
+            name="name"
+            value={name}
+            onChange={onChange}
+            required
           />
         </div>
-        {/* Form group for Price */}
         <div className={styles.formGroup}>
           <label htmlFor="price">Price:</label>
-          <input 
-            type="number" 
-            name="price" 
-            value={price} 
-            onChange={onChange} 
-            required 
-            min="0" 
-            step="0.01" 
+          <input
+            type="number"
+            name="price"
+            value={price}
+            onChange={onChange}
+            required
+            min="0"
+            step="0.01"
           />
         </div>
-        {/* Form group for Category with a dropdown selection */}
         <div className={styles.formGroup}>
           <label htmlFor="category">Category:</label>
-          <select 
-            name="category" 
-            value={category} 
-            onChange={onChange} 
+          <select
+            name="category"
+            value={category}
+            onChange={onChange}
             required
           >
             <option value="men-watches">Men's Watches</option>
@@ -106,28 +108,26 @@ const AdminDashboard = () => {
             <option value="smartwatches">Smartwatches</option>
           </select>
         </div>
-        {/* Form group for Description */}
         <div className={styles.formGroup}>
           <label htmlFor="description">Description:</label>
-          <textarea 
-            name="description" 
-            value={description} 
-            onChange={onChange} 
-            required 
+          <textarea
+            name="description"
+            value={description}
+            onChange={onChange}
+            required
           />
         </div>
-        {/* Form group for Image URL */}
+        {/* Replace the image text input with a file input */}
         <div className={styles.formGroup}>
-          <label htmlFor="image">Image Name:</label>
-          <input 
-            type="text" 
-            name="image" 
-            value={image} 
-            onChange={onChange} 
-            required 
+          <label htmlFor="image">Image File:</label>
+          <input
+            type="file"
+            name="image"
+            onChange={handleFileChange}
+            accept="image/*"
+            required
           />
         </div>
-        {/* Submit button to upload the watch */}
         <button type="submit" className={styles.uploadBtn}>
           Upload Watch
         </button>

@@ -66,8 +66,12 @@ const PurchaseHistory = () => {
           {purchaseHistory.map((purchase) => (
             <li key={purchase._id} className={styles.purchaseItem}>
               <img
-                src={getImageURL(purchase.watch?.image)}
-                alt={purchase.watch?.name || 'Watch image'}
+                src={
+                  purchase.watch && purchase.watch.image
+                    ? getImageURL(purchase.watch.image)
+                    : '' // fallback image
+                }
+                alt={purchase.watch?.name || 'Deleted Watch'}
                 className={styles.watchImage}
               />
               <div className={styles.purchaseDetails}>
