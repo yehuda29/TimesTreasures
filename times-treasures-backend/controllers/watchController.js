@@ -4,6 +4,7 @@ const Watch = require('../models/Watch');
 // Import asyncHandler to handle errors in async route handlers without using try/catch in every function
 const asyncHandler = require('express-async-handler');
 
+const cloudinary = require('../cloudinaryConfig'); // Import your config
 /**
  * @desc    Get all watches with pagination, category filter, and sorting
  * @route   GET /api/watches?category=men-watches&sort=price&page=1&limit=20
@@ -107,23 +108,31 @@ exports.getWatch = asyncHandler(async (req, res, next) => {
 });
 
 /**
- * @desc    Upload a new watch
+ * @desc    Upload a new watch with an image uploaded to Cloudinary
  * @route   POST /api/watches
  * @access  Private/Admin
  */
 exports.uploadWatch = asyncHandler(async (req, res, next) => {
-  // Destructure required fields from the request body
-  const { name, price, description, image, category } = req.body;
+  // Destructure required fields (excluding image, which comes from the file upload)
+  const { name, price, description, category } = req.body;
 
-  // Validate that all required fields are provided; if not, return a 400 status
-  if (!name || !price || !description || !image || !category) {
+  // Validate required text fields
+  if (!name || !price || !description || !category) {
     return res.status(400).json({
       success: false,
-      message: 'Please provide name, price, description, image, and category'
+      message: 'Please provide name, price, description, and category'
     });
   }
 
-  // Validate that the category is one of the allowed values
+  // Validate that an image file was uploaded
+  if (!req.files || !req.files.image) {
+    return res.status(400).json({
+      success: false,
+      message: 'Please upload an image file'
+    });
+  }
+
+  // Validate category against allowed values
   const allowedCategories = ['men-watches', 'women-watches', 'luxury-watches', 'smartwatches'];
   if (!allowedCategories.includes(category)) {
     return res.status(400).json({
@@ -133,26 +142,123 @@ exports.uploadWatch = asyncHandler(async (req, res, next) => {
   }
 
   try {
-    // Create a new watch document in the database with the provided data
+    // Upload the image file to Cloudinary (using tempFilePath from express-fileupload)
+    const result = await cloudinary.uploader.upload(req.files.image.tempFilePath, {
+      folder: 'assets'
+    });
+
+    // Create a new watch document with the Cloudinary secure URL as the image field
     const watch = await Watch.create({
       name,
       price,
       description,
-      image,
+      image: result.secure_url,
+      cloudinaryId: result.public_id,
       category
     });
+    
 
-    // Return a 201 status with the newly created watch data
     res.status(201).json({
       success: true,
       data: watch
     });
   } catch (error) {
-    // Log any errors and return a 500 status with an error message
     console.error('Error uploading watch:', error);
     res.status(500).json({
       success: false,
       message: 'Server Error: Unable to upload watch.'
     });
   }
+});
+
+// Example upload endpoint using express-fileupload or multer to get the file path
+exports.uploadImage = asyncHandler(async (req, res, next) => {
+  // Assume the file is available as req.files.image
+  if (!req.files || !req.files.image) {
+    res.status(400);
+    throw new Error('No file uploaded');
+  }
+
+  // Upload the file to Cloudinary, specifying the "assets" folder
+  const result = await cloudinary.uploader.upload(req.files.image.tempFilePath, {
+    folder: 'assets'
+  });
+
+  // Return the secure URL so it can be saved in your DB
+  res.status(201).json({
+    success: true,
+    url: result.secure_url,
+    public_id: result.public_id
+  });
+});
+
+/**
+ * @desc    Update an existing watch (including image update)
+ * @route   PUT /api/watches/:id
+ * @access  Private/Admin
+ */
+exports.updateWatch = asyncHandler(async (req, res, next) => {
+  // Find the watch by its ID
+  const watch = await Watch.findById(req.params.id);
+  if (!watch) {
+    return res.status(404).json({ success: false, message: 'Watch not found' });
+  }
+
+  // Update text fields if provided
+  const { name, price, description, category } = req.body;
+  if (name) watch.name = name;
+  if (price) watch.price = price;
+  if (description) watch.description = description;
+  if (category) watch.category = category;
+
+  // If a new image file is provided, handle image update
+  if (req.files && req.files.image) {
+    // Delete the old image from Cloudinary if it exists
+    if (watch.cloudinaryId) {
+      await cloudinary.uploader.destroy(watch.cloudinaryId);
+    }
+    // Upload the new image to Cloudinary
+    const result = await cloudinary.uploader.upload(req.files.image.tempFilePath, {
+      folder: 'assets'
+    });
+    // Update the watch document with the new image info
+    watch.image = result.secure_url;
+    watch.cloudinaryId = result.public_id;
+  }
+
+  // Save the updated watch document
+  await watch.save();
+  res.status(200).json({ success: true, data: watch });
+});
+
+
+/**
+ * @desc    Delete a watch and its associated image from Cloudinary
+ * @route   DELETE /api/watches/:id
+ * @access  Private/Admin
+ */
+exports.deleteWatch = asyncHandler(async (req, res, next) => {
+  // Find the watch by its ID
+  const watch = await Watch.findById(req.params.id);
+  if (!watch) {
+    return res.status(404).json({ success: false, message: 'Watch not found' });
+  }
+
+  // If the watch has an associated Cloudinary image, attempt to delete it
+  if (watch.cloudinaryId) {
+    console.log('Deleting image with public id:', watch.cloudinaryId);
+    const deletionResult = await cloudinary.uploader.destroy(
+      watch.cloudinaryId,
+      { resource_type: 'image', invalidate: true }
+    );
+
+    if (deletionResult.result !== 'ok') {
+      console.error('Failed to delete image from Cloudinary:', deletionResult);
+    }
+  }
+
+  // Delete the watch from the database
+  await watch.deleteOne();
+
+  res.status(200).json({ success: true, message: 'Watch deleted successfully' });
 });

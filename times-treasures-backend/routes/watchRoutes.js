@@ -3,7 +3,7 @@
 // Import the express module to create a router
 const express = require('express');
 // Destructure the controller functions for watches from the watchController
-const { getAllWatches, getWatch, uploadWatch } = require('../controllers/watchController');
+const { getAllWatches, getWatch, uploadWatch, updateWatch, deleteWatch } = require('../controllers/watchController');
 // Import the authentication middleware functions: protect (to ensure the user is authenticated)
 // and authorize (to ensure the user has the proper role, e.g., 'admin')
 const { protect, authorize } = require('../middleware/auth');
@@ -52,6 +52,13 @@ const uploadValidation = [
 // and the 'authorize' middleware to ensure the user has the 'admin' role.
 // The 'uploadValidation' array validates the incoming request body.
 router.post('/', protect, authorize('admin'), uploadValidation, uploadWatch);
+
+// Upload a new watch (already updated to use Cloudinary)
+router.post('/', protect, authorize('admin'), uploadWatch);
+// New: Update an existing watch
+router.put('/:id', protect, authorize('admin'), updateWatch);
+// Delete an existing watch
+router.delete('/:id', protect, authorize('admin'), deleteWatch);
 
 // Export the router to be used in the main server file
 module.exports = router;

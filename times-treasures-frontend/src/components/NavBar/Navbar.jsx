@@ -133,13 +133,6 @@ const Navbar = () => {
           </Link>
         </li>
         {user && (
-          <li className={currentPath === "/purchase-history" ? styles.active : ""}>
-            <Link to="/purchase-history" onClick={closeMenus}>
-              Purchase History
-            </Link>
-          </li>
-        )}
-        {user && (
           <li className={currentPath === "/profile" ? styles.active : ""}>
             <Link to="/profile" onClick={closeMenus}>
               Profile

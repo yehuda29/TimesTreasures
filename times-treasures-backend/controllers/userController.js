@@ -6,7 +6,7 @@ const mongoose = require('mongoose'); // Import Mongoose for MongoDB interaction
 const User = require('../models/User'); // Import the User model.
 const asyncHandler = require('express-async-handler'); // Utility to handle async errors in route handlers.
 const Watch = require('../models/Watch'); // Import the Watch model, used to verify watch existence in cart items.
-
+const cloudinary = require('../cloudinaryConfig'); // Import Cloudinary config
 // -----------------------------------------------------------------------------
 // GET PURCHASE HISTORY
 // -----------------------------------------------------------------------------
@@ -14,16 +14,20 @@ const Watch = require('../models/Watch'); // Import the Watch model, used to ver
 // @route   GET /api/users/purchase-history
 // @access  Private
 exports.getPurchaseHistory = asyncHandler(async (req, res, next) => {
-  // Find the user by the ID (populated by the authentication middleware) and populate the 'watch' field
-  // inside each purchase history record so that full watch details (like image, name, etc.) are available.
+  // Find the user and populate the 'watch' field for each purchase record
   const user = await User.findById(req.user.id).populate('purchaseHistory.watch');
   
-  // Respond with a success flag and the user's purchase history.
+  // Filter out any purchase records where the watch has been deleted (i.e. is null)
+  const filteredPurchaseHistory = user.purchaseHistory.filter(
+    (purchase) => purchase.watch !== null
+  );
+  
   res.status(200).json({
     success: true,
-    data: user.purchaseHistory
+    data: filteredPurchaseHistory
   });
 });
+
 
 // -----------------------------------------------------------------------------
 // GET PERSISTENT CART
@@ -164,27 +168,40 @@ exports.purchaseCart = asyncHandler(async (req, res, next) => {
   });
 });
 
-// This endpoint allows updating fields like name, profilePicture, and addresses.
 exports.updateProfile = asyncHandler(async (req, res, next) => {
-  // Destructure fields from the request body; adjust as needed.
-  const { name, profilePicture, addresses } = req.body;
-
-  // Build the update object with only provided fields.
+  const { name, addresses } = req.body;
   const updates = {};
+
   if (name) updates.name = name;
-  if (profilePicture) updates.profilePicture = profilePicture;
   if (addresses) updates.addresses = addresses;
 
-  // Find the user by ID and update using the $set operator.
+  // Check if a new profile picture file is uploaded via req.files.profilePicture
+  if (req.files && req.files.profilePicture) {
+    try {
+      const result = await cloudinary.uploader.upload(req.files.profilePicture.tempFilePath, {
+        folder: 'profilePictures'
+      });
+      updates.profilePicture = result.secure_url;
+    } catch (error) {
+      console.error("Error uploading profile picture:", error);
+      return res.status(500).json({
+        success: false,
+        message: 'Error uploading profile picture'
+      });
+    }
+  } else if (req.body.profilePicture) {
+    // Alternatively, if a URL is provided directly in the body, use it.
+    updates.profilePicture = req.body.profilePicture;
+  }
+
   const updatedUser = await User.findByIdAndUpdate(
     req.user.id,
     { $set: updates },
     { new: true, runValidators: true }
-  ).select('-password'); // Exclude the password from the returned document
+  ).select('-password');
 
   if (!updatedUser) {
-    res.status(404);
-    throw new Error('User not found');
+    return res.status(404).json({ success: false, message: 'User not found' });
   }
 
   res.status(200).json({
