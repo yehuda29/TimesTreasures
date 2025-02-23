@@ -1,17 +1,15 @@
 // src/pages/Cart/Cart.jsx
-
 import React, { useContext } from 'react';
-import axios from 'axios';
+import { Link } from 'react-router-dom'; // Import Link for navigation
 import { AuthContext } from '../../context/AuthContext';
 import { CartContext } from '../../context/CartContext';
 import { toast } from 'react-toastify';
 import styles from './Cart.module.css';
-import PaymentButton from '../../components/PaymentButton/PaymentButton.jsx';
-import { getImageURL } from '../../utils/imageUtil.js';
+import { getImageURL } from '../../utils/imageUtil';
 
 const Cart = () => {
   const { user, token } = useContext(AuthContext);
-  const { cartItems, removeFromCart, clearCart } = useContext(CartContext);
+  const { cartItems, removeFromCart } = useContext(CartContext);
 
   // Helper: Extract the watch ID from a cart item.
   const getWatchId = (item) =>
@@ -30,26 +28,6 @@ const Cart = () => {
     const price = item.watch?.price ? Number(item.watch.price) : 0;
     return acc + price * item.quantity;
   }, 0);
-
-  // Handle successful payment by calling the purchase endpoint
-  const handlePaymentSuccess = async (orderDetails) => {
-    try {
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      };
-      // Call the new purchase endpoint to process the purchase and clear the persistent cart.
-      await axios.post(`${import.meta.env.VITE_API_URL}/users/purchase`, {}, config);
-      toast.success('Purchase successful');
-      // Clear the cart in the context (which should reflect the persistent cart being cleared)
-      clearCart(token);
-    } catch (err) {
-      console.error('Error processing purchase:', err);
-      toast.error(err.response?.data?.message || 'Purchase failed');
-    }
-  };
 
   return (
     <div className={styles.cartContainer}>
@@ -93,13 +71,10 @@ const Cart = () => {
           </ul>
           <div className={styles.cartSummary}>
             <h3>Total: ${totalPrice.toFixed(2)}</h3>
-            {/* Dedicated container for PayPal buttons */}
-            <div id="paypal-button-portal"></div>
-            <PaymentButton 
-              amount={totalPrice.toFixed(2)} 
-              onSuccess={handlePaymentSuccess}
-              containerId="paypal-button-portal"
-            />
+            {/* Button to navigate to the checkout page */}
+            <Link to="/checkout">
+              <button className={styles.checkoutBtn}>Proceed to Checkout</button>
+            </Link>
           </div>
         </>
       )}

@@ -171,7 +171,7 @@ exports.uploadWatch = asyncHandler(async (req, res, next) => {
   }
 });
 
-// Example upload endpoint using express-fileupload or multer to get the file path
+// upload endpoint using express-fileupload or multer to get the file path
 exports.uploadImage = asyncHandler(async (req, res, next) => {
   // Assume the file is available as req.files.image
   if (!req.files || !req.files.image) {
