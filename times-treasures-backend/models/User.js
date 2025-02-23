@@ -35,6 +35,14 @@ const purchaseSchema = new mongoose.Schema({
   totalPrice: {
     type: Number,
     required: true
+  },
+
+  shippingAddress: {
+    country: String,
+    city: String,
+    homeAddress: String,
+    zipcode: String,
+    phoneNumber: String
   }
 });
 

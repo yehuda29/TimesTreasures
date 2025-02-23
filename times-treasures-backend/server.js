@@ -1,4 +1,4 @@
-// watch-shop-backend/server.js
+// times-treasures-backend/server.js
 
 // Import core modules and dependencies
 const express = require('express');                 // Express framework for building the server

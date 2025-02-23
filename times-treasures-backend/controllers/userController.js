@@ -7,6 +7,54 @@ const User = require('../models/User'); // Import the User model.
 const asyncHandler = require('express-async-handler'); // Utility to handle async errors in route handlers.
 const Watch = require('../models/Watch'); // Import the Watch model, used to verify watch existence in cart items.
 const cloudinary = require('../cloudinaryConfig'); // Import Cloudinary config
+const nodemailer = require('nodemailer');
+
+// -----------------------------------------------------------------------------
+// Setup Nodemailer Transporter
+// -----------------------------------------------------------------------------
+const transporter = nodemailer.createTransport({
+  service: 'Gmail', // You can replace this with another service such as SendGrid or Mailgun in production
+  auth: {
+    user: process.env.EMAIL_USER,  // Your email address from environment variables
+    pass: process.env.EMAIL_PASS   // Your email password or API key from environment variables
+  }
+});
+
+// -----------------------------------------------------------------------------
+// Function: sendReceiptEmail
+// Purpose: Send an email receipt to the user after a successful purchase.
+// -----------------------------------------------------------------------------
+const sendReceiptEmail = async (userEmail, purchaseDetails) => {
+  // Build the HTML content for the receipt email
+  const emailContent = `
+    <h2>Thank you for your purchase!</h2>
+    <p>Here is your receipt:</p>
+    <h3>Shipping Address:</h3>
+    <p>Country/State: ${purchaseDetails.shippingAddress.country}</p>
+    <p>City: ${purchaseDetails.shippingAddress.city}</p>
+    <p>Home Address: ${purchaseDetails.shippingAddress.homeAddress}</p>
+    <p>Zipcode: ${purchaseDetails.shippingAddress.zipcode}</p>
+    <p>Phone Number: ${purchaseDetails.shippingAddress.phoneNumber}</p>
+    <h3>Items Purchased:</h3>
+    <ul>
+      ${purchaseDetails.items.map(item => `<li>${item.name} x ${item.quantity} - $${Number(item.price).toFixed(2)}</li>`).join('')}
+    </ul>
+    <h3>Total: $${purchaseDetails.total.toFixed(2)}</h3>
+    <p>Estimated Shipping Time: 14 to 21 days</p>
+  `;
+
+  // Define email options including the sender, recipient, subject, and HTML content
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: userEmail,
+    subject: 'Your Purchase Receipt',
+    html: emailContent
+  };
+
+  // Send the email using the transporter; if it fails, the error is logged
+  await transporter.sendMail(mailOptions);
+};
+
 // -----------------------------------------------------------------------------
 // GET PURCHASE HISTORY
 // -----------------------------------------------------------------------------
@@ -122,46 +170,79 @@ exports.updateCart = asyncHandler(async (req, res, next) => {
 });
 
 // -----------------------------------------------------------------------------
-// PURCHASE CART
+// Controller: purchaseCart
+// Purpose: Process all items in the user's persistent cart, add them to the purchase
+//          history (including the shipping address), clear the cart, and send a receipt email.
+// Route:   POST /api/users/purchase
+// Access:  Private
 // -----------------------------------------------------------------------------
-// @desc    Purchase all items in the user's persistent cart
-// @route   POST /api/users/purchase
-// @access  Private
 exports.purchaseCart = asyncHandler(async (req, res, next) => {
-  // Retrieve the user by ID and populate the cart items so that we have full watch details.
+  // Extract the shippingAddress from the request body (provided by the checkout process)
+  const { shippingAddress } = req.body;
+
+  // Find the user by ID and populate the 'cart.watch' field to have full watch details
   const user = await User.findById(req.user.id).populate('cart.watch');
-  
-  // If the user is not found, return a 404 error.
+
+  // Check if the user exists
   if (!user) {
     res.status(404);
     throw new Error('User not found');
   }
-  // If the cart is empty, return a 400 error.
+  // Check if the cart is empty
   if (!user.cart || user.cart.length === 0) {
     res.status(400);
     throw new Error('Cart is empty');
   }
 
-  // For each item in the user's cart, create a purchase record.
+  // Initialize variables to compute the receipt details
+  let total = 0;
+  const items = [];
+
+  // Process each item in the cart:
+  // - Calculate total price for each item
+  // - Push details into the items array for the email receipt
+  // - Add a new purchase record to the user's purchaseHistory, including the shipping address
   user.cart.forEach((item) => {
-    // Calculate the total price for the item (quantity multiplied by the watch's price).
-    const totalPrice = item.quantity * (item.watch.price || 0);
-    // Push a new purchase record into the purchaseHistory array.
-    user.purchaseHistory.push({
-      watch: item.watch._id,   // Store only the watch's ObjectId.
+    const itemTotal = item.quantity * (item.watch.price || 0);
+    total += itemTotal;
+
+    // Add item details to the receipt details
+    items.push({
+      name: item.watch.name,
       quantity: item.quantity,
-      totalPrice: totalPrice,
-      purchaseDate: new Date() // Use the current date/time.
+      price: item.watch.price
+    });
+
+    // Add purchase record; we include shippingAddress here so each order record remains immutable
+    user.purchaseHistory.push({
+      watch: item.watch._id,
+      quantity: item.quantity,
+      totalPrice: itemTotal,
+      purchaseDate: new Date(),
+      shippingAddress: shippingAddress
     });
   });
 
-  // After processing the purchase, clear the user's cart.
+  // Clear the user's persistent cart after processing the purchase
   user.cart = [];
   
-  // Save the updated user document, which now includes new purchase records and an empty cart.
+  // Save the updated user document with the new purchase history and empty cart
   await user.save();
 
-  // Return a response with the updated purchase history.
+  // Build an object with purchase details for the email receipt
+  const purchaseDetails = {
+    shippingAddress,
+    items,
+    total
+  };
+
+  // Asynchronously send the receipt email to the user.
+  // This operation is not awaited to avoid delaying the response.
+  sendReceiptEmail(user.email, purchaseDetails)
+    .then(() => console.log('Receipt email sent successfully'))
+    .catch(err => console.error('Error sending receipt email:', err));
+
+  // Return a response with the updated purchase history
   res.status(200).json({
     success: true,
     data: user.purchaseHistory

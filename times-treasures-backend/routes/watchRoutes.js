@@ -41,7 +41,7 @@ const uploadValidation = [
   // Check that the 'description' field is not empty.
   body('description', 'Description is required').not().isEmpty(),
   // Check that the 'image' field is not empty.
-  body('image', 'Image URL is required').not().isEmpty(),
+  body('image', 'Image file is required').not().isEmpty(),
   // Check that the 'category' field is one of the allowed values.
   body('category', 'Valid category is required').isIn(['men-watches', 'women-watches', 'luxury-watches', 'smartwatches'])
 ];
