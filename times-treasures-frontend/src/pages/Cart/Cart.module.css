@@ -72,3 +72,35 @@
 .purchaseBtn:hover {
   background-color: #218838;
 }
+
+
+/* Example CSS snippet for price container and arrow */
+.priceContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.originalPrice {
+  color: #888;
+}
+
+.arrow {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.discountedPrice {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+/* You can similarly add .specialOfferBadge styles */
+.specialOfferBadge {
+  background-color: var(--secondary-color);
+  color: #fff;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}

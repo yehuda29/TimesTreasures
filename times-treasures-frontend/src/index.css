@@ -2,6 +2,7 @@
 
 :root {
     --primary-color: #2c3e50; 
+    --primary-color-dark: #0056b3;
     --secondary-color: #e74c3c; 
     --text-color: #ecf0f1; 
     --hover-color: #e74c3c;

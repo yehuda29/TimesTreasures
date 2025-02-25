@@ -6,66 +6,86 @@ import { toast } from 'react-toastify';
 import styles from './AdminDashboard.module.css';
 
 const AdminDashboard = () => {
-  // Include 'inventory' in the initial form data
+  // Extend form state to include special offer fields:
   const [formData, setFormData] = useState({
     name: '',
     price: '',
     description: '',
     category: 'men-watches',
-    inventory: '' // New field for inventory count
+    inventory: '',
+    discountPercentage: '', // Optional: percentage discount (e.g., 20 for 20% off)
+    offerStart: '',         // Optional: start date of the offer (YYYY-MM-DD format)
+    offerEnd: ''            // Optional: end date of the offer (YYYY-MM-DD format)
   });
-  // Store the selected image file
+  // State to hold the selected image file
   const [imageFile, setImageFile] = useState(null);
 
-  // Destructure fields from formData, including inventory
-  const { name, price, description, category, inventory } = formData;
+  // Destructure all fields from formData
+  const { name, price, description, category, inventory, discountPercentage, offerStart, offerEnd } = formData;
 
-  // Update form data state when inputs change
-  const onChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  // Handler to update form data state when any input field changes
+  const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  // Handle file selection from the file input
+  // Handle file selection for the image file
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setImageFile(e.target.files[0]);
     }
   };
 
-  // Handle form submission to create a new watch
+  // Handler for form submission to create a new watch with special offer details
   const onSubmit = async (e) => {
     e.preventDefault();
 
+    // ----- Special Offer Fields Validation -----
+    // If any one of the special offer fields is filled in, ensure that all are provided.
+    if (discountPercentage || offerStart || offerEnd) {
+      if (!(discountPercentage && offerStart && offerEnd)) {
+        toast.error("Please provide discount percentage, offer start date, and offer end date together, or leave all empty.");
+        return;
+      }
+    }
+    // ---------------------------------------------
+
     try {
       const token = localStorage.getItem('token');
-      // Create a FormData object and append all fields, including inventory
+      // Create a FormData object to handle file upload and text data
       const data = new FormData();
       data.append('name', name);
       data.append('price', price);
       data.append('description', description);
       data.append('category', category);
-      data.append('inventory', inventory); // Append inventory field
+      data.append('inventory', inventory);
+      // Append special offer fields. These are optional; if left blank, the backend defaults will apply.
+      data.append('discountPercentage', discountPercentage);
+      data.append('offerStart', offerStart);
+      data.append('offerEnd', offerEnd);
       if (imageFile) {
         data.append('image', imageFile);
       }
 
-      // Let the browser set the Content-Type header automatically
+      // Set up the configuration for the request with the authorization token.
       const config = {
         headers: {
           Authorization: `Bearer ${token}`
         }
       };
 
-      // POST to the watch creation endpoint
+      // POST the FormData to the watches endpoint.
+      // The backend is expected to parse these fields and use the specialOffer sub-schema.
       await axios.post(`${import.meta.env.VITE_API_URL}/watches`, data, config);
       toast.success('Watch uploaded successfully');
 
-      // Reset the form including the inventory field
+      // Reset the form state (including special offer fields) and clear the file input.
       setFormData({
         name: '',
         price: '',
         description: '',
         category: 'men-watches',
-        inventory: ''
+        inventory: '',
+        discountPercentage: '',
+        offerStart: '',
+        offerEnd: ''
       });
       setImageFile(null);
     } catch (err) {
@@ -78,6 +98,7 @@ const AdminDashboard = () => {
     <div className={styles.adminDashboard}>
       <h2>Admin Dashboard</h2>
       <form onSubmit={onSubmit} className={styles.uploadForm}>
+        {/* Watch Name */}
         <div className={styles.formGroup}>
           <label htmlFor="name">Watch Name:</label>
           <input
@@ -88,6 +109,7 @@ const AdminDashboard = () => {
             required
           />
         </div>
+        {/* Price */}
         <div className={styles.formGroup}>
           <label htmlFor="price">Price:</label>
           <input
@@ -100,6 +122,7 @@ const AdminDashboard = () => {
             step="0.01"
           />
         </div>
+        {/* Category */}
         <div className={styles.formGroup}>
           <label htmlFor="category">Category:</label>
           <select
@@ -114,6 +137,7 @@ const AdminDashboard = () => {
             <option value="smartwatches">Smartwatches</option>
           </select>
         </div>
+        {/* Description */}
         <div className={styles.formGroup}>
           <label htmlFor="description">Description:</label>
           <textarea
@@ -123,7 +147,7 @@ const AdminDashboard = () => {
             required
           />
         </div>
-        {/* New: Inventory input field */}
+        {/* Inventory */}
         <div className={styles.formGroup}>
           <label htmlFor="inventory">Inventory:</label>
           <input
@@ -136,6 +160,40 @@ const AdminDashboard = () => {
             step="1"
           />
         </div>
+        {/* Special Offer: Discount Percentage */}
+        <div className={styles.formGroup}>
+          <label htmlFor="discountPercentage">Discount Percentage (optional):</label>
+          <input
+            type="number"
+            name="discountPercentage"
+            value={discountPercentage}
+            onChange={onChange}
+            min="0"
+            max="100"
+            step="1"
+          />
+        </div>
+        {/* Special Offer: Offer Start Date */}
+        <div className={styles.formGroup}>
+          <label htmlFor="offerStart">Offer Start Date (optional):</label>
+          <input
+            type="date"
+            name="offerStart"
+            value={offerStart}
+            onChange={onChange}
+          />
+        </div>
+        {/* Special Offer: Offer End Date */}
+        <div className={styles.formGroup}>
+          <label htmlFor="offerEnd">Offer End Date (optional):</label>
+          <input
+            type="date"
+            name="offerEnd"
+            value={offerEnd}
+            onChange={onChange}
+          />
+        </div>
+        {/* Image File */}
         <div className={styles.formGroup}>
           <label htmlFor="image">Image File:</label>
           <input
@@ -146,6 +204,7 @@ const AdminDashboard = () => {
             required
           />
         </div>
+        {/* Submit Button */}
         <button type="submit" className={styles.uploadBtn}>
           Upload Watch
         </button>
