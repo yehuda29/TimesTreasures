@@ -6,8 +6,9 @@ import { CartContext } from '../../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PaymentButton from '../../components/PaymentButton/PaymentButton';
-import { toast } from 'react-toastify'; // <-- Added import for toast
+import { toast } from 'react-toastify';
 import styles from './Checkout.module.css';
+import { calculateFinalPrice } from '../../utils/priceUtil';
 
 const Checkout = () => {
   const { user, token } = useContext(AuthContext);
@@ -33,13 +34,13 @@ const Checkout = () => {
     setNewAddress({ ...newAddress, [e.target.name]: e.target.value });
   };
 
-  // Calculate total price from cart items
+  // Calculate total price from cart items using the discounted (final) price.
   const totalPrice = cartItems.reduce((acc, item) => {
-    const price = item.watch?.price ? Number(item.watch.price) : 0;
-    return acc + price * item.quantity;
+    const unitPrice = calculateFinalPrice(item.watch);
+    return acc + unitPrice * item.quantity;
   }, 0);
 
-  // Handle payment success by calling the backend purchase endpoint
+  // Handle payment success by calling the backend purchase endpoint.
   const handlePaymentSuccess = async (orderDetails) => {
     try {
       setLoading(true);
@@ -53,7 +54,7 @@ const Checkout = () => {
           }
         }
       );
-      // If the response contains a message about out-of-stock items, display it
+      // If the response contains a message about out-of-stock items, display it.
       if (response.data.message && response.data.message !== "Purchase completed successfully.") {
         toast.error(response.data.message);
       }
@@ -67,7 +68,7 @@ const Checkout = () => {
     }
   };
 
-  // Step 1: Render the address selection step
+  // Step 1: Render the address selection step.
   const renderAddressStep = () => {
     return (
       <div className={styles.addressStep}>
@@ -140,7 +141,7 @@ const Checkout = () => {
     );
   };
 
-  // Step 2: Render the order review & payment step
+  // Step 2: Render the order review & payment step.
   const renderReviewStep = () => {
     return (
       <div className={styles.reviewStep}>
@@ -156,11 +157,26 @@ const Checkout = () => {
         <div>
           <h3>Items:</h3>
           <ul>
-            {cartItems.map((item, index) => (
-              <li key={index}>
-                {item.watch.name} x {item.quantity} - ${Number(item.watch.price).toFixed(2)}
-              </li>
-            ))}
+            {cartItems.map((item, index) => {
+              const unitPrice = calculateFinalPrice(item.watch);
+              const isDiscounted = unitPrice < Number(item.watch.price);
+              return (
+                <li key={index}>
+                  {item.watch.name} x {item.quantity} - $
+                  {(unitPrice * item.quantity).toFixed(2)}
+                  {isDiscounted && (
+                    <span className={styles.itemPriceDetail}>
+                      {' '}
+                      (
+                      <s>${(Number(item.watch.price) * item.quantity).toFixed(2)}</s> 
+                      <span className={styles.arrow}>→</span> 
+                      ${ (unitPrice * item.quantity).toFixed(2) }
+                      )
+                    </span>
+                  )}
+                </li>
+              );
+            })}
           </ul>
           <h3>Total: ${totalPrice.toFixed(2)}</h3>
         </div>

@@ -51,7 +51,7 @@
   .addressStep button,
   .reviewStep button {
     padding: 0.75rem 1.5rem;
-    background-color: #007bff;
+    background-color: var(--primary-color);
     border: none;
     border-radius: 4px;
     color: #fff;
@@ -63,7 +63,7 @@
   
   .addressStep button:hover,
   .reviewStep button:hover {
-    background-color: #0056b3;
+    background-color: var(--primary-color-dark);
   }
   
   .reviewStep ul {
@@ -112,3 +112,42 @@
     margin: 2rem 0;
   }
   
+
+/* Example CSS snippet for price container and arrow */
+ .priceContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+ .originalPrice {
+    color: #888;
+  }
+  
+ .arrow {
+    margin: 0 0.3rem;
+    font-weight: bold;
+    color: #333;
+ }
+  
+ .discountedPrice {
+    color: var(--primary-color);
+    font-weight: bold;
+ }
+  
+  /* You can similarly add .specialOfferBadge styles */
+ .specialOfferBadge {
+    background-color: var(--secondary-color);
+    color: #fff;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+ }
+  
+
+ .itemPriceDetail {
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+    margin-left: 0.5rem;
+  }

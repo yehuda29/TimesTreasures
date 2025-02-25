@@ -113,7 +113,8 @@ exports.getWatch = asyncHandler(async (req, res, next) => {
  * @access  Private/Admin
  */
 exports.uploadWatch = asyncHandler(async (req, res, next) => {
-  const { name, price, description, category, inventory } = req.body; // include inventory
+  // Extract the required fields along with the special offer fields
+  const { name, price, description, category, inventory, discountPercentage, offerStart, offerEnd } = req.body;
 
   // Validate required text fields including inventory.
   if (!name || !price || !description || !category || inventory === undefined) {
@@ -146,7 +147,8 @@ exports.uploadWatch = asyncHandler(async (req, res, next) => {
       folder: 'assets'
     });
 
-    // Create a new watch document including the inventory field
+    // Create a new watch document including the specialOffer field.
+    // Only set the specialOffer values if all three are provided; otherwise, defaults will be used.
     const watch = await Watch.create({
       name,
       price,
@@ -154,7 +156,12 @@ exports.uploadWatch = asyncHandler(async (req, res, next) => {
       image: result.secure_url,
       cloudinaryId: result.public_id,
       category,
-      inventory // store the provided inventory value
+      inventory,
+      specialOffer: {
+        discountPercentage: discountPercentage ? Number(discountPercentage) : 0,
+        offerStart: offerStart || null,
+        offerEnd: offerEnd || null
+      }
     });
 
     res.status(201).json({

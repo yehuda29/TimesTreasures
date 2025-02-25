@@ -8,6 +8,7 @@ import { CartContext } from '../../context/CartContext';
 import { AuthContext } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import { getImageURL } from '../../utils/imageUtil';
+import { calculateFinalPrice } from '../../utils/priceUtil';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -16,7 +17,6 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  // New state for updating inventory (for admin use)
   const [newInventory, setNewInventory] = useState('');
 
   const { addToCart } = useContext(CartContext);
@@ -31,7 +31,6 @@ const ProductDetail = () => {
           throw new Error('Invalid watch data');
         }
         setWatch(fetchedWatch);
-        // If admin, prefill the newInventory field with current stock
         if (user && user.role === 'admin') {
           setNewInventory(fetchedWatch.inventory);
         }
@@ -45,6 +44,10 @@ const ProductDetail = () => {
     fetchWatch();
   }, [id, user]);
 
+  // Calculate final price using the helper function
+  const finalPrice = watch ? calculateFinalPrice(watch) : 0;
+  const isDiscounted = watch && finalPrice < Number(watch.price);
+
   const handleAddToCart = () => {
     if (!user) {
       toast.error('Please login to make a purchase');
@@ -52,7 +55,6 @@ const ProductDetail = () => {
       return;
     }
     if (watch) {
-      // Check available stock before adding to cart
       if (watch.inventory === 0) {
         toast.error('This watch is out of stock');
         return;
@@ -67,29 +69,25 @@ const ProductDetail = () => {
     }
   };
 
-  // Handler for admin to update the stock/inventory
   const handleUpdateStock = async () => {
     try {
-      // Prepare payload with updated inventory value.
       const updatedInventory = Number(newInventory);
       if (isNaN(updatedInventory) || updatedInventory < 0) {
         toast.error('Please enter a valid non-negative number for stock');
         return;
       }
-      const token = localStorage.getItem('token');
+      const localToken = localStorage.getItem('token');
       const config = {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${localToken}`,
         },
       };
-      // Send a PUT request to update the watch. We only send the inventory field.
       const response = await axios.put(
         `${import.meta.env.VITE_API_URL}/watches/${id}`,
         { inventory: updatedInventory },
         config
       );
-      // Update local state with new watch data
       setWatch(response.data.data);
       toast.success('Stock updated successfully');
     } catch (err) {
@@ -98,12 +96,10 @@ const ProductDetail = () => {
     }
   };
 
-  // New handler for admin inventory input change
   const handleInventoryChange = (e) => {
     setNewInventory(e.target.value);
   };
 
-  // Handler for admin deletion of the watch.
   const handleDeleteWatch = async () => {
     if (!window.confirm('Are you sure you want to delete this watch?')) return;
     try {
@@ -136,12 +132,26 @@ const ProductDetail = () => {
       <img src={getImageURL(watch.image)} alt={watch.name} className={styles.productImage} />
       <div className={styles.productInfo}>
         <h2 className={styles.productName}>{watch.name}</h2>
-        <p className={styles.productPrice}>${Number(watch.price).toFixed(2)}</p>
+        {isDiscounted ? (
+          <div className={styles.priceContainer}>
+            <p className={styles.originalPrice}>
+              <s>${Number(watch.price).toFixed(2)}</s>
+            </p>
+            <span className={styles.arrow}>→</span>
+            <p className={styles.discountedPrice}>
+              ${finalPrice.toFixed(2)}
+            </p>
+            <p className={styles.specialOfferBadge}>
+              {watch.specialOffer.discountPercentage}% OFF!
+            </p>
+          </div>
+        ) : (
+          <p className={styles.productPrice}>${Number(watch.price).toFixed(2)}</p>
+        )}
         <p className={styles.productDescription}>{watch.description}</p>
         <p className={styles.stockInfo}>
           {watch.inventory > 0 ? `In Stock: ${watch.inventory}` : 'Out of Stock'}
         </p>
-        {/* Only show quantity selector if the item is in stock */}
         {watch.inventory > 0 && (
           <div className={styles.quantitySelector}>
             <label htmlFor="quantity">Quantity:</label>
@@ -169,7 +179,6 @@ const ProductDetail = () => {
               <button className={styles.deleteBtn} onClick={handleDeleteWatch}>
                 Delete Watch
               </button>
-              {/* Admin: Update Stock Section */}
               <div className={styles.updateStock}>
                 <label htmlFor="inventoryUpdate">Update Stock:</label>
                 <input

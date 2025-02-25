@@ -1,56 +1,82 @@
 /* src/components/ProductCard/ProductCard.module.css */
 
 .productCard {
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  background-color: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
   padding: 1rem;
   text-align: center;
-  /* Ensure the container is not automatically turning links into bigger clickable areas */
-  position: relative;
-  max-width: 250px; /* or whatever suits your layout */
-  margin: 0 auto;   /* optional, centers card if used in a grid */
-  background-color: #fff;
 }
 
 .imageLink {
-  display: inline-block; /* Ensures the clickable area only wraps the image size */
+  display: block;
+  margin: 0 auto;
 }
 
 .productImage {
-  width: 100%;
+  max-width: 100%;
   height: auto;
-  display: block;      /* So the image itself doesn't exceed container */
-  object-fit: cover;   /* or contain, based on your preference */
-  border-radius: 4px;
+  border-radius: 8px;
+  margin-bottom: 1rem;
 }
 
 .productDetails {
-  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .productName {
-  font-size: 1rem;
-  margin: 0.5rem 0 0.25rem;
-  color: #333;
-}
-
-.productPrice {
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: bold;
-  color: #777;
   margin-bottom: 0.5rem;
 }
 
+.productPrice {
+  font-size: 1.1rem;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.priceContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.originalPrice {
+  color: #888;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.arrow {
+  font-size: 1.2rem;
+  color: #333;
+  text-align: center;
+}
+
+.discountedPrice {
+  color: var(--primary-color);
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-align: center;
+}
+
 .viewDetailsBtn {
-  display: inline-block; /* This ensures the link acts like a button size */
-  text-decoration: none;
-  padding: 0.4rem 0.8rem;
-  background-color: #2c3e50;
+  background-color: var(--primary-color);
   color: #fff;
+  padding: 0.5rem 1rem;
   border-radius: 4px;
-  transition: background-color 0.3s;
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  transition: background-color 0.3s ease;
 }
 
 .viewDetailsBtn:hover {
-  background-color: #445566;
+  background-color: var(--primary-color-dark);
 }
