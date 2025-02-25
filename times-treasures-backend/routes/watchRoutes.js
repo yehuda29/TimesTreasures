@@ -34,17 +34,15 @@ router.get('/:id', getWatch);
 // Define validation rules for uploading a new watch using express-validator.
 // These rules ensure that all required fields are provided and valid.
 const uploadValidation = [
-  // Check that the 'name' field is not empty.
   body('name', 'Watch name is required').not().isEmpty(),
-  // Check that the 'price' field is numeric.
   body('price', 'Price must be a number').isNumeric(),
-  // Check that the 'description' field is not empty.
   body('description', 'Description is required').not().isEmpty(),
-  // Check that the 'image' field is not empty.
   body('image', 'Image file is required').not().isEmpty(),
-  // Check that the 'category' field is one of the allowed values.
-  body('category', 'Valid category is required').isIn(['men-watches', 'women-watches', 'luxury-watches', 'smartwatches'])
+  body('category', 'Valid category is required').isIn(['men-watches', 'women-watches', 'luxury-watches', 'smartwatches']),
+  // NEW: Validate that inventory is an integer greater than or equal to 0.
+  body('inventory', 'Inventory must be a non-negative integer').isInt({ min: 0 })
 ];
+
 
 // POST /api/watches
 // This route allows an admin to upload a new watch.

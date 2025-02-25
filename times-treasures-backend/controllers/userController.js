@@ -179,75 +179,83 @@ exports.updateCart = asyncHandler(async (req, res, next) => {
 exports.purchaseCart = asyncHandler(async (req, res, next) => {
   // Extract the shippingAddress from the request body (provided by the checkout process)
   const { shippingAddress } = req.body;
-
   // Find the user by ID and populate the 'cart.watch' field to have full watch details
   const user = await User.findById(req.user.id).populate('cart.watch');
 
-  // Check if the user exists
   if (!user) {
     res.status(404);
     throw new Error('User not found');
   }
-  // Check if the cart is empty
   if (!user.cart || user.cart.length === 0) {
     res.status(400);
     throw new Error('Cart is empty');
   }
 
-  // Initialize variables to compute the receipt details
   let total = 0;
   const items = [];
+  // Array to keep track of any watches that are out of stock
+  const outOfStockItems = [];
 
-  // Process each item in the cart:
-  // - Calculate total price for each item
-  // - Push details into the items array for the email receipt
-  // - Add a new purchase record to the user's purchaseHistory, including the shipping address
-  user.cart.forEach((item) => {
-    const itemTotal = item.quantity * (item.watch.price || 0);
-    total += itemTotal;
+  // Process each cart item
+  for (const item of user.cart) {
+    const watchDoc = item.watch;
+    // Check if the available inventory is less than the desired quantity
+    if (watchDoc.inventory < item.quantity) {
+      // Record the watch name for the out-of-stock message
+      outOfStockItems.push(watchDoc.name);
+      // Skip processing this item (i.e. do not add to purchase history or deduct inventory)
+    } else {
+      // Sufficient inventory: decrement the inventory by the purchased quantity
+      await Watch.findByIdAndUpdate(watchDoc._id, { $inc: { inventory: -item.quantity } });
+      const itemTotal = item.quantity * (watchDoc.price || 0);
+      total += itemTotal;
 
-    // Add item details to the receipt details
-    items.push({
-      name: item.watch.name,
-      quantity: item.quantity,
-      price: item.watch.price
-    });
+      // Add item details for the receipt email
+      items.push({
+        name: watchDoc.name,
+        quantity: item.quantity,
+        price: watchDoc.price
+      });
 
-    // Add purchase record; we include shippingAddress here so each order record remains immutable
-    user.purchaseHistory.push({
-      watch: item.watch._id,
-      quantity: item.quantity,
-      totalPrice: itemTotal,
-      purchaseDate: new Date(),
-      shippingAddress: shippingAddress
-    });
-  });
+      // Record the purchase in the user's purchase history (with a snapshot of shippingAddress)
+      user.purchaseHistory.push({
+        watch: watchDoc._id,
+        quantity: item.quantity,
+        totalPrice: itemTotal,
+        purchaseDate: new Date(),
+        shippingAddress: shippingAddress
+      });
+    }
+  }
 
-  // Clear the user's persistent cart after processing the purchase
+  // Remove all items from the cart (both purchased and out-of-stock items are cleared)
   user.cart = [];
-  
-  // Save the updated user document with the new purchase history and empty cart
   await user.save();
 
-  // Build an object with purchase details for the email receipt
   const purchaseDetails = {
     shippingAddress,
     items,
     total
   };
 
-  // Asynchronously send the receipt email to the user.
-  // This operation is not awaited to avoid delaying the response.
+  // Asynchronously send the receipt email (not awaited so as not to delay response)
   sendReceiptEmail(user.email, purchaseDetails)
     .then(() => console.log('Receipt email sent successfully'))
     .catch(err => console.error('Error sending receipt email:', err));
 
-  // Return a response with the updated purchase history
+  // Build a response message. If any items were out of stock, include their names.
+  let responseMessage = "Purchase completed successfully.";
+  if (outOfStockItems.length > 0) {
+    responseMessage = `The following watches were out of stock and have been removed from your cart: ${outOfStockItems.join(', ')}`;
+  }
+
   res.status(200).json({
     success: true,
-    data: user.purchaseHistory
+    data: user.purchaseHistory,
+    message: responseMessage
   });
 });
+
 
 exports.updateProfile = asyncHandler(async (req, res, next) => {
   const { name, addresses } = req.body;

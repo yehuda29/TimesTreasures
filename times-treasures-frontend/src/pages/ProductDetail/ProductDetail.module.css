@@ -1,131 +1,166 @@
-/* src/pages/ProductDetail/ProductDetail.module.css */
+/* ProductDetail.module.css */
 
 .productDetail {
   display: flex;
   flex-wrap: wrap;
-  padding: 2rem;
   gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  background-color: #ffffff;
+  padding: 2rem;
+  background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 2rem auto;
+  max-width: 1200px;
+  color: black;
 }
 
 .productImage {
-  flex: 1 1 400px;
-  max-width: 200px;
   width: 100%;
+  max-width: 400px;
   height: auto;
   border-radius: 8px;
   object-fit: cover;
 }
 
 .productInfo {
-  flex: 1 1 300px;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
 .productName {
   font-size: 2rem;
-  margin-bottom: 1rem;
-  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+  color: #333;
 }
 
 .productPrice {
   font-size: 1.5rem;
   margin-bottom: 1rem;
-  color: var(--secondary-color);
+  /* Use primary color for pricing */
+  color: var(--primary-color);
 }
 
 .productDescription {
   font-size: 1rem;
-  margin-bottom: 2rem;
-  color: #555555;
+  margin-bottom: 1rem;
+  color: #555;
+  line-height: 1.5;
 }
 
-/* Common button styling for both Add to Cart and Delete */
-.addToCartBtn,
-.deleteBtn {
-  padding: 0.75rem 1.5rem;
-  background-color: var(--secondary-color);
-  color: #ffffff;
-  border: none;
-  border-radius: 4px;
+.stockInfo {
   font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  align-self: flex-start;
-}
-
-.addToCartBtn:hover,
-.deleteBtn:hover {
-  background-color: var(--hover-color);
-}
-
-/* Container to group buttons side by side */
-.buttonGroup {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
+  margin-bottom: 1rem;
+  /* Use secondary color for stock info */
+  color: var(--secondary-color);
+  font-weight: bold;
 }
 
 .quantitySelector {
   display: flex;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .quantitySelector label {
   margin-right: 0.5rem;
-  font-weight: bold;
+  font-size: 1rem;
+  color: #333;
 }
 
 .quantitySelector input {
   width: 60px;
+  padding: 0.25rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.addToCartBtn {
+  background-color: var(--primary-color);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.addToCartBtn:hover {
+  opacity: 0.8;
+}
+
+.deleteBtn {
+  background-color: var(--secondary-color);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.deleteBtn:hover {
+  opacity: 0.8;
+}
+
+/* Update stock section for admin */
+.updateStock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  max-width: 200px;
+}
+
+.updateStock label {
+  font-size: 1rem;
+  color: #333;
+}
+
+.updateStock input {
+  width: 100%;
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 
-/* Responsive Adjustments */
+.updateStockBtn {
+  background-color: var(--primary-color);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.updateStockBtn:hover {
+  opacity: 0.8;
+}
+
+/* Loader styling */
+.loader {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  color: var(--primary-color);
+}
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .productDetail {
     flex-direction: column;
     padding: 1rem;
   }
-
   .productImage {
     max-width: 100%;
-  }
-
-  .productName {
-    font-size: 1.8rem;
-  }
-
-  .productPrice {
-    font-size: 1.3rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .productDetail {
-    padding: 0.5rem;
-  }
-
-  .productName {
-    font-size: 1.5rem;
-  }
-
-  .productPrice {
-    font-size: 1.1rem;
-  }
-
-  .addToCartBtn,
-  .deleteBtn {
-    width: 100%;
-    text-align: center;
   }
 }

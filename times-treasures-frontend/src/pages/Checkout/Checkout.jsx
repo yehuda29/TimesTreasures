@@ -1,10 +1,12 @@
 // src/pages/Checkout/Checkout.jsx
+
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { CartContext } from '../../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PaymentButton from '../../components/PaymentButton/PaymentButton';
+import { toast } from 'react-toastify'; // <-- Added import for toast
 import styles from './Checkout.module.css';
 
 const Checkout = () => {
@@ -41,7 +43,7 @@ const Checkout = () => {
   const handlePaymentSuccess = async (orderDetails) => {
     try {
       setLoading(true);
-      await axios.post(
+      const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/users/purchase`,
         { shippingAddress },
         {
@@ -51,12 +53,17 @@ const Checkout = () => {
           }
         }
       );
+      // If the response contains a message about out-of-stock items, display it
+      if (response.data.message && response.data.message !== "Purchase completed successfully.") {
+        toast.error(response.data.message);
+      }
       clearCart(token);
       setLoading(false);
       navigate('/purchase-history');
     } catch (error) {
       setLoading(false);
       console.error('Checkout failed:', error);
+      toast.error('Checkout failed. Please try again.');
     }
   };
 
@@ -157,7 +164,6 @@ const Checkout = () => {
           </ul>
           <h3>Total: ${totalPrice.toFixed(2)}</h3>
         </div>
-        {/* New shipping time display */}
         <p className={styles.shippingTime}>
           Estimated Shipping Time: 14 to 21 business days
         </p>
@@ -175,7 +181,6 @@ const Checkout = () => {
 
   return (
     <div className={styles.checkoutContainer}>
-      {/* Back Button to return to Cart */}
       <div className={styles.backButtonContainer}>
         <button className={styles.backBtn} onClick={() => navigate('/cart')}>
           Back to Cart
