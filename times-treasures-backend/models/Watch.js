@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 
 // Define the schema for a Watch document in MongoDB
+
 const WatchSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -18,7 +19,6 @@ const WatchSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please provide watch image']
   },
-  // New field to store Cloudinary public_id for managing images later (update, delete)
   cloudinaryId: {
     type: String
   },
@@ -31,6 +31,12 @@ const WatchSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please provide watch description'],
     maxlength: [1000, 'Description cannot exceed 1000 characters']
+  },
+  // NEW: Inventory field to track stock count
+  inventory: {
+    type: Number,
+    required: [true, 'Please provide inventory quantity'],
+    min: [0, 'Inventory cannot be negative']
   },
   createdAt: {
     type: Date,

@@ -113,14 +113,13 @@ exports.getWatch = asyncHandler(async (req, res, next) => {
  * @access  Private/Admin
  */
 exports.uploadWatch = asyncHandler(async (req, res, next) => {
-  // Destructure required fields (excluding image, which comes from the file upload)
-  const { name, price, description, category } = req.body;
+  const { name, price, description, category, inventory } = req.body; // include inventory
 
-  // Validate required text fields
-  if (!name || !price || !description || !category) {
+  // Validate required text fields including inventory.
+  if (!name || !price || !description || !category || inventory === undefined) {
     return res.status(400).json({
       success: false,
-      message: 'Please provide name, price, description, and category'
+      message: 'Please provide name, price, description, category, and inventory count'
     });
   }
 
@@ -142,21 +141,21 @@ exports.uploadWatch = asyncHandler(async (req, res, next) => {
   }
 
   try {
-    // Upload the image file to Cloudinary (using tempFilePath from express-fileupload)
+    // Upload the image file to Cloudinary
     const result = await cloudinary.uploader.upload(req.files.image.tempFilePath, {
       folder: 'assets'
     });
 
-    // Create a new watch document with the Cloudinary secure URL as the image field
+    // Create a new watch document including the inventory field
     const watch = await Watch.create({
       name,
       price,
       description,
       image: result.secure_url,
       cloudinaryId: result.public_id,
-      category
+      category,
+      inventory // store the provided inventory value
     });
-    
 
     res.status(201).json({
       success: true,
@@ -170,6 +169,7 @@ exports.uploadWatch = asyncHandler(async (req, res, next) => {
     });
   }
 });
+
 
 // upload endpoint using express-fileupload or multer to get the file path
 exports.uploadImage = asyncHandler(async (req, res, next) => {
@@ -210,6 +210,11 @@ exports.updateWatch = asyncHandler(async (req, res, next) => {
   if (price) watch.price = price;
   if (description) watch.description = description;
   if (category) watch.category = category;
+  
+  // NEW: Update inventory if provided (even if it's 0)
+  if (req.body.inventory !== undefined) {
+    watch.inventory = Number(req.body.inventory);
+  }
 
   // If a new image file is provided, handle image update
   if (req.files && req.files.image) {

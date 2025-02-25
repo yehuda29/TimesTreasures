@@ -80,9 +80,6 @@ const Profile = () => {
         <Link to="/purchase-history" className={styles.profileButton}>
           Purchase History
         </Link>
-        <Link to="/current-order" className={styles.profileButton}>
-          Current Order
-        </Link>
         <Link to="/address" className={styles.profileButton}>
           Your Addresses
         </Link>

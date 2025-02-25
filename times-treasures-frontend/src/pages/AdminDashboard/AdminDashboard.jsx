@@ -6,18 +6,21 @@ import { toast } from 'react-toastify';
 import styles from './AdminDashboard.module.css';
 
 const AdminDashboard = () => {
-  // Form fields for watch details (excluding the image file)
+  // Include 'inventory' in the initial form data
   const [formData, setFormData] = useState({
     name: '',
     price: '',
     description: '',
-    category: 'men-watches'
+    category: 'men-watches',
+    inventory: '' // New field for inventory count
   });
   // Store the selected image file
   const [imageFile, setImageFile] = useState(null);
 
-  const { name, price, description, category } = formData;
+  // Destructure fields from formData, including inventory
+  const { name, price, description, category, inventory } = formData;
 
+  // Update form data state when inputs change
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -28,38 +31,41 @@ const AdminDashboard = () => {
     }
   };
 
+  // Handle form submission to create a new watch
   const onSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const token = localStorage.getItem('token');
-      // Create a FormData object and append all fields
+      // Create a FormData object and append all fields, including inventory
       const data = new FormData();
       data.append('name', name);
       data.append('price', price);
       data.append('description', description);
       data.append('category', category);
+      data.append('inventory', inventory); // Append inventory field
       if (imageFile) {
         data.append('image', imageFile);
       }
 
-      // Do not manually set the Content-Type header; let the browser set it
+      // Let the browser set the Content-Type header automatically
       const config = {
         headers: {
           Authorization: `Bearer ${token}`
         }
       };
 
-      // POST to the watch creation endpoint (which now expects a file upload)
+      // POST to the watch creation endpoint
       await axios.post(`${import.meta.env.VITE_API_URL}/watches`, data, config);
       toast.success('Watch uploaded successfully');
 
-      // Reset the form
+      // Reset the form including the inventory field
       setFormData({
         name: '',
         price: '',
         description: '',
-        category: 'men-watches'
+        category: 'men-watches',
+        inventory: ''
       });
       setImageFile(null);
     } catch (err) {
@@ -117,7 +123,19 @@ const AdminDashboard = () => {
             required
           />
         </div>
-        {/* Replace the image text input with a file input */}
+        {/* New: Inventory input field */}
+        <div className={styles.formGroup}>
+          <label htmlFor="inventory">Inventory:</label>
+          <input
+            type="number"
+            name="inventory"
+            value={inventory}
+            onChange={onChange}
+            required
+            min="0"
+            step="1"
+          />
+        </div>
         <div className={styles.formGroup}>
           <label htmlFor="image">Image File:</label>
           <input
