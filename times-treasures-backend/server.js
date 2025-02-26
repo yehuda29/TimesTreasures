@@ -51,6 +51,9 @@ app.use(fileUpload({ useTempFiles: true }));
 // Security Middleware: Helmet helps secure your app by setting various HTTP headers
 app.use(helmet());
 
+// Telling express that we use the app through a proxy like Heroku
+app.set('trust proxy', 1);
+
 // Rate Limiting: Limit each IP to a maximum number of requests per time window
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
