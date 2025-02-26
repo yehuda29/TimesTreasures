@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import styles from "./Navbar.module.css";
 import { CartContext } from "../../context/CartContext";
 import { AuthContext } from "../../context/AuthContext";
+import NotificationBell from "../NotificationBell/NotificationBell";
 import { toast } from "react-toastify";
 
 const Navbar = () => {
@@ -177,6 +178,9 @@ const Navbar = () => {
               </button>
             </li>
           </>
+        )}
+        {user && user.role === "admin" && (
+            <NotificationBell />
         )}
       </ul>
     </nav>
