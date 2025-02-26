@@ -25,10 +25,14 @@ const app = express();
 // -----------------------
 
 // CORS Configuration: Allow requests from the specified frontend URL and allow specific HTTP methods
+const allowedOrigin = process.env.NODE_ENV === 'production'
+  ? process.env.FRONTEND_URL
+  : 'http://localhost:5173';
+
 app.use(cors({
-  origin: 'http://localhost:5173', // Update with your frontend URL if needed
+  origin: allowedOrigin,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true                // Allows cookies and authentication headers
+  credentials: true
 }));
 
 // Parse incoming JSON bodies in requests
