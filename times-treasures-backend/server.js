@@ -27,7 +27,8 @@ const app = express();
 // CORS Configuration: Allow requests from the specified frontend URL and allow specific HTTP methods
 const allowedOrigins = [
   process.env.FRONTEND_URL,
-  'http://localhost:5173'
+  'http://localhost:5173',
+  'http://localhost:5000'
 ];
 
 app.use(cors({
@@ -49,7 +50,18 @@ app.use(express.json());
 app.use(fileUpload({ useTempFiles: true }));
 
 // Security Middleware: Helmet helps secure your app by setting various HTTP headers
-app.use(helmet());
+// Apply Helmet (even if CSP option appears disabled)
+app.use(helmet({
+  contentSecurityPolicy: false
+}));
+
+// Immediately remove any Content-Security-Policy header that was set.
+app.use((req, res, next) => {
+  res.removeHeader('Content-Security-Policy');
+  next();
+});
+
+
 
 // Telling express that we use the app through a proxy like Heroku
 app.set('trust proxy', 1);
@@ -99,8 +111,8 @@ app.use('/api/watches', watchRoutes);
 // If running in production, serve static files from the React client's build folder
 if (process.env.NODE_ENV === 'production') {
   // Serve static files from the React client's build folder
+  console.log("Serving static files from:", path.join(__dirname, 'client/build'));
   app.use(express.static(path.join(__dirname, 'client/build')));
-  
   // For any routes not handled by the server, send back index.html so the React app can handle routing
   app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
