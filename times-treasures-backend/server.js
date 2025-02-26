@@ -5,7 +5,6 @@ const express = require('express');                 // Express framework for bui
 const mongoose = require('mongoose');               // Mongoose for connecting to MongoDB
 const dotenv = require('dotenv');                   // dotenv for loading environment variables
 const cors = require('cors');                       // CORS middleware for cross-origin resource sharing
-const helmet = require('helmet');                   // Helmet for securing HTTP headers
 const rateLimit = require('express-rate-limit');    // Rate limiting middleware
 const authRoutes = require('./routes/authRoutes');    // Routes for authentication endpoints
 const userRoutes = require('./routes/userRoutes');    // Routes for user-related endpoints
@@ -13,6 +12,7 @@ const watchRoutes = require('./routes/watchRoutes');  // Routes for watch-relate
 const paypalRoutes = require('./routes/paypalRoutes'); // Routes for PayPal REST API endpoints
 const path = require('path');                         // Module for working with file paths
 const fileUpload = require('express-fileupload'); // <-- Added file upload middleware
+const lusca = require('lusca');
 
 // Load environment variables from a .env file into process.env
 dotenv.config();
@@ -49,18 +49,14 @@ app.use(express.json());
 // <-- Use express-fileupload middleware with temp files enabled
 app.use(fileUpload({ useTempFiles: true }));
 
-// Security Middleware: Helmet helps secure your app by setting various HTTP headers
-// Apply Helmet (even if CSP option appears disabled)
-app.use(helmet({
-  contentSecurityPolicy: false
-}));
+// Security Middleware: Lusca helps secure your app by setting various HTTP headers
+// Disable the X-Powered-By header
+app.disable('x-powered-by');
 
-// Immediately remove any Content-Security-Policy header that was set.
-app.use((req, res, next) => {
-  res.removeHeader('Content-Security-Policy');
-  next();
-});
-
+// Use Lusca's built-in middleware with default settings
+app.use(lusca.xframe('DENY'));         // Prevent clickjacking by disallowing iframes
+app.use(lusca.nosniff());              // Prevent MIME type sniffing
+app.use(lusca.xssProtection(true));    // Enable basic XSS protection
 
 
 // Telling express that we use the app through a proxy like Heroku
