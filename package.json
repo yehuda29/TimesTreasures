@@ -7,7 +7,7 @@
       "heroku-postbuild": "cd times-treasures-frontend && npm install && npm run build && mkdir -p ../times-treasures-backend/client/build && cp -r dist/* ../times-treasures-backend/client/build"
     },
     "engines": {
-      "node": "16.x"
+      "node": "18.x"
     }
   }
   
