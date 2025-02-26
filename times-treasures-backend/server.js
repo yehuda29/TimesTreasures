@@ -100,7 +100,7 @@ app.get('/', (req, res) => res.send('Watch Shop API is running'));
 // -----------------------
 
 // If running in production, serve static files from the React client's build folder
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'development') {
   // Serve static files from the React client's build folder
   app.use(express.static(path.join(__dirname, 'client/build')));
   
