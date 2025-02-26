@@ -101,15 +101,17 @@ app.get('/', (req, res) => res.send('Watch Shop API is running'));
 
 // If running in production, serve static files from the React client's build folder
 if (process.env.NODE_ENV === 'production') {
-  // Set the static folder for serving assets
+  // Serve static files from the React client's build folder
   app.use(express.static(path.join(__dirname, 'client/build')));
   
   // For any routes not handled by the server, send back index.html so the React app can handle routing
   app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
   });
+} else {
+  // In development, show a simple message at the root
+  app.get('/', (req, res) => res.send('Watch Shop API is running'));
 }
-
 // -----------------------
 // Error Handling Middleware
 // -----------------------
