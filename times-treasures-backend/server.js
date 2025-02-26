@@ -92,15 +92,12 @@ app.use('/api/users', userRoutes);
 // Mount the watch-related routes under /api/watches
 app.use('/api/watches', watchRoutes);
 
-// Simple route to verify that the API server is running
-app.get('/', (req, res) => res.send('Watch Shop API is running'));
-
 // -----------------------
 // Production: Serve Client Build
 // -----------------------
 
 // If running in production, serve static files from the React client's build folder
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'production') {
   // Serve static files from the React client's build folder
   app.use(express.static(path.join(__dirname, 'client/build')));
   
