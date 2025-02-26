@@ -3,7 +3,7 @@
 // Import Mongoose to define schemas and create models
 const mongoose = require('mongoose');
 // Import bcrypt for password hashing
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 // ---------------------------------------
 // Define the Purchase Schema
