@@ -5,6 +5,10 @@ const Watch = require('../models/Watch');
 const asyncHandler = require('express-async-handler');
 
 const cloudinary = require('../cloudinaryConfig'); // Import your config
+
+const fetchWatchesFromEbay = require("../utils/fetchWatchesFromEbay");
+
+
 /**
  * @desc    Get all watches with pagination, category filter, and sorting
  * @route   GET /api/watches?category=men-watches&sort=price&page=1&limit=20
@@ -273,4 +277,43 @@ exports.deleteWatch = asyncHandler(async (req, res, next) => {
   await watch.deleteOne();
 
   res.status(200).json({ success: true, message: 'Watch deleted successfully' });
+});
+
+
+exports.fetchAndStoreEbayWatches = asyncHandler(async (req, res) => {
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ success: false, message: "Unauthorized" });
+  }
+
+  const { query, category, limit } = req.body;
+  const ebayWatches = await fetchWatchesFromEbay(query, category, limit);
+
+  if (ebayWatches.length === 0) {
+    return res.status(400).json({ success: false, message: "No watches found from eBay" });
+  }
+
+  const validWatches = ebayWatches.filter((watch) => {
+    if (!watch.name || !watch.image || isNaN(watch.price) || watch.price <= 0) {
+      console.log(`🚨 Skipping invalid watch:`, watch);
+      return false; // Exclude invalid watches
+    }
+    return true; // Keep only valid watches
+  });
+
+  if (validWatches.length === 0) {
+    return res.status(400).json({ success: false, message: "No valid watches to store." });
+  }
+
+  for (const watch of validWatches) {
+    const existingWatch = await Watch.findOne({ name: watch.name });
+
+    if (existingWatch) {
+      console.log(`⚠️ Duplicate found: ${watch.name}. Deleting old entry.`);
+      await Watch.deleteOne({ _id: existingWatch._id });
+    }
+
+    await Watch.create(watch);
+  }
+
+  res.status(200).json({ success: true, message: "Valid eBay watches fetched and stored." });
 });

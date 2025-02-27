@@ -84,18 +84,17 @@ exports.getPurchaseHistory = asyncHandler(async (req, res, next) => {
 // @route   GET /api/users/cart
 // @access  Private
 exports.getCart = asyncHandler(async (req, res, next) => {
-  // Find the user by their ID and populate the 'watch' field within the cart items
   const user = await User.findById(req.user.id).populate('cart.watch');
-  
-  // Log the fetched cart for debugging purposes.
-  console.log("Fetched cart for user:", req.user.id, "Cart:", user.cart);
-  
-  // Return the user's cart in the response.
+
+  console.log("🛒 Debugging Cart Data for User:", req.user.id);
+  console.log("Fetched cart from DB:", JSON.stringify(user.cart, null, 2));
+
   res.status(200).json({
     success: true,
     data: user.cart
   });
 });
+
 
 // -----------------------------------------------------------------------------
 // UPDATE PERSISTENT CART
@@ -104,70 +103,76 @@ exports.getCart = asyncHandler(async (req, res, next) => {
 // @route   POST /api/users/cart
 // @access  Private
 exports.updateCart = asyncHandler(async (req, res, next) => {
-  // Destructure the 'cart' array from the request body.
   const { cart } = req.body;
-  
-  // Validate that "cart" is an array.
+
   if (!Array.isArray(cart)) {
-    res.status(400);
-    throw new Error('Cart must be an array');
+    console.error("❌ Cart update failed: Cart must be an array");
+    return res.status(400).json({ success: false, message: "Cart must be an array" });
   }
 
-  // Log the cart payload for debugging.
-  console.log("Updating cart for user:", req.user.id, "Cart payload:", cart);
+  console.log("📡 Incoming Cart Update for User:", req.user.id);
+  console.log("📦 Cart Payload:", JSON.stringify(cart, null, 2));
 
-  // Process and validate each item in the incoming cart array.
-  // For each cart item, we verify that it includes a valid watch ID and a positive quantity.
-  const updatedCart = await Promise.all(
-    cart.map(async (item) => {
-      // Ensure the item includes a watch field.
-      if (!item.watch) {
-        throw new Error('Each cart item must have a watch field');
-      }
-      // Ensure the quantity is a positive number.
-      if (typeof item.quantity !== 'number' || item.quantity < 1) {
-        throw new Error('Quantity must be a positive number');
-      }
-      let watchId;
+  const validCart = [];
+
+  for (const item of cart) {
+    if (!item.watch) {
+      console.log("🚨 Skipping invalid cart item: Missing watch field", item);
+      continue;
+    }
+
+    let watchId = item.watch;
+
+    if (typeof watchId === "object" && watchId._id) {
+      console.warn(`⚠️ watchId is an object instead of a string: ${JSON.stringify(watchId)}`);
+      watchId = watchId._id;
+    }
+
+    if (typeof watchId === "string") {
+      console.log(`🔄 Converting watch ID string to ObjectId: ${watchId}`);
       try {
-        // Convert the watch field to a valid MongoDB ObjectId.
-        watchId = new mongoose.Types.ObjectId(item.watch);
+        watchId = new mongoose.Types.ObjectId(watchId);
       } catch (err) {
-        console.error("Invalid watch ID:", item.watch, err);
-        throw new Error(`Invalid watch ID: ${item.watch}`);
+        console.error("🚨 Invalid watch ID format:", watchId, err);
+        continue;
       }
-      // verify that the watch exists in the database.
-      const existingWatch = await Watch.findById(watchId);
-      if (!existingWatch) {
-        throw new Error(`Watch not found for ID: ${item.watch}`);
-      }
-      // Return a new object containing the watch reference and its quantity.
-      return { watch: watchId, quantity: item.quantity };
-    })
-  );
+    }
 
-  // Atomically update the user's cart using the $set operator.
-  // This replaces the existing cart with the validated updated cart.
+    console.log(`🔍 Checking database for watch ID: ${watchId}`);
+
+    const existingWatch = await Watch.findById(watchId);
+    if (!existingWatch) {
+      console.log(`🚨 Watch not found in DB for ID: ${watchId}`);
+      continue;
+    }
+
+    console.log(`✅ Found watch in DB: ${existingWatch.name}`);
+    validCart.push({ watch: watchId, quantity: item.quantity });
+  }
+
+  console.log("✅ Cleaned Cart Before Saving:", JSON.stringify(validCart, null, 2));
+
+  // Save the updated cart to the user profile
   const updatedUser = await User.findByIdAndUpdate(
     req.user.id,
-    { $set: { cart: updatedCart } },
-    { new: true, runValidators: true } // Return the updated document and run schema validations.
-  ).populate('cart.watch'); // Populate the 'watch' field for the updated cart items.
+    { $set: { cart: validCart } },
+    { new: true, runValidators: true }
+  ).populate("cart.watch");
 
   if (!updatedUser) {
-    res.status(404);
-    throw new Error('User not found');
+    console.error("❌ Cart update failed: User not found");
+    return res.status(404).json({ success: false, message: "User not found" });
   }
 
-  // Log the updated cart for debugging purposes.
-  console.log("Updated cart for user:", req.user.id, "Cart:", updatedUser.cart);
+  console.log("✅ Cart Successfully Updated in DB:", JSON.stringify(updatedUser.cart, null, 2));
 
-  // Return the updated cart in the response.
   res.status(200).json({
     success: true,
-    data: updatedUser.cart
+    data: updatedUser.cart,
   });
 });
+
+
 
 // -----------------------------------------------------------------------------
 // Controller: purchaseCart

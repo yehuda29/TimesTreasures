@@ -3,6 +3,7 @@
 import React, { createContext, useState, useCallback, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { AuthContext } from './AuthContext';
+import { toast } from 'react-toastify';
 
 export const CartContext = createContext();
 
@@ -11,8 +12,15 @@ export const CartProvider = ({ children }) => {
   const { user, token } = useContext(AuthContext);
 
   // Helper: Extract the watch ID from a cart item.
-  const getWatchId = (item) =>
-    typeof item.watch === 'object' ? item.watch._id : item.watch;
+  const getWatchId = (item) => {
+    if (!item || !item.watch) {
+      console.error("❌ Error: Trying to get _id from a null watch item:", item);
+      return null; // Return null instead of crashing
+    }
+    return typeof item.watch === "object" ? item.watch._id : item.watch;
+  };
+  
+  
 
   /**
    * Fetch the user's cart from the backend.
@@ -40,55 +48,67 @@ export const CartProvider = ({ children }) => {
    */
   const updateCartOnServer = useCallback(async (token, newCart) => {
     try {
-      console.log('Updating cart on server with payload:', newCart);
+      console.log("📡 Sending Cart Update to Server:", newCart);
+      
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/users/cart`,
         { cart: newCart },
         {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
         }
       );
-      console.log('Server updated cart response:', response.data);
+  
+      console.log("✅ Server Response:", response.data);
       setCartItems(response.data.data);
     } catch (err) {
-      console.error('Error updating cart on server:', err.response?.data || err);
+      console.error("❌ Error updating cart on server:", err.response?.data || err);
+      toast.error("Failed to update cart.");
     }
   }, []);
+  
 
-  /**
-   * Add an item to the cart.
-   * Stores only the watch's ObjectId and quantity.
-   */
   const addToCart = (item, token) => {
+    // Use getWatchId to retrieve the watch ID from the item.
+    const incomingWatchId = getWatchId(item);
+    if (!item || !item.watch || !incomingWatchId) {
+      console.error("❌ Skipping invalid item (missing watch or _id):", item);
+      return;
+    }
+  
     setCartItems((prevItems) => {
-      const existingItem = prevItems.find(
-        (i) => getWatchId(i).toString() === item._id.toString()
-      );
+      // Find if an item with the same watch ID already exists.
+      const existingItem = prevItems.find((i) => getWatchId(i) === incomingWatchId);
       let updatedCart;
+      
       if (existingItem) {
+        // If it exists, update its quantity.
         updatedCart = prevItems.map((i) =>
-          getWatchId(i).toString() === item._id.toString()
-            ? { watch: item, quantity: i.quantity + item.quantity }
+          getWatchId(i) === incomingWatchId
+            ? { watch: item.watch, quantity: i.quantity + item.quantity }
             : i
         );
       } else {
-        updatedCart = [...prevItems, { watch: item, quantity: item.quantity }];
+        // Otherwise, add the new item.
+        updatedCart = [...prevItems, { watch: item.watch, quantity: item.quantity }];
       }
-      // Update the server with only the watch ID and quantity
+  
+      // Update the cart on the server using the correct watch ID.
       updateCartOnServer(
         token,
         updatedCart.map((cartItem) => ({
-          watch: cartItem.watch._id,
+          watch: getWatchId(cartItem),
           quantity: cartItem.quantity,
         }))
       );
+  
       return updatedCart;
     });
   };
+  
   
 
   /**

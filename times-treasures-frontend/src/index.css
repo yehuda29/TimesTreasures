@@ -1,14 +1,16 @@
 /* src/index.css */
 
 :root {
-    --primary-color: #2c3e50; 
-    --primary-color-dark: #0056b3;
-    --secondary-color: #e74c3c; 
-    --text-color: #ecf0f1; 
-    --hover-color: #e74c3c;
-    --subtext-color: #ffff;
-    --border-color: #5555;
-  }
+  --primary-color: #2c3e50; /* Dark blue for primary theme */
+  --primary-color-dark: #0056b3; /* Darker blue for highlights */
+  --secondary-color: #e74c3c; /* Red accent color */
+  --text-color: #ecf0f1; /* Light text */
+  --hover-color: #e74c3c; /* Same as secondary for hover effects */
+  --subtext-color: #ffffff; /* White text for contrast */
+  --border-color: #5555; /* Soft border color */
+  --background-color: #34495e; /* Darker background for contrast */
+  --input-bg: #2c3e50; /* Match primary theme */
+}
   
   body {
     color: var(--text-color);
