@@ -50,24 +50,34 @@ const ProductDetail = () => {
 
   const handleAddToCart = () => {
     if (!user) {
-      toast.error('Please login to make a purchase');
-      navigate('/login');
+      toast.error("Please login to make a purchase");
+      navigate("/login");
       return;
     }
-    if (watch) {
-      if (watch.inventory === 0) {
-        toast.error('This watch is out of stock');
-        return;
-      }
-      if (quantity > watch.inventory) {
-        toast.error(`Only ${watch.inventory} available in stock`);
-        return;
-      }
-      const validQuantity = quantity < 1 ? 1 : quantity;
-      addToCart({ _id: watch._id, quantity: validQuantity }, token);
-      toast.success(`${watch.name} (x${validQuantity}) added to your cart!`);
+  
+    if (!watch || !watch._id) {
+      console.error("❌ Cannot add to cart: Watch is missing or invalid", watch);
+      toast.error("Invalid watch. Please try again.");
+      return;
     }
+  
+    if (watch.inventory === 0) {
+      toast.error("This watch is out of stock");
+      return;
+    }
+  
+    if (quantity > watch.inventory) {
+      toast.error(`Only ${watch.inventory} available in stock`);
+      return;
+    }
+  
+    console.log("🛒 Adding watch to cart:", { watch: watch._id, quantity });
+  
+    addToCart({ watch: String(watch._id), quantity }, token);
+    toast.success(`${watch.name} (x${quantity}) added to your cart!`);
   };
+  
+  
 
   const handleUpdateStock = async () => {
     try {
@@ -129,76 +139,103 @@ const ProductDetail = () => {
 
   return (
     <div className={styles.productDetail}>
-      <img src={getImageURL(watch.image)} alt={watch.name} className={styles.productImage} />
-      <div className={styles.productInfo}>
-        <h2 className={styles.productName}>{watch.name}</h2>
-        {isDiscounted ? (
-          <div className={styles.priceContainer}>
-            <p className={styles.originalPrice}>
-              <s>${Number(watch.price).toFixed(2)}</s>
+      {/* Ensure watch exists before rendering */}
+      {watch ? (
+        <>
+          <img
+            src={getImageURL(watch.image) || "https://via.placeholder.com/150"}
+            alt={watch.name || "Unnamed Watch"}
+            className={styles.productImage}
+          />
+          <div className={styles.productInfo}>
+            <h2 className={styles.productName}>{watch.name || "Unnamed Watch"}</h2>
+  
+            {isDiscounted ? (
+              <div className={styles.priceContainer}>
+                <p className={styles.originalPrice}>
+                  <s>${watch.price ? Number(watch.price).toFixed(2) : "0.00"}</s>
+                </p>
+                <span className={styles.arrow}>→</span>
+                <p className={styles.discountedPrice}>
+                  ${finalPrice.toFixed(2)}
+                </p>
+                <p className={styles.specialOfferBadge}>
+                  {watch.specialOffer?.discountPercentage || 0}% OFF!
+                </p>
+              </div>
+            ) : (
+              <p className={styles.productPrice}>
+                ${watch.price ? Number(watch.price).toFixed(2) : "0.00"}
+              </p>
+            )}
+  
+            <p className={styles.productDescription}>
+              {watch.description || "No description available."}
             </p>
-            <span className={styles.arrow}>→</span>
-            <p className={styles.discountedPrice}>
-              ${finalPrice.toFixed(2)}
+            <p className={styles.stockInfo}>
+              {watch.inventory > 0 ? `In Stock: ${watch.inventory}` : "Out of Stock"}
             </p>
-            <p className={styles.specialOfferBadge}>
-              {watch.specialOffer.discountPercentage}% OFF!
-            </p>
-          </div>
-        ) : (
-          <p className={styles.productPrice}>${Number(watch.price).toFixed(2)}</p>
-        )}
-        <p className={styles.productDescription}>{watch.description}</p>
-        <p className={styles.stockInfo}>
-          {watch.inventory > 0 ? `In Stock: ${watch.inventory}` : 'Out of Stock'}
-        </p>
-        {watch.inventory > 0 && (
-          <div className={styles.quantitySelector}>
-            <label htmlFor="quantity">Quantity:</label>
-            <input
-              type="number"
-              id="quantity"
-              name="quantity"
-              min="1"
-              max={watch.inventory}
-              value={quantity}
-              onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
-            />
-          </div>
-        )}
-        <div className={styles.buttonGroup}>
-          <button
-            className={styles.addToCartBtn}
-            onClick={handleAddToCart}
-            disabled={watch.inventory === 0}
-          >
-            {watch.inventory === 0 ? 'Out of Stock' : 'Add to Cart'}
-          </button>
-          {user && user.role === 'admin' && (
-            <>
-              <button className={styles.deleteBtn} onClick={handleDeleteWatch}>
-                Delete Watch
-              </button>
-              <div className={styles.updateStock}>
-                <label htmlFor="inventoryUpdate">Update Stock:</label>
+  
+            {watch.inventory > 0 && (
+              <div className={styles.quantitySelector}>
+                <label htmlFor="quantity">Quantity:</label>
                 <input
                   type="number"
-                  id="inventoryUpdate"
-                  name="inventoryUpdate"
-                  min="0"
-                  value={newInventory}
-                  onChange={handleInventoryChange}
+                  id="quantity"
+                  name="quantity"
+                  min="1"
+                  max={watch.inventory}
+                  value={quantity}
+                  onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
                 />
-                <button className={styles.updateStockBtn} onClick={handleUpdateStock}>
-                  Update Stock
-                </button>
               </div>
-            </>
-          )}
-        </div>
-      </div>
+            )}
+  
+            <div className={styles.buttonGroup}>
+              <button
+                className={styles.addToCartBtn}
+                onClick={() => {
+                  if (!watch || !watch._id) {
+                    console.error("❌ Cannot add to cart: Watch is missing or invalid", watch);
+                    return;
+                  }
+                  handleAddToCart();
+                }}
+                disabled={!watch._id || watch.inventory === 0}
+              >
+                {watch.inventory === 0 ? "Out of Stock" : "Add to Cart"}
+              </button>
+  
+              {user && user.role === "admin" && (
+                <>
+                  <button className={styles.deleteBtn} onClick={handleDeleteWatch}>
+                    Delete Watch
+                  </button>
+                  <div className={styles.updateStock}>
+                    <label htmlFor="inventoryUpdate">Update Stock:</label>
+                    <input
+                      type="number"
+                      id="inventoryUpdate"
+                      name="inventoryUpdate"
+                      min="0"
+                      value={newInventory}
+                      onChange={handleInventoryChange}
+                    />
+                    <button className={styles.updateStockBtn} onClick={handleUpdateStock}>
+                      Update Stock
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </>
+      ) : (
+        <p className={styles.errorMessage}>❌ Watch not found.</p>
+      )}
     </div>
   );
+  
 };
 
 export default ProductDetail;

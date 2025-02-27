@@ -1,43 +1,88 @@
-/* src/pages/AdminDashboard/AdminDashboard.module.css */
+
 
 .adminDashboard {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 20px;
-    color: var(--primary-color);
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background: var(--background-color);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+  text-align: center;
+  color: var(--secondary-color);
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* Form Container */
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+label {
+  font-weight: bold;
+  color: var(--subtext-color);
+  font-size: 16px;
+}
+
+input,
+select {
+  padding: 12px;
+  font-size: 16px;
+  border: 2px solid var(--primary-color-dark);
+  border-radius: 5px;
+  background: var(--input-bg);
+  color: var(--text-color);
+  transition: all 0.3s ease-in-out;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--hover-color);
+  outline: none;
+  box-shadow: 0 0 5px var(--hover-color);
+}
+
+/* Fetch Button */
+.fetchEbayBtn {
+  background-color: var(--secondary-color);
+  color: var(--subtext-color);
+  padding: 12px 15px;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+.fetchEbayBtn:hover {
+  background-color: var(--primary-color-dark);
+}
+
+.fetchEbayBtn:disabled {
+  background-color: #777;
+  cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .adminDashboard {
+    padding: 15px;
   }
-  
-  .uploadForm {
-    display: flex;
-    flex-direction: column;
+
+  input,
+  select {
+    font-size: 14px;
   }
-  
-  .formGroup {
-    margin-bottom: 15px;
-  }
-  
-  .formGroup label {
-    margin-bottom: 5px;
-    display: block;
-  }
-  
-  .formGroup input,
-  .formGroup select,
-  .formGroup textarea {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-  }
-  
-  .uploadBtn {
+
+  .fetchEbayBtn {
+    font-size: 16px;
     padding: 10px;
-    background-color: #ffc107;
-    color: #fff;
-    border: none;
-    cursor: pointer;
   }
-  
-  .uploadBtn:hover {
-    background-color: #e0a800;
-  }
-  
+}

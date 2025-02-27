@@ -3,12 +3,13 @@
 // Import the express module to create a router
 const express = require('express');
 // Destructure the controller functions for watches from the watchController
-const { getAllWatches, getWatch, uploadWatch, updateWatch, deleteWatch } = require('../controllers/watchController');
+const { getAllWatches, getWatch, uploadWatch, updateWatch, deleteWatch, fetchAndStoreEbayWatches } = require('../controllers/watchController');
 // Import the authentication middleware functions: protect (to ensure the user is authenticated)
 // and authorize (to ensure the user has the proper role, e.g., 'admin')
 const { protect, authorize } = require('../middleware/auth');
 // Import the express-validator's body function to validate incoming request data
 const { body } = require('express-validator');
+
 
 // Create a new Express router instance
 const router = express.Router();
@@ -57,6 +58,9 @@ router.post('/', protect, authorize('admin'), uploadWatch);
 router.put('/:id', protect, authorize('admin'), updateWatch);
 // Delete an existing watch
 router.delete('/:id', protect, authorize('admin'), deleteWatch);
+
+
+router.post("/fetch-ebay", protect, authorize("admin"), fetchAndStoreEbayWatches);
 
 // Export the router to be used in the main server file
 module.exports = router;
