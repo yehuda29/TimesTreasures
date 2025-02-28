@@ -18,10 +18,6 @@ import LocationListener from './components/LocationListener/LocationListener.jsx
 
 // Lazy load pages for code-splitting and improved performance
 const Home = lazy(() => import('./pages/Home/Home.jsx'));
-const MenWatches = lazy(() => import('./pages/MenWatches/MenWatches.jsx'));
-const WomenWatches = lazy(() => import('./pages/WomenWatches/WomenWatches.jsx'));
-const LuxuryWatches = lazy(() => import('./pages/LuxuryWatches/LuxuryWatches.jsx'));
-const SmartWatches = lazy(() => import('./pages/SmartWatches/SmartWatches.jsx'));
 const Contact = lazy(() => import('./pages/Contact/Contact.jsx'));
 const ProductDetail = lazy(() => import('./pages/ProductDetail/ProductDetail.jsx'));
 const Cart = lazy(() => import('./pages/Cart/Cart.jsx'));
@@ -51,10 +47,6 @@ const App = () => {
                 <Suspense fallback={<div>Loading...</div>}>
                   <Routes>
                     <Route path="/" element={<Home />} />
-                    <Route path="/men-watches" element={<MenWatches />} />
-                    <Route path="/women-watches" element={<WomenWatches />} />
-                    <Route path="/luxury-watches" element={<LuxuryWatches />} />
-                    <Route path="/smartwatches" element={<SmartWatches />} />
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/product/:id" element={<ProductDetail />} />
                     <Route path="/cart" element={<Cart />} />
