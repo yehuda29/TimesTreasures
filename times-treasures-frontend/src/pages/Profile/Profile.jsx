@@ -15,7 +15,6 @@ const Profile = () => {
   // For a local preview, use URL.createObjectURL (optional)
   useEffect(() => {
     if (user && user.profilePicture) {
-      // Assume user.profilePicture is now a full Cloudinary URL
       setProfilePic(user.profilePicture);
     }
   }, [user]);
@@ -27,19 +26,15 @@ const Profile = () => {
       setProfilePic(URL.createObjectURL(file));
 
       try {
-        // Create FormData and append the file with key "profilePicture"
         const formData = new FormData();
         formData.append('profilePicture', file);
 
         const config = {
           headers: {
             Authorization: `Bearer ${token}`,
-            // Let the browser set the correct multipart/form-data header
           }
         };
 
-        // Send the file to the backend's profile update endpoint.
-        // Ensure that your backend updateProfile endpoint checks for req.files.profilePicture.
         const response = await axios.put(
           `${import.meta.env.VITE_API_URL}/users/profile`,
           formData,
@@ -83,6 +78,12 @@ const Profile = () => {
         <Link to="/address" className={styles.profileButton}>
           Your Addresses
         </Link>
+        {/* Only show the discounted watches button if the user is an admin */}
+        {user && user.role === 'admin' && (
+          <Link to="/discounted-watches" className={styles.profileButton}>
+            Discounted Watches
+          </Link>
+        )}
       </div>
     </div>
   );

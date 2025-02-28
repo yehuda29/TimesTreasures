@@ -1,6 +1,6 @@
 // src/pages/Checkout/Checkout.jsx
 
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { CartContext } from '../../context/CartContext';
 import { useNavigate } from 'react-router-dom';
@@ -12,8 +12,16 @@ import { calculateFinalPrice } from '../../utils/priceUtil';
 
 const Checkout = () => {
   const { user, token } = useContext(AuthContext);
-  const { cartItems, clearCart } = useContext(CartContext);
+  // Destructure fetchCart from CartContext
+  const { cartItems, clearCart, fetchCart } = useContext(CartContext);
   const navigate = useNavigate();
+
+  // Re-fetch the latest cart data when the checkout page loads.
+  useEffect(() => {
+    if (user && token) {
+      fetchCart(token);
+    }
+  }, [user, token, fetchCart]);
 
   // 'step' manages which stage of checkout we're on: address selection or review/payment
   const [step, setStep] = useState('address');
@@ -44,6 +52,9 @@ const Checkout = () => {
   const handlePaymentSuccess = async (orderDetails) => {
     try {
       setLoading(true);
+      // Optionally, re-fetch the cart here again before processing payment
+      await fetchCart(token);
+
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/users/purchase`,
         { shippingAddress },
@@ -162,12 +173,11 @@ const Checkout = () => {
               const isDiscounted = unitPrice < Number(item.watch.price);
               return (
                 <li key={index}>
-                  {item.watch.name} x {item.quantity} - $
+                  {item.watch.name} x {item.quantity} - $ 
                   {(unitPrice * item.quantity).toFixed(2)}
                   {isDiscounted && (
                     <span className={styles.itemPriceDetail}>
-                      {' '}
-                      (
+                      {' '}(
                       <s>${(Number(item.watch.price) * item.quantity).toFixed(2)}</s> 
                       <span className={styles.arrow}>→</span> 
                       ${ (unitPrice * item.quantity).toFixed(2) }

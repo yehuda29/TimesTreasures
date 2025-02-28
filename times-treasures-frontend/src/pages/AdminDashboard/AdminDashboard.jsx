@@ -1,3 +1,5 @@
+// src/pages/AdminDashboard/AdminDashboard.jsx
+
 import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -5,7 +7,7 @@ import styles from "./AdminDashboard.module.css";
 
 const AdminDashboard = () => {
   const [query, setQuery] = useState("wrist watch"); // Default search term
-  const [category, setCategory] = useState("all"); // Default category
+  const [brand, setBrand] = useState(""); // New: Brand filter provided by admin
   const [limit, setLimit] = useState(10); // Default fetch limit
   const [loading, setLoading] = useState(false);
 
@@ -16,7 +18,7 @@ const AdminDashboard = () => {
 
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/watches/fetch-ebay`,
-        { query, category, limit }, // Send user-selected values
+        { query, brand, limit }, // Pass the brand filter in the request payload
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -41,17 +43,16 @@ const AdminDashboard = () => {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Enter watch brand or keyword..."
+          placeholder="Enter search keywords..."
         />
 
-        <label>Category:</label>
-        <select value={category} onChange={(e) => setCategory(e.target.value)}>
-          <option value="all">All Categories</option>
-          <option value="men-watches">Men's Watches</option>
-          <option value="women-watches">Women's Watches</option>
-          <option value="luxury-watches">Luxury Watches</option>
-          <option value="smartwatches">Smartwatches</option>
-        </select>
+        <label>Brand Filter:</label>
+        <input
+          type="text"
+          value={brand}
+          onChange={(e) => setBrand(e.target.value)}
+          placeholder="Enter desired brand (e.g., Rolex, Apple)..."
+        />
 
         <label>Number of Watches:</label>
         <input

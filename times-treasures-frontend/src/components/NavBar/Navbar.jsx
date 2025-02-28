@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { FaSearch, FaShoppingCart } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios"; // Import axios to make HTTP requests
 import styles from "./Navbar.module.css";
 import { CartContext } from "../../context/CartContext";
 import { AuthContext } from "../../context/AuthContext";
@@ -13,20 +14,40 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
+  const [brands, setBrands] = useState([]); // New state to hold dynamic brands
 
   // Access totalItems from CartContext
   const { totalItems } = useContext(CartContext);
   // Access user and logout from AuthContext
   const { user, logout } = useContext(AuthContext);
-
   const navigate = useNavigate();
 
+  // Update currentPath on history changes
   useEffect(() => {
     const handleLocationChange = () => setCurrentPath(window.location.pathname);
     window.addEventListener("popstate", handleLocationChange);
     return () => window.removeEventListener("popstate", handleLocationChange);
   }, []);
 
+  // NEW: Fetch unique watch brands from the backend when Navbar mounts
+  useEffect(() => {
+    const fetchBrands = async () => {
+      try {
+        // Assumes your backend exposes an endpoint that returns distinct brands
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/watches/brands`);
+        if (response.data && response.data.success) {
+          // response.data.data should be an array of brand names (e.g., ["Rolex", "Apple", ...])
+          setBrands(response.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching brands:", error);
+      }
+    };
+
+    fetchBrands();
+  }, []);
+
+  // Toggles for mobile menu and dropdown visibility
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
@@ -79,13 +100,14 @@ const Navbar = () => {
         <span className={`${styles.hamburgerLine} ${isMobileMenuOpen ? styles.open : ""}`}></span>
       </div>
 
-      {/* Navigation Links (Desktop & Mobile) */}
+      {/* Navigation Links */}
       <ul className={`${styles.navbarLinks} ${isMobileMenuOpen ? styles.open : ""}`}>
         <li className={currentPath === "/" ? styles.active : ""}>
           <Link to="/" onClick={closeMenus}>
             Home
           </Link>
         </li>
+        {/* Shop Dropdown using dynamic brands */}
         <li
           className={styles.dropdown}
           onMouseEnter={handleDropdownEnter}
@@ -96,30 +118,28 @@ const Navbar = () => {
           </Link>
           {isDropdownVisible && (
             <ul className={styles.dropdownMenu}>
-              <li>
-                <Link to="/men-watches" onClick={closeMenus}>
-                  Men's Watches
-                </Link>
-              </li>
-              <li>
-                <Link to="/women-watches" onClick={closeMenus}>
-                  Women's Watches
-                </Link>
-              </li>
-              <li>
-                <Link to="/luxury-watches" onClick={closeMenus}>
-                  Luxury Watches
-                </Link>
-              </li>
-              <li>
-                <Link to="/smartwatches" onClick={closeMenus}>
-                  Smart Watches
-                </Link>
-              </li>
+              {brands.length > 0 ? (
+                brands.map((brand) => (
+                  <li key={brand}>
+                    {/* 
+                      Link to a route that filters watches by brand.
+                      You may need to set up a corresponding route (e.g., /shop/:brand) 
+                      and adjust filtering logic in your watch fetching code.
+                    */}
+                    <Link to={`/shop/${brand.toLowerCase()}`} onClick={closeMenus}>
+                      {brand}
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <li>
+                  <span>No brands available</span>
+                </li>
+              )}
             </ul>
           )}
         </li>
-        {/* Only show the Cart link if a user is logged in */}
+        {/* Cart Link (only shown if user is logged in) */}
         {user && (
           <li className={currentPath === "/cart" ? styles.active : ""}>
             <Link to="/cart" onClick={closeMenus} className={styles.cartLink}>
@@ -147,7 +167,7 @@ const Navbar = () => {
             </Link>
           </li>
         )}
-        {/* If no user is logged in, show Login & Sign Up */}
+        {/* Authentication Links */}
         {!user && (
           <>
             <li>
@@ -166,7 +186,6 @@ const Navbar = () => {
             </li>
           </>
         )}
-        {/* If user is logged in, show welcome text and Logout */}
         {user && (
           <>
             <li className={styles.welcomeText}>
@@ -179,9 +198,7 @@ const Navbar = () => {
             </li>
           </>
         )}
-        {user && user.role === "admin" && (
-            <NotificationBell />
-        )}
+        {user && user.role === "admin" && <NotificationBell />}
       </ul>
     </nav>
   );

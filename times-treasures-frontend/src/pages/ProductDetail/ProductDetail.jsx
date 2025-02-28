@@ -18,10 +18,16 @@ const ProductDetail = () => {
   const [error, setError] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [newInventory, setNewInventory] = useState('');
+  
+  // New state variables for special offer details
+  const [discountPercentage, setDiscountPercentage] = useState(0);
+  const [offerStart, setOfferStart] = useState('');
+  const [offerEnd, setOfferEnd] = useState('');
 
   const { addToCart } = useContext(CartContext);
   const { user, token } = useContext(AuthContext);
 
+  // Fetch the watch data from the backend
   useEffect(() => {
     const fetchWatch = async () => {
       try {
@@ -31,6 +37,7 @@ const ProductDetail = () => {
           throw new Error('Invalid watch data');
         }
         setWatch(fetchedWatch);
+        // If admin, initialize inventory and special offer state
         if (user && user.role === 'admin') {
           setNewInventory(fetchedWatch.inventory);
         }
@@ -44,10 +51,28 @@ const ProductDetail = () => {
     fetchWatch();
   }, [id, user]);
 
+  // Update special offer state when the watch is fetched (for admin users)
+  useEffect(() => {
+    if (watch && user && user.role === 'admin') {
+      setDiscountPercentage(watch.specialOffer?.discountPercentage || 0);
+      setOfferStart(
+        watch.specialOffer?.offerStart
+          ? new Date(watch.specialOffer.offerStart).toISOString().substr(0, 10)
+          : ''
+      );
+      setOfferEnd(
+        watch.specialOffer?.offerEnd
+          ? new Date(watch.specialOffer.offerEnd).toISOString().substr(0, 10)
+          : ''
+      );
+    }
+  }, [watch, user]);
+
   // Calculate final price using the helper function
   const finalPrice = watch ? calculateFinalPrice(watch) : 0;
   const isDiscounted = watch && finalPrice < Number(watch.price);
 
+  // Handler for adding the watch to the cart
   const handleAddToCart = () => {
     if (!user) {
       toast.error("Please login to make a purchase");
@@ -77,8 +102,7 @@ const ProductDetail = () => {
     toast.success(`${watch.name} (x${quantity}) added to your cart!`);
   };
   
-  
-
+  // Handler for updating stock (for admin)
   const handleUpdateStock = async () => {
     try {
       const updatedInventory = Number(newInventory);
@@ -110,6 +134,37 @@ const ProductDetail = () => {
     setNewInventory(e.target.value);
   };
 
+  // Handler for updating the special offer (for admin)
+  const handleUpdateSpecialOffer = async () => {
+    try {
+      // Build the specialOffer object from state
+      const updatedOffer = {
+        discountPercentage: Number(discountPercentage),
+        offerStart: offerStart ? new Date(offerStart) : null,
+        offerEnd: offerEnd ? new Date(offerEnd) : null,
+      };
+      const localToken = localStorage.getItem('token');
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localToken}`,
+        },
+      };
+      // Send PUT request to update the watch with the new special offer
+      const response = await axios.put(
+        `${import.meta.env.VITE_API_URL}/watches/${id}`,
+        { specialOffer: updatedOffer },
+        config
+      );
+      setWatch(response.data.data);
+      toast.success('Special offer updated successfully');
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || 'Failed to update special offer');
+    }
+  };
+
+  // Handler for deleting the watch (for admin)
   const handleDeleteWatch = async () => {
     if (!window.confirm('Are you sure you want to delete this watch?')) return;
     try {
@@ -139,8 +194,7 @@ const ProductDetail = () => {
 
   return (
     <div className={styles.productDetail}>
-      {/* Ensure watch exists before rendering */}
-      {watch ? (
+      {watch && (
         <>
           <img
             src={getImageURL(watch.image) || "https://via.placeholder.com/150"}
@@ -194,48 +248,35 @@ const ProductDetail = () => {
             <div className={styles.buttonGroup}>
               <button
                 className={styles.addToCartBtn}
-                onClick={() => {
-                  if (!watch || !watch._id) {
-                    console.error("❌ Cannot add to cart: Watch is missing or invalid", watch);
-                    return;
-                  }
-                  handleAddToCart();
-                }}
+                onClick={handleAddToCart}
                 disabled={!watch._id || watch.inventory === 0}
               >
                 {watch.inventory === 0 ? "Out of Stock" : "Add to Cart"}
               </button>
   
+              {/* Admin-only controls */}
               {user && user.role === "admin" && (
                 <>
                   <button className={styles.deleteBtn} onClick={handleDeleteWatch}>
                     Delete Watch
                   </button>
-                  <div className={styles.updateStock}>
-                    <label htmlFor="inventoryUpdate">Update Stock:</label>
-                    <input
-                      type="number"
-                      id="inventoryUpdate"
-                      name="inventoryUpdate"
-                      min="0"
-                      value={newInventory}
-                      onChange={handleInventoryChange}
-                    />
-                    <button className={styles.updateStockBtn} onClick={handleUpdateStock}>
-                      Update Stock
-                    </button>
-                  </div>
                 </>
+              )}
+              
+              {user && user.role === "admin" && (
+                <button 
+                  className={styles.adminUpdateBtn} 
+                  onClick={() => navigate(`/admin/watch-update/${id}`)}
+                >
+                  Update Watch Details
+                </button>
               )}
             </div>
           </div>
         </>
-      ) : (
-        <p className={styles.errorMessage}>❌ Watch not found.</p>
       )}
     </div>
   );
-  
 };
 
 export default ProductDetail;
