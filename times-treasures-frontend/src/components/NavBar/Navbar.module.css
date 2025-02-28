@@ -118,22 +118,35 @@
 }
 
 /*************************************
- * Dropdown Menu
+ * Dropdown Menu (Shop)
  *************************************/
 .dropdown {
   position: relative;
 }
 
+/* Updated dropdownMenu styling with text-transform */
 .dropdownMenu {
   position: absolute;
   top: 100%;
   left: 0;
-  background-color: var(--primary-color);
+  background: linear-gradient(180deg, var(--primary-color) 0%, #2c3e50 100%);
+  border: 1px solid rgba(236, 240, 241, 0.3);
   border-radius: 5px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.25);
   list-style: none;
   padding: 0.5rem 0;
-  min-width: 150px;
+  min-width: 180px; /* increased width for better appearance */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.dropdown:hover .dropdownMenu,
+.dropdownMenu:hover {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 .dropdownMenu li {
@@ -142,15 +155,17 @@
 
 .dropdownMenu a {
   display: block;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
   text-decoration: none;
   color: #ecf0f1;
-  font-size: 0.88rem;
+  font-size: 0.9rem;
+  /* Ensure the first letter of each word is uppercase */
+  text-transform: capitalize;
   transition: background-color 0.3s, color 0.3s;
 }
 
 .dropdownMenu a:hover {
-  background-color: var(--primary-color);
+  background-color: rgba(236, 240, 241, 0.2);
   color: var(--secondary-color);
 }
 

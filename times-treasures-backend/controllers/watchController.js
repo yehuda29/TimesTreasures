@@ -208,6 +208,8 @@ exports.uploadImage = asyncHandler(async (req, res, next) => {
  * @route   PUT /api/watches/:id
  * @access  Private/Admin
  */
+// watch-shop-backend/controllers/watchController.js
+
 exports.updateWatch = asyncHandler(async (req, res, next) => {
   // Find the watch by its ID
   const watch = await Watch.findById(req.params.id);
@@ -222,9 +224,24 @@ exports.updateWatch = asyncHandler(async (req, res, next) => {
   if (description) watch.description = description;
   if (category) watch.category = category;
   
-  // NEW: Update inventory if provided (even if it's 0)
+  // Update inventory if provided (even if it's 0)
   if (req.body.inventory !== undefined) {
     watch.inventory = Number(req.body.inventory);
+  }
+
+  // Update special offer details if provided in the request body
+  if (req.body.specialOffer) {
+    const { discountPercentage, offerStart, offerEnd } = req.body.specialOffer;
+    if (discountPercentage !== undefined) {
+      watch.specialOffer.discountPercentage = Number(discountPercentage);
+    }
+    if (offerStart !== undefined) {
+      // Convert to Date object if a valid date string is provided; otherwise, set to null
+      watch.specialOffer.offerStart = offerStart ? new Date(offerStart) : null;
+    }
+    if (offerEnd !== undefined) {
+      watch.specialOffer.offerEnd = offerEnd ? new Date(offerEnd) : null;
+    }
   }
 
   // If a new image file is provided, handle image update
@@ -280,40 +297,49 @@ exports.deleteWatch = asyncHandler(async (req, res, next) => {
 });
 
 
+// In watch-shop-backend/controllers/watchController.js
+
 exports.fetchAndStoreEbayWatches = asyncHandler(async (req, res) => {
   if (req.user.role !== "admin") {
     return res.status(403).json({ success: false, message: "Unauthorized" });
   }
 
-  const { query, category, limit } = req.body;
-  const ebayWatches = await fetchWatchesFromEbay(query, category, limit);
+  // Destructure the query, brand, and limit from the request body.
+  const { query, brand, limit } = req.body;
+  console.log("Received payload:", req.body);
+  // Fetch watches using the updated function with brand filtering.
+  const ebayWatches = await fetchWatchesFromEbay(query, brand, limit);
 
   if (ebayWatches.length === 0) {
-    return res.status(400).json({ success: false, message: "No watches found from eBay" });
+    return res.status(400).json({ success: false, message: "No valid watches found from eBay" });
   }
 
-  const validWatches = ebayWatches.filter((watch) => {
-    if (!watch.name || !watch.image || isNaN(watch.price) || watch.price <= 0) {
-      console.log(`🚨 Skipping invalid watch:`, watch);
-      return false; // Exclude invalid watches
-    }
-    return true; // Keep only valid watches
-  });
-
-  if (validWatches.length === 0) {
-    return res.status(400).json({ success: false, message: "No valid watches to store." });
-  }
-
-  for (const watch of validWatches) {
+  // Save the valid watches to the database.
+  for (const watch of ebayWatches) {
     const existingWatch = await Watch.findOne({ name: watch.name });
-
     if (existingWatch) {
       console.log(`⚠️ Duplicate found: ${watch.name}. Deleting old entry.`);
       await Watch.deleteOne({ _id: existingWatch._id });
     }
-
     await Watch.create(watch);
   }
 
   res.status(200).json({ success: true, message: "Valid eBay watches fetched and stored." });
+});
+
+
+/**
+ * @desc    Get unique watch brands from the database.
+ * @route   GET /api/watches/brands
+ * @access  Public
+ */
+exports.getUniqueBrands = asyncHandler(async (req, res, next) => {
+  // Use Mongoose's distinct method on the 'category' field
+  const brands = await Watch.distinct('category');
+  
+  // Return the unique brands in the response
+  res.status(200).json({
+    success: true,
+    data: brands
+  });
 });

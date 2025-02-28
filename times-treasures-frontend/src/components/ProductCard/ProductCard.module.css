@@ -1,12 +1,21 @@
 /* src/components/ProductCard/ProductCard.module.css */
 
+/* Product card styling */
 .productCard {
-  background-color: #fff;
+  background-color: var(--primary-color);
   border: 1px solid #eee;
   border-radius: 8px;
   padding: 1rem;
   text-align: center;
+  color: #ecf0f1;
+  /* Remove the fixed width so the card doesn't stretch */
+  /* width: 100%; */
+  max-width: 300px; /* Limit the card width */
+  margin: 0.75rem; /* Optional: consistent margin */
 }
+
+
+/* ... other rules remain unchanged ... */
 
 .imageLink {
   display: block;
@@ -34,7 +43,7 @@
 
 .productPrice {
   font-size: 1.1rem;
-  color: var(--primary-color);
+  color: #ecf0f1; /* Use light text on dark background */
   margin-bottom: 0.5rem;
   text-align: center;
 }
@@ -48,26 +57,26 @@
 }
 
 .originalPrice {
-  color: #888;
+  color: #bdc3c7; /* Lighter gray for struck-out price */
   font-size: 1rem;
   text-align: center;
 }
 
 .arrow {
   font-size: 1.2rem;
-  color: #333;
+  color: #ecf0f1;
   text-align: center;
 }
 
 .discountedPrice {
-  color: var(--primary-color);
+  color: #e74c3c; /* Red for emphasis */
   font-size: 1.1rem;
   font-weight: bold;
   text-align: center;
 }
 
 .viewDetailsBtn {
-  background-color: var(--primary-color);
+  background-color: var(--secondary-color); /* Updated for better contrast */
   color: #fff;
   padding: 0.5rem 1rem;
   border-radius: 4px;

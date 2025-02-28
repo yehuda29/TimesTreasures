@@ -181,6 +181,8 @@ exports.updateCart = asyncHandler(async (req, res, next) => {
 // Route:   POST /api/users/purchase
 // Access:  Private
 // -----------------------------------------------------------------------------
+// In watch-shop-backend/controllers/userController.js
+
 exports.purchaseCart = asyncHandler(async (req, res, next) => {
   // Extract the shippingAddress from the request body (provided by the checkout process)
   const { shippingAddress } = req.body;
@@ -209,20 +211,38 @@ exports.purchaseCart = asyncHandler(async (req, res, next) => {
       // Record the watch name for the out-of-stock message
       outOfStockItems.push(watchDoc.name);
       // Skip processing this item (i.e. do not add to purchase history or deduct inventory)
+      continue;
     } else {
       // Sufficient inventory: decrement the inventory by the purchased quantity
       await Watch.findByIdAndUpdate(watchDoc._id, { $inc: { inventory: -item.quantity } });
-      const itemTotal = item.quantity * (watchDoc.price || 0);
+      
+      // Calculate final price considering any valid special offer discount
+      let finalPrice = watchDoc.price;
+      if (watchDoc.specialOffer && watchDoc.specialOffer.discountPercentage > 0) {
+        // Ensure both offerStart and offerEnd are defined
+        if (watchDoc.specialOffer.offerStart && watchDoc.specialOffer.offerEnd) {
+          const now = new Date();
+          const start = new Date(watchDoc.specialOffer.offerStart);
+          const end = new Date(watchDoc.specialOffer.offerEnd);
+          // Apply discount if current date is within the offer period
+          if (now >= start && now <= end) {
+            finalPrice = watchDoc.price * (1 - watchDoc.specialOffer.discountPercentage / 100);
+          }
+        }
+      }
+
+      // Calculate the total for this item based on the final (possibly discounted) price
+      const itemTotal = item.quantity * finalPrice;
       total += itemTotal;
 
-      // Add item details for the receipt email
+      // Prepare item details for the receipt email using the discounted price
       items.push({
         name: watchDoc.name,
         quantity: item.quantity,
-        price: watchDoc.price
+        price: finalPrice
       });
 
-      // Record the purchase in the user's purchase history (with a snapshot of shippingAddress)
+      // Record the purchase in the user's purchase history
       user.purchaseHistory.push({
         watch: watchDoc._id,
         quantity: item.quantity,

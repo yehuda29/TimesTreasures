@@ -1,5 +1,6 @@
 /* ProductDetail.module.css */
 
+/* Main container for product detail */
 .productDetail {
   display: flex;
   flex-wrap: wrap;
@@ -13,10 +14,11 @@
   color: black;
 }
 
+/* Product image styling */
 .productImage {
   width: 100%;
-  max-width: 400px;
-  height: auto;
+  max-width: 366px; /* Reduced from 400px for a more compact look */
+  height: 500px; /* Fixed height for a more compact appearance */
   border-radius: 8px;
   object-fit: cover;
 }
@@ -25,15 +27,17 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  /* Remove any justify-content: flex-start to let margin-top push content down */
 }
 
+/* Product name style */
 .productName {
   font-size: 2rem;
   margin-bottom: 0.5rem;
   color: #333;
 }
 
+/* Product price styling */
 .productPrice {
   font-size: 1.5rem;
   margin-bottom: 1rem;
@@ -41,6 +45,7 @@
   color: var(--primary-color);
 }
 
+/* Product description styling */
 .productDescription {
   font-size: 1rem;
   margin-bottom: 1rem;
@@ -48,6 +53,7 @@
   line-height: 1.5;
 }
 
+/* Stock information styling */
 .stockInfo {
   font-size: 1rem;
   margin-bottom: 1rem;
@@ -56,6 +62,7 @@
   font-weight: bold;
 }
 
+/* Quantity selector container */
 .quantitySelector {
   display: flex;
   align-items: center;
@@ -76,13 +83,17 @@
   text-align: center;
 }
 
+/* Button group styling */
+
 .buttonGroup {
   display: flex;
   gap: 1rem;
   align-items: center;
   flex-wrap: wrap;
+  margin-top: auto; /* This pushes the button group to the bottom */
 }
 
+/* Add to Cart button style */
 .addToCartBtn {
   background-color: var(--primary-color);
   color: #fff;
@@ -97,6 +108,7 @@
   opacity: 0.8;
 }
 
+/* Delete button styling */
 .deleteBtn {
   background-color: var(--secondary-color);
   color: #fff;
@@ -111,40 +123,6 @@
   opacity: 0.8;
 }
 
-/* Update stock section for admin */
-.updateStock {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  max-width: 200px;
-}
-
-.updateStock label {
-  font-size: 1rem;
-  color: #333;
-}
-
-.updateStock input {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.updateStockBtn {
-  background-color: var(--primary-color);
-  color: #fff;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: opacity 0.3s ease;
-}
-
-.updateStockBtn:hover {
-  opacity: 0.8;
-}
 
 /* Loader styling */
 .loader {
@@ -154,7 +132,7 @@
   color: var(--primary-color);
 }
 
-/* Example CSS snippet for price container and arrow */
+/* Price container and arrow styling */
 .priceContainer {
   display: flex;
   align-items: center;
@@ -175,7 +153,7 @@
   font-weight: bold;
 }
 
-/* You can similarly add .specialOfferBadge styles */
+/* Special offer badge styling */
 .specialOfferBadge {
   background-color: var(--secondary-color);
   color: #fff;
@@ -184,7 +162,6 @@
   font-size: 0.9rem;
   margin-top: 0.5rem;
 }
-
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
@@ -195,4 +172,19 @@
   .productImage {
     max-width: 100%;
   }
+}
+
+.adminUpdateBtn {
+  background-color: var(--primary-color);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+  margin-left: auto; /* This pushes the button to the right in a flex container */
+}
+
+.adminUpdateBtn:hover {
+  opacity: 0.8;
 }

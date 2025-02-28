@@ -2,14 +2,22 @@
 
 // Import the express module to create a router
 const express = require('express');
-// Destructure the controller functions for watches from the watchController
-const { getAllWatches, getWatch, uploadWatch, updateWatch, deleteWatch, fetchAndStoreEbayWatches } = require('../controllers/watchController');
+// Destructure the controller functions for watches from the watchController,
+// now including getUniqueBrands for fetching unique brands.
+const { 
+  getAllWatches, 
+  getWatch, 
+  uploadWatch, 
+  updateWatch, 
+  deleteWatch, 
+  fetchAndStoreEbayWatches, 
+  getUniqueBrands 
+} = require('../controllers/watchController');
 // Import the authentication middleware functions: protect (to ensure the user is authenticated)
 // and authorize (to ensure the user has the proper role, e.g., 'admin')
 const { protect, authorize } = require('../middleware/auth');
 // Import the express-validator's body function to validate incoming request data
 const { body } = require('express-validator');
-
 
 // Create a new Express router instance
 const router = express.Router();
@@ -17,6 +25,11 @@ const router = express.Router();
 // ----------------------------------------
 // Public Routes for Watches
 // ----------------------------------------
+
+// NEW: Endpoint to get unique watch brands.
+// This route returns an array of unique brands (extracted from the category field)
+// so that the frontend (e.g., Navbar) can dynamically display them.
+router.get('/brands', getUniqueBrands);
 
 // GET /api/watches
 // This route retrieves all watches with pagination, filtering, and sorting (if provided)
@@ -39,8 +52,9 @@ const uploadValidation = [
   body('price', 'Price must be a number').isNumeric(),
   body('description', 'Description is required').not().isEmpty(),
   body('image', 'Image file is required').not().isEmpty(),
-  body('category', 'Valid category is required').isIn(['men-watches', 'women-watches', 'luxury-watches', 'smartwatches']),
-  // NEW: Validate that inventory is an integer greater than or equal to 0.
+  // Updated: Validate that the watch brand (stored in category) is provided
+  body('category', 'Watch brand is required').not().isEmpty(),
+  // Validate that inventory is a non-negative integer.
   body('inventory', 'Inventory must be a non-negative integer').isInt({ min: 0 })
 ];
 
@@ -54,12 +68,14 @@ router.post('/', protect, authorize('admin'), uploadValidation, uploadWatch);
 
 // Upload a new watch (already updated to use Cloudinary)
 router.post('/', protect, authorize('admin'), uploadWatch);
+
 // New: Update an existing watch
 router.put('/:id', protect, authorize('admin'), updateWatch);
+
 // Delete an existing watch
 router.delete('/:id', protect, authorize('admin'), deleteWatch);
 
-
+// Route to fetch and store watches from eBay
 router.post("/fetch-ebay", protect, authorize("admin"), fetchAndStoreEbayWatches);
 
 // Export the router to be used in the main server file

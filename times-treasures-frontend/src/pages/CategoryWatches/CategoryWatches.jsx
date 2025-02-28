@@ -1,42 +1,43 @@
-// src/pages/MenWatches/MenWatches.jsx
-import React, { useState, useEffect } from 'react';
-import styles from './MenWatches.module.css';
-import ProductCard from '../../components/ProductCard/ProductCard.jsx';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import axios from 'axios';
+// src/pages/CategoryWatches/CategoryWatches.jsx
 
-const MenWatches = () => {
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import ProductCard from '../../components/ProductCard/ProductCard';
+import styles from './CategoryWatches.module.css';
+
+const CategoryWatches = () => {
+  // Get the category parameter from the URL (e.g., /shop/rolex)
+  const { category } = useParams();
   const [watches, setWatches] = useState([]);
   const [visibleWatches, setVisibleWatches] = useState(12);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState(null);
-
-  // store the selected "sort" (defaults to empty => sort by createdAt desc)
   const [sort, setSort] = useState('');
 
-  // This effect fetches data from the server whenever "sort" changes
+  // Helper to capitalize the first letter of the category for display
+  const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
+  // Fetch watches for the given category whenever 'category' or 'sort' changes
   useEffect(() => {
     const fetchWatches = async () => {
       try {
-        // We'll set "page"=1, "limit"=100 so we get all men-watches in one request
-        // and then do local infinite scroll
+        // We'll request all items for this category in one go (page=1, limit=100)
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/watches`, {
           params: {
-            category: 'men-watches',
-            sort: sort,       // e.g. "name", "-price", etc.
+            category: category,  // Filter by the category from the URL
+            sort: sort,          // Sorting option (e.g., "name", "-price")
             page: 1,
             limit: 100,
           },
         });
         const fetchedWatches = response.data.data;
-
         if (!Array.isArray(fetchedWatches)) {
           throw new Error('Invalid data format from server');
         }
-
         setWatches(fetchedWatches);
-
-        // If fetchedWatches <= visibleWatches, no more to reveal
+        // Determine if there is more data to show
         if (fetchedWatches.length <= visibleWatches) {
           setHasMore(false);
         } else {
@@ -44,16 +45,16 @@ const MenWatches = () => {
         }
       } catch (err) {
         console.error(err);
-        setError("Failed to fetch men's watches.");
+        setError(`Failed to fetch ${capitalize(category)} watches.`);
       }
     };
 
-    // reset visibleWatches to 12 whenever we change sort
+    // Reset visible items and fetch data whenever sort or category changes
     setVisibleWatches(12);
     fetchWatches();
-  }, [sort]);
+  }, [category, sort]);
 
-  // The local infinite scroll that reveals more items
+  // Function to load more items (used by InfiniteScroll)
   const fetchMoreData = () => {
     if (visibleWatches >= watches.length) {
       setHasMore(false);
@@ -64,7 +65,7 @@ const MenWatches = () => {
     }, 500);
   };
 
-  // Handler for user picking a sort option from a dropdown
+  // Handle sort option changes
   const handleSortChange = (e) => {
     setSort(e.target.value);
   };
@@ -72,9 +73,9 @@ const MenWatches = () => {
   if (error) return <p className={styles.error}>{error}</p>;
 
   return (
-    <div className={styles.menWatches}>
-      <h2 className={styles.title}>Men's Watches</h2>
-
+    <div className={styles.categoryWatches}>
+      <h2 className={styles.title}>{capitalize(category)} Watches</h2>
+      
       {/* Sorting Dropdown */}
       <div className={styles.sortContainer}>
         <label htmlFor="sortSelect">Sort by:</label>
@@ -87,7 +88,6 @@ const MenWatches = () => {
         </select>
       </div>
 
-      {/* Infinite Scroll from local array */}
       <InfiniteScroll
         dataLength={visibleWatches}
         next={fetchMoreData}
@@ -95,7 +95,7 @@ const MenWatches = () => {
         loader={<h4 className={styles.loader}>Loading...</h4>}
         endMessage={
           <p className={styles.endMessage}>
-            <b>You've seen all our men's watches!</b>
+            <b>You've seen all the {capitalize(category)} watches!</b>
           </p>
         }
       >
@@ -109,4 +109,4 @@ const MenWatches = () => {
   );
 };
 
-export default MenWatches;
+export default CategoryWatches;
