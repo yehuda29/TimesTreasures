@@ -246,3 +246,10 @@
     display: flex;
   }
 }
+
+.cartCount {
+  margin-left: 4px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #333;
+}

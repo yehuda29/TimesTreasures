@@ -24,7 +24,8 @@ const ProductDetail = () => {
   const [offerStart, setOfferStart] = useState('');
   const [offerEnd, setOfferEnd] = useState('');
 
-  const { addToCart } = useContext(CartContext);
+  // Access cartItems and addToCart from CartContext
+  const { cartItems, addToCart } = useContext(CartContext);
   const { user, token } = useContext(AuthContext);
 
   // Fetch the watch data from the backend
@@ -72,7 +73,7 @@ const ProductDetail = () => {
   const finalPrice = watch ? calculateFinalPrice(watch) : 0;
   const isDiscounted = watch && finalPrice < Number(watch.price);
 
-  // Handler for adding the watch to the cart
+  // Handler for adding the watch to the cart with cumulative check
   const handleAddToCart = () => {
     if (!user) {
       toast.error("Please login to make a purchase");
@@ -91,8 +92,16 @@ const ProductDetail = () => {
       return;
     }
   
-    if (quantity > watch.inventory) {
-      toast.error(`Only ${watch.inventory} available in stock`);
+    // Calculate the current quantity of this watch already in the cart
+    const existingCartItem = cartItems.find(item => {
+      // Handle both object and string type for item.watch
+      return (typeof item.watch === "object" ? item.watch._id : item.watch) === watch._id;
+    });
+    const currentQuantityInCart = existingCartItem ? existingCartItem.quantity : 0;
+  
+    // Check if adding the new quantity would exceed available inventory
+    if (quantity + currentQuantityInCart > watch.inventory) {
+      toast.error(`You can only add ${watch.inventory - currentQuantityInCart} more of this watch to your cart`);
       return;
     }
   

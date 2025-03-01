@@ -8,7 +8,7 @@ import styles from './PurchaseHistory.module.css';
 import { getImageURL } from '../../utils/imageUtil';
 
 const PurchaseHistory = () => {
-  // Always call hooks at the top level.
+  // Get user and token from AuthContext
   const { user, token } = useContext(AuthContext);
   const [purchaseHistory, setPurchaseHistory] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -76,6 +76,7 @@ const PurchaseHistory = () => {
               />
               <div className={styles.purchaseDetails}>
                 <h3>{purchase.watch?.name || 'Unknown Watch'}</h3>
+                <p>Order Number: {purchase.orderNumber}</p>
                 <p>Quantity: {purchase.quantity}</p>
                 <p>
                   Total Price: $

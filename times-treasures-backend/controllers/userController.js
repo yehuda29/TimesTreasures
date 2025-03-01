@@ -173,19 +173,27 @@ exports.updateCart = asyncHandler(async (req, res, next) => {
 });
 
 
+// Helper function to generate an 11-digit random order number as a string
+const generateOrderNumber = () => {
+  let orderNum = '';
+  for (let i = 0; i < 11; i++) {
+    orderNum += Math.floor(Math.random() * 10); // Append a random digit (0-9)
+  }
+  return orderNum;
+};
 
 // -----------------------------------------------------------------------------
 // Controller: purchaseCart
 // Purpose: Process all items in the user's persistent cart, add them to the purchase
-//          history (including the shipping address), clear the cart, and send a receipt email.
+//          history (including shipping address and a generated order number),
+//          clear the cart, and send a receipt email.
 // Route:   POST /api/users/purchase
 // Access:  Private
 // -----------------------------------------------------------------------------
-// In watch-shop-backend/controllers/userController.js
-
 exports.purchaseCart = asyncHandler(async (req, res, next) => {
   // Extract the shippingAddress from the request body (provided by the checkout process)
   const { shippingAddress } = req.body;
+  
   // Find the user by ID and populate the 'cart.watch' field to have full watch details
   const user = await User.findById(req.user.id).populate('cart.watch');
 
@@ -197,6 +205,13 @@ exports.purchaseCart = asyncHandler(async (req, res, next) => {
     res.status(400);
     throw new Error('Cart is empty');
   }
+
+  // Ensure any existing purchase history records have an orderNumber
+  user.purchaseHistory.forEach(doc => {
+    if (!doc.orderNumber) {
+      doc.orderNumber = generateOrderNumber();
+    }
+  });
 
   let total = 0;
   const items = [];
@@ -210,7 +225,7 @@ exports.purchaseCart = asyncHandler(async (req, res, next) => {
     if (watchDoc.inventory < item.quantity) {
       // Record the watch name for the out-of-stock message
       outOfStockItems.push(watchDoc.name);
-      // Skip processing this item (i.e. do not add to purchase history or deduct inventory)
+      // Skip processing this item
       continue;
     } else {
       // Sufficient inventory: decrement the inventory by the purchased quantity
@@ -230,7 +245,7 @@ exports.purchaseCart = asyncHandler(async (req, res, next) => {
           }
         }
       }
-
+      
       // Calculate the total for this item based on the final (possibly discounted) price
       const itemTotal = item.quantity * finalPrice;
       total += itemTotal;
@@ -242,18 +257,20 @@ exports.purchaseCart = asyncHandler(async (req, res, next) => {
         price: finalPrice
       });
 
-      // Record the purchase in the user's purchase history
+      // Record the purchase in the user's purchase history,
+      // including a generated order number for order tracking.
       user.purchaseHistory.push({
         watch: watchDoc._id,
         quantity: item.quantity,
         totalPrice: itemTotal,
         purchaseDate: new Date(),
-        shippingAddress: shippingAddress
+        shippingAddress: shippingAddress,
+        orderNumber: generateOrderNumber() // Generate and add the order number here
       });
     }
   }
 
-  // Remove all items from the cart (both purchased and out-of-stock items are cleared)
+  // Clear the cart (both purchased and out-of-stock items are removed)
   user.cart = [];
   await user.save();
 
@@ -263,7 +280,7 @@ exports.purchaseCart = asyncHandler(async (req, res, next) => {
     total
   };
 
-  // Asynchronously send the receipt email (not awaited so as not to delay response)
+  // Asynchronously send the receipt email (not awaited to avoid delaying the response)
   sendReceiptEmail(user.email, purchaseDetails)
     .then(() => console.log('Receipt email sent successfully'))
     .catch(err => console.error('Error sending receipt email:', err));
@@ -280,6 +297,7 @@ exports.purchaseCart = asyncHandler(async (req, res, next) => {
     message: responseMessage
   });
 });
+
 
 
 exports.updateProfile = asyncHandler(async (req, res, next) => {
@@ -324,3 +342,27 @@ exports.updateProfile = asyncHandler(async (req, res, next) => {
   });
 });
 
+/**
+ * @desc    Track an order by order number from the logged-in user's purchase history.
+ * @route   GET /api/users/track-order/:orderNumber
+ * @access  Private
+ */
+exports.trackOrder = asyncHandler(async (req, res, next) => {
+  const { orderNumber } = req.params;
+
+  // Find the current user (no need to populate purchaseHistory as it is embedded)
+  const user = await User.findById(req.user.id);
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
+  // Find the purchase record with the matching order number
+  const order = user.purchaseHistory.find(purchase => purchase.orderNumber === orderNumber);
+  if (!order) {
+    return res.status(404).json({ success: false, message: "Order not found" });
+  }
+
+  // Return the order record
+  res.status(200).json({ success: true, order });
+});
