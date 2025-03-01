@@ -4,25 +4,40 @@ import React, { useContext, useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import styles from './Profile.module.css';
 import { AuthContext } from '../../context/AuthContext';
+// Material UI components
+import { 
+  Avatar, 
+  Card, 
+  CardHeader, 
+  CardContent, 
+  Button, 
+  IconButton, 
+  Grid, 
+  Typography, 
+  Box, 
+  Tooltip,
+  Divider
+} from '@mui/material';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
 
 const Profile = () => {
   const { user, token, setUser } = useContext(AuthContext);
   const [profilePic, setProfilePic] = useState('');
   const fileInputRef = useRef(null);
 
-  // For a local preview, use URL.createObjectURL (optional)
+  // Update local profile picture when user data changes
   useEffect(() => {
     if (user && user.profilePicture) {
       setProfilePic(user.profilePicture);
     }
   }, [user]);
 
+  // Handle profile picture file changes and update profile via API
   const handleFileChange = async (e) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      // Optionally update the preview immediately
+      // Update the preview immediately
       setProfilePic(URL.createObjectURL(file));
 
       try {
@@ -51,15 +66,133 @@ const Profile = () => {
     }
   };
 
+  // Trigger the file input click event
   const handleUploadClick = () => {
     fileInputRef.current.click();
   };
 
   return (
-    <div className={styles.profileContainer}>
-      <div className={styles.profileHeader}>
-        <img src={profilePic} alt="Profile" className={styles.profilePicture} />
-        <h1 className={styles.userName}>{user ? user.name : 'Guest'}</h1>
+    <Box sx={{ maxWidth: 600, margin: '2rem auto', padding: 2 }}>
+      <Card>
+        <CardHeader
+          avatar={
+            <Avatar
+              src={profilePic}
+              sx={{ width: 100, height: 100 }} // Larger avatar size
+            >
+              {user?.name?.charAt(0)}
+            </Avatar>
+          }
+          action={
+            <Tooltip title="Upload new picture">
+              <IconButton onClick={handleUploadClick} color="primary">
+                <PhotoCamera />
+              </IconButton>
+            </Tooltip>
+          }
+          title={
+            <Typography variant="h5">
+              {user ? user.name : 'Guest'}
+            </Typography>
+          }
+          subheader={user && user.email ? user.email : ''}
+        />
+        <CardContent>
+          {/* New section: Display User Addresses with labels */}
+          {user && user.addresses && user.addresses.length > 0 && (
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="h6" sx={{ mb: 1 }}>
+                Your Addresses
+              </Typography>
+              {user.addresses.map((address, index) => (
+                <Box 
+                  key={index} 
+                  sx={{ 
+                    mb: 2, 
+                    p: 2, 
+                    border: '1px solid #e0e0e0', 
+                    borderRadius: 2, 
+                    backgroundColor: '#fafafa'
+                  }}
+                >
+                  <Typography variant="body1">
+                    <strong>Country:</strong> {address.country}
+                  </Typography>
+                  <Typography variant="body1">
+                    <strong>City:</strong> {address.city}
+                  </Typography>
+                  <Typography variant="body1">
+                    <strong>Home Address:</strong> {address.homeAddress}
+                  </Typography>
+                  <Typography variant="body1">
+                    <strong>Zip Code:</strong> {address.zipcode}
+                  </Typography>
+                  <Typography variant="body1">
+                    <strong>Phone Number:</strong> {address.phoneNumber}
+                  </Typography>
+                </Box>
+              ))}
+              <Divider sx={{ mt: 2, mb: 2 }} />
+            </Box>
+          )}
+          {/* Action Buttons */}
+          <Grid container spacing={2} justifyContent="center">
+            <Grid item xs={12} sm={6}>
+              <Button 
+                component={Link} 
+                to="/purchase-history" 
+                variant="outlined" 
+                fullWidth
+              >
+                Purchase History
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Button 
+                component={Link} 
+                to="/address" 
+                variant="outlined" 
+                fullWidth
+              >
+                Update Your Addresses
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Button 
+                component={Link} 
+                to="/order-tracking" 
+                variant="outlined" 
+                fullWidth
+              >
+                Order Tracking
+              </Button>
+            </Grid>
+            {user && user.role === 'admin' && (
+              <>
+                <Grid item xs={12} sm={6}>
+                  <Button 
+                    component={Link} 
+                    to="/discounted-watches" 
+                    variant="outlined" 
+                    fullWidth
+                  >
+                    Discounted Watches
+                  </Button>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Button 
+                    component={Link} 
+                    to="/admin/analytics" 
+                    variant="outlined" 
+                    fullWidth
+                  >
+                    Admin Analytics
+                  </Button>
+                </Grid>
+              </>
+            )}
+          </Grid>
+        </CardContent>
         <input
           type="file"
           ref={fileInputRef}
@@ -67,25 +200,8 @@ const Profile = () => {
           accept="image/*"
           onChange={handleFileChange}
         />
-        <button onClick={handleUploadClick} className={styles.uploadBtn}>
-          Upload Picture
-        </button>
-      </div>
-      <div className={styles.buttonContainer}>
-        <Link to="/purchase-history" className={styles.profileButton}>
-          Purchase History
-        </Link>
-        <Link to="/address" className={styles.profileButton}>
-          Your Addresses
-        </Link>
-        {/* Only show the discounted watches button if the user is an admin */}
-        {user && user.role === 'admin' && (
-          <Link to="/discounted-watches" className={styles.profileButton}>
-            Discounted Watches
-          </Link>
-        )}
-      </div>
-    </div>
+      </Card>
+    </Box>
   );
 };
 

@@ -3,24 +3,26 @@
 import React, { useState, useEffect, useContext } from "react";
 import { FaSearch, FaShoppingCart } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios"; // Import axios to make HTTP requests
+import axios from "axios";
 import styles from "./Navbar.module.css";
 import { CartContext } from "../../context/CartContext";
 import { AuthContext } from "../../context/AuthContext";
 import NotificationBell from "../NotificationBell/NotificationBell";
 import { toast } from "react-toastify";
+import { Badge } from "@mui/material";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
-  const [brands, setBrands] = useState([]); // New state to hold dynamic brands
+  const [brands, setBrands] = useState([]); // State to hold dynamic brands
 
-  // Access totalItems from CartContext
-  const { totalItems } = useContext(CartContext);
   // Access user and logout from AuthContext
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  const { cartItems } = useContext(CartContext);
+  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   // Update currentPath on history changes
   useEffect(() => {
@@ -29,15 +31,19 @@ const Navbar = () => {
     return () => window.removeEventListener("popstate", handleLocationChange);
   }, []);
 
-  // NEW: Fetch unique watch brands from the backend when Navbar mounts
+  // Fetch unique watch brands from the backend once and cache them in localStorage
   useEffect(() => {
     const fetchBrands = async () => {
       try {
-        // Assumes your backend exposes an endpoint that returns distinct brands
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/watches/brands`);
-        if (response.data && response.data.success) {
-          // response.data.data should be an array of brand names (e.g., ["Rolex", "Apple", ...])
-          setBrands(response.data.data);
+        const cachedBrands = localStorage.getItem("brands");
+        if (cachedBrands) {
+          setBrands(JSON.parse(cachedBrands));
+        } else {
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/watches/brands`);
+          if (response.data && response.data.success) {
+            setBrands(response.data.data);
+            localStorage.setItem("brands", JSON.stringify(response.data.data));
+          }
         }
       } catch (error) {
         console.error("Error fetching brands:", error);
@@ -121,11 +127,6 @@ const Navbar = () => {
               {brands.length > 0 ? (
                 brands.map((brand) => (
                   <li key={brand}>
-                    {/* 
-                      Link to a route that filters watches by brand.
-                      You may need to set up a corresponding route (e.g., /shop/:brand) 
-                      and adjust filtering logic in your watch fetching code.
-                    */}
                     <Link to={`/shop/${brand.toLowerCase()}`} onClick={closeMenus}>
                       {brand}
                     </Link>
@@ -141,12 +142,13 @@ const Navbar = () => {
         </li>
         {/* Cart Link (only shown if user is logged in) */}
         {user && (
-          <li className={currentPath === "/cart" ? styles.active : ""}>
-            <Link to="/cart" onClick={closeMenus} className={styles.cartLink}>
+        <li className={currentPath === "/cart" ? styles.active : ""}>
+          <Link to="/cart" onClick={closeMenus} className={styles.cartLink}>
+            <Badge badgeContent={totalItems} color="error" showZero overlap="circular">
               <FaShoppingCart className={styles.cartIcon} />
-              <span className={styles.cartCount}>({totalItems})</span>
-            </Link>
-          </li>
+            </Badge>
+          </Link>
+        </li>
         )}
         <li className={currentPath === "/contact" ? styles.active : ""}>
           <Link to="/contact" onClick={closeMenus}>

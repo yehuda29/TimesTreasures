@@ -1,56 +1,73 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { IconButton, Badge, Menu, MenuItem, ListItemText, Typography } from '@mui/material';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import styles from './NotificationBell.module.css';
-import { FaBell } from 'react-icons/fa';
 
 const NotificationBell = () => {
   const [notifications, setNotifications] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
-  // Fetch out-of-stock notifications
+  // Function to fetch out-of-stock notifications
+  const fetchNotifications = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/watches`);
+      const outOfStock = response.data.data.filter(watch => Number(watch.inventory) === 0);
+      setNotifications(outOfStock);
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    }
+  };
+
+  // Poll for new notifications every 60 seconds
   useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/watches`);
-        const outOfStock = response.data.data.filter(watch => Number(watch.inventory) === 0);
-        setNotifications(outOfStock);
-      } catch (error) {
-        console.error('Error fetching notifications:', error);
-      }
-    };
-
     fetchNotifications();
+    const interval = setInterval(fetchNotifications, 30000); // 30 seconds
+    return () => clearInterval(interval); // Cleanup on unmount
   }, []);
 
-  // Toggle notification dropdown
-  const toggleNotifications = () => {
-    setIsOpen(!isOpen);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   return (
     <div className={styles.notificationContainer}>
-      <div className={styles.notificationBell} onClick={toggleNotifications}>
-        <FaBell className={styles.bellIcon} />
-        {notifications.length > 0 && (
-          <span className={styles.notificationBadge}>{notifications.length}</span>
+      <IconButton color="inherit" onClick={handleClick}>
+        <Badge badgeContent={notifications.length} color="error">
+          <NotificationsIcon className={styles.bellIcon} />
+        </Badge>
+      </IconButton>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        PaperProps={{
+          style: {
+            maxHeight: 300,
+            width: '350px',
+            whiteSpace: 'normal'
+          },
+        }}
+      >
+        {notifications.length > 0 ? (
+          notifications.map((watch) => (
+            <MenuItem key={watch._id} onClick={handleClose}>
+              <ListItemText 
+                primary={`🚨 ${watch.name} is out of stock!`}
+                primaryTypographyProps={{ style: { whiteSpace: 'normal' } }}
+              />
+            </MenuItem>
+          ))
+        ) : (
+          <MenuItem onClick={handleClose}>
+            <Typography variant="body1">No new notifications</Typography>
+          </MenuItem>
         )}
-      </div>
-
-      {isOpen && (
-        <div className={styles.notificationDropdown}>
-          <ul>
-            {notifications.length > 0 ? (
-              notifications.map((watch) => (
-                <li key={watch._id}>
-                  🚨 {watch.name} is out of stock!
-                </li>
-              ))
-            ) : (
-              <li className={styles.noNotifications}>No new notifications</li>
-            )}
-          </ul>
-        </div>
-      )}
+      </Menu>
     </div>
   );
 };

@@ -1,83 +1,29 @@
-/* Container that keeps the bell and dropdown together */
+/* src/pages/NotificationBell/NotificationBell.module.css */
+
+/* Example: If you want to add a little extra padding or margin to the notification container */
 .notificationContainer {
-    position: relative;
-    display: inline-block;
-  }
-  
-  /* Bell icon styling */
-  .notificationBell {
-    position: relative;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    color: white;
-    transition: color 0.3s ease-in-out;
-  }
-  
-  .notificationBell:hover {
-    color: var(--secondary-color);
-  }
-  
-  /* Notification badge (red bubble) */
-  .notificationBadge {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background-color: red;
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  /* Dropdown window (notification list) */
-  .notificationDropdown {
-    position: absolute;
-    top: 35px;
-    right: 0;
-    width: 250px;
-    background: white;
-    border: 1px solid #ddd;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
-    overflow: hidden;
-    z-index: 10;
-  }
-  
-  .notificationDropdown ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .notificationDropdown li {
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-    font-size: 14px;
-    color: var(--primary-color);
-  }
-  
-  .notificationDropdown li:last-child {
-    border-bottom: none;
-  }
-  
-  .notificationDropdown li:hover {
-    background: #f7f7f7;
-    cursor: pointer;
-  }
-  
-  /* Message when no notifications */
-  .noNotifications {
-    padding: 10px;
-    text-align: center;
-    color: var(--primary-color);
-    font-size: 14px;
-  }
-  
+  margin: 0;
+  padding: 0;
+}
+
+/* Example: Customize the bell icon if needed */
+.bellIcon {
+  font-size: 1.5rem;
+  color: inherit;
+}
+
+/* Example: Customize the notification badge style */
+.notificationBadge {
+  background-color: red;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+/* Example: Customize the dropdown menu if not using Material UI's styling */
+.notificationDropdown {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}

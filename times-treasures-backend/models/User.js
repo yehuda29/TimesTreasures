@@ -43,6 +43,12 @@ const purchaseSchema = new mongoose.Schema({
     homeAddress: String,
     zipcode: String,
     phoneNumber: String
+  },
+
+    // New: Order Number field (an 11-digit random string)
+  orderNumber: {
+    type: String,
+    required: true
   }
 });
 
