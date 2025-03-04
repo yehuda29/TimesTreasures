@@ -1,0 +1,286 @@
+[33mcommit 22f542106379432dfcee2522df6ee1d0bb3a0dd2[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: 88a92c3 ade72d3
+Author: Bar-Maimon <73166902+Bar-Maimon@users.noreply.github.com>
+Date:   Sat Mar 1 22:06:14 2025 +0200
+
+    Merge pull request #33 from Bar-Maimon/master
+    
+    Material UI Update 1.0
+
+[33mcommit ade72d373013ba9cd173f144f3cda31e2c70efcf[m
+Author: Bar Maimon <bar5554maimon@gmail.com>
+Date:   Sat Mar 1 22:05:42 2025 +0200
+
+    Material UI Update 1.0
+
+[33mcommit 88a92c3fc71feaa7f0a481553348a12849d3b2d2[m
+Merge: f7a5956 bd3d8f0
+Author: Bar-Maimon <73166902+Bar-Maimon@users.noreply.github.com>
+Date:   Fri Feb 28 19:50:51 2025 +0200
+
+    Merge pull request #32 from Bar-Maimon/master
+    
+    Old Categories Deletion Update
+
+[33mcommit bd3d8f0e2b8f63e4574ac49dbc425560ae2589ad[m
+Author: Bar Maimon <bar5554maimon@gmail.com>
+Date:   Fri Feb 28 19:50:02 2025 +0200
+
+    Old Categories
+
+[33mcommit f7a59561e62ed9fde6c1da5e29aa3b495fe45eb5[m
+Merge: 4506b6a 16fa4a0
+Author: Bar-Maimon <73166902+Bar-Maimon@users.noreply.github.com>
+Date:   Fri Feb 28 19:47:04 2025 +0200
+
+    Merge pull request #31 from Bar-Maimon/master
+    
+    Categories Deletion Update
+
+[33mcommit 16fa4a077de40be5616e73928bb80e6b24b644aa[m
+Author: Bar Maimon <bar5554maimon@gmail.com>
+Date:   Fri Feb 28 19:46:20 2025 +0200
+
+    Categories Deletion Update
+
+[33mcommit 4506b6a867929efbf4abb2f59f1241a96ba758a6[m
+Merge: 95b4218 0274605
+Author: Bar-Maimon <73166902+Bar-Maimon@users.noreply.github.com>
+Date:   Fri Feb 28 19:43:18 2025 +0200
+
+    Merge pull request #30 from Bar-Maimon/master
+    
+    Special Offers Update
+
+[33mcommit 0274605d7f7d4fb2e8557872bdc61c45505f1a99[m
+Author: Bar Maimon <bar5554maimon@gmail.com>
+Date:   Fri Feb 28 19:42:39 2025 +0200
+
+    Special Offers Update
+
+[33mcommit 95b42182d613ea168c66a6929158e433c162bcfa[m
+Merge: 86f656c 114be64
+Author: Bar-Maimon <73166902+Bar-Maimon@users.noreply.github.com>
+Date:   Thu Feb 27 19:29:12 2025 +0200
+
+    Merge pull request #29 from Bar-Maimon/master
+    
+    Ebay API Update
+
+[33mcommit 114be643f6c68945ddaceb985ada9ab09c4bac70[m
+Author: Bar Maimon <bar5554maimon@gmail.com>
+Date:   Thu Feb 27 19:28:30 2025 +0200
+
+    Ebay API Update
+
+[33mcommit 86f656cef37999911b82d9c326320f0afe7aa8b9[m
+Merge: 2405b8e 2b49a83
+Author: Bar-Maimon <73166902+Bar-Maimon@users.noreply.github.com>
+Date:   Wed Feb 26 23:27:25 2025 +0200
+
+    Merge pull request #28 from Bar-Maimon/master
+    
+    Notification Bell Update
+
+[33mcommit 2b49a834c6526130c8d9a2ef063b6d736927a215[m
+Author: Bar Maimon <bar5554maimon@gmail.com>
+Date:   Wed Feb 26 23:26:16 2025 +0200
+
+    Notification Bell Update
+
+[33mcommit 2405b8ec4f793c8bca50e2e6e9ff86ade5bbde28[m
+Merge: 1daa6c4 716454d
+Author: Bar-Maimon <73166902+Bar-Maimon@users.noreply.github.com>
+Date:   Wed Feb 26 23:25:48 2025 +0200
+
+    Merge pull request #27 from Bar-Maimon/master
+    
+    Notification Bell Update
+
+[33mcommit 716454daea7241a54ba7e0b9ae4b09bb9b40e176[m
+Author: Bar Maimon <bar5554maimon@gmail.com>
+Date:   Wed Feb 26 23:25:12 2025 +0200
+
+    Notification Bell Update
+
+[33mcommit 1daa6c4198c2f5257502a5da479a488318ae53a4[m
+Merge: 582d4a5 80869a7
+Author: Bar-Maimon <73166902+Bar-Maimon@users.noreply.github.com>
+Date:   Wed Feb 26 21:38:56 2025 +0200
+
+    Merge pull request #26 from Bar-Maimon/master
+    
+    .....
+
+[33mcommit 80869a717d721f03e4c0f28ff86b9033f7655933[m
+Author: Bar Maimon <bar5554maimon@gmail.com>
+Date:   Wed Feb 26 21:38:03 2025 +0200
+
+    .....
+
+[33mcommit 582d4a59b55968d7c986c965da84594840716a3b[m
+Merge: 22a3be5 6f0f4e5
+Author: Bar-Maimon <73166902+Bar-Maimon@users.noreply.github.com>
+Date:   Wed Feb 26 21:29:58 2025 +0200
+
+    Merge pull request #25 from Bar-Maimon/master
+    
+    Lusca Addition
+
+[33mcommit 6f0f4e50d52c5a08e187a6a3444e46f8076d3e77[m
+Author: Bar Maimon <bar5554maimon@gmail.com>
+Date:   Wed Feb 26 21:29:15 2025 +0200
+
+    Lusca Addition
+
+[33mcommit 22a3be53afd5443e466d88cceecdab17876949bd[m
+Merge: 34c43b9 52a1291
+Author: Bar-Maimon <73166902+Bar-Maimon@users.noreply.github.com>
+Date:   Wed Feb 26 20:56:43 2025 +0200
+
+    Merge pull request #24 from Bar-Maimon/master
+    
+    Helment Issues 1.0
+
+[33mcommit 52a1291cf8c0faf4034304b84bd67ccb8c5d09d7[m
+Author: Bar Maimon <bar5554maimon@gmail.com>
+Date:   Wed Feb 26 20:56:14 2025 +0200
+
+    Helment Issues 1.0
+
+[33mcommit 34c43b93fc18547f7f6159da97310b49f130e133[m
+Merge: 6e8d894 e9b009d
+Author: Bar-Maimon <73166902+Bar-Maimon@users.noreply.github.com>
+Date:   Wed Feb 26 19:41:28 2025 +0200
+
+    Merge pull request #23 from Bar-Maimon/master
+    
+    ...
+
+[33mcommit e9b009dd754dfbe8d4e8060bf9c7ed46373a3b99[m
+Author: Bar Maimon <bar5554maimon@gmail.com>
+Date:   Wed Feb 26 19:40:56 2025 +0200
+
+    ...
+
+[33mcommit 6e8d894d651996020e796067e4e0106a2af1e533[m
+Merge: caba97d 08325b6
+Author: Bar-Maimon <73166902+Bar-Maimon@users.noreply.github.com>
+Date:   Wed Feb 26 19:36:44 2025 +0200
+
+    Merge pull request #22 from Bar-Maimon/master
+    
+    .
+
+[33mcommit 08325b6b8042c9f1f1d2e6794ebe91bd9ed8dbf4[m
+Author: Bar Maimon <bar5554maimon@gmail.com>
+Date:   Wed Feb 26 19:36:20 2025 +0200
+
+    .
+
+[33mcommit caba97d4d8a118a500cf693b534b789d69330e4d[m
+Merge: 1a8beb2 f551173
+Author: Bar-Maimon <73166902+Bar-Maimon@users.noreply.github.com>
+Date:   Wed Feb 26 19:33:44 2025 +0200
+
+    Merge pull request #21 from Bar-Maimon/master
+    
+    Server Issues Fix
+
+[33mcommit f551173b6d079038bfa0868379e6a19cab6ff2e6[m
+Author: Bar Maimon <bar5554maimon@gmail.com>
+Date:   Wed Feb 26 19:33:05 2025 +0200
+
+    Server Issues Fix
+
+[33mcommit 1a8beb22f947d77b50825aff9d689551bc58d7eb[m
+Merge: 8a22cfd c85227e
+Author: Bar-Maimon <73166902+Bar-Maimon@users.noreply.github.com>
+Date:   Wed Feb 26 19:25:28 2025 +0200
+
+    Merge pull request #20 from Bar-Maimon/master
+    
+    Proxy
+
+[33mcommit c85227e50e40eaf5ab45148aafcfe1c4629b0c15[m
+Author: Bar Maimon <bar5554maimon@gmail.com>
+Date:   Wed Feb 26 19:24:35 2025 +0200
+
+    Proxy
+
+[33mcommit 8a22cfd75c011aef8855a3ce29f7da554f1e4f24[m
+Merge: 1e52560 390579d
+Author: Bar-Maimon <73166902+Bar-Maimon@users.noreply.github.com>
+Date:   Wed Feb 26 19:20:50 2025 +0200
+
+    Merge pull request #19 from Bar-Maimon/master
+    
+    debugging
+
+[33mcommit 390579dd0523175ba6a4ca504a73ae6e301e1183[m
+Author: Bar Maimon <bar5554maimon@gmail.com>
+Date:   Wed Feb 26 19:20:12 2025 +0200
+
+    debugging
+
+[33mcommit 1e525602114898dc0e5bce6cdba8fa02899e46ed[m
+Merge: 078b77c 631bcdb
+Author: Bar-Maimon <73166902+Bar-Maimon@users.noreply.github.com>
+Date:   Wed Feb 26 19:07:20 2025 +0200
+
+    Merge pull request #18 from Bar-Maimon/master
+    
+    debugging
+
+[33mcommit 631bcdb41603513023ec824096bd363405124b8e[m
+Author: Bar Maimon <bar5554maimon@gmail.com>
+Date:   Wed Feb 26 19:06:32 2025 +0200
+
+    debugging
+
+[33mcommit 078b77cabf7c2fb7706f93e50b2f68f9b67c3bd9[m
+Merge: b162bc9 79d070d
+Author: Bar-Maimon <73166902+Bar-Maimon@users.noreply.github.com>
+Date:   Wed Feb 26 19:02:11 2025 +0200
+
+    Merge pull request #17 from Bar-Maimon/master
+    
+    Procfile
+
+[33mcommit 79d070ddf9bfff3d7cd187b8ccff340aaee093d2[m
+Author: Bar Maimon <bar5554maimon@gmail.com>
+Date:   Wed Feb 26 19:01:39 2025 +0200
+
+    Procfile
+
+[33mcommit b162bc91a617d85be4b4e814a82ce96359179e25[m
+Merge: 5124fa1 eb0dc1e
+Author: Bar-Maimon <73166902+Bar-Maimon@users.noreply.github.com>
+Date:   Wed Feb 26 18:37:44 2025 +0200
+
+    Merge pull request #16 from Bar-Maimon/master
+    
+    heroku
+
+[33mcommit eb0dc1ef8f0ddc047e05bbb68bdbbcc6a34c6a69[m
+Author: Bar Maimon <bar5554maimon@gmail.com>
+Date:   Wed Feb 26 18:37:14 2025 +0200
+
+    heroku
+
+[33mcommit 5124fa1e373cae08dd6d2225dc89ea17b8ee6e0d[m
+Merge: 060b472 272dd66
+Author: Bar-Maimon <73166902+Bar-Maimon@users.noreply.github.com>
+Date:   Wed Feb 26 18:33:07 2025 +0200
+
+    Merge pull request #15 from Bar-Maimon/master
+    
+    Update Node engine to 16.x for ES2021 syntax support
+
+[33mcommit 272dd663e31f75b667dd5511d8586091e9d78e88[m
+Author: Bar Maimon <bar5554maimon@gmail.com>
+Date:   Wed Feb 26 18:31:55 2025 +0200
+
+    Update Node engine to 16.x for ES2021 syntax support
+
+[33

@@ -5,11 +5,15 @@ import axios from 'axios';
 // Import the ProductCard component to display individual watch items
 import ProductCard from '../../components/ProductCard/ProductCard';
 // Import InfiniteScroll to enable lazy loading of watch cards as the user scrolls
-import InfiniteScroll from 'react-infinite-scroll-component';
+// import InfiniteScroll from 'react-infinite-scroll-component';
 // Import CSS module for styling this page
 import styles from './Home.module.css';
 // Import HeroSection component for the top banner area
 import HeroSection from '../../components/HeroSection/HeroSection';
+import Slider from "react-slick"
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
 
 const Home = () => {
   // State to store all fetched watches
@@ -25,6 +29,19 @@ const Home = () => {
   const [prevPage, setPrevPage] = useState(null);
   // NEW: State to control how many watches are visible
   const [visibleWatches, setVisibleWatches] = useState(12);
+
+
+// מספר הפריטים שמוצגים בכל שקף
+
+  const carouselSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,  
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+  };
 
   // useEffect that runs whenever 'page', 'hasMore', 'limit', or 'prevPage' changes.
   // It fetches the watch data from the backend.
@@ -105,29 +122,20 @@ const Home = () => {
       {/* Render the HeroSection component at the top */}
       <HeroSection />
 
-      {/* Featured Watches Section */}
-      <section className={styles.featured}>
-        <h2 className={styles.sectionTitle}>Featured Watches</h2>
-        {/* InfiniteScroll handles lazy loading: as the user scrolls, next pages are loaded */}
-        <InfiniteScroll
-          dataLength={watches.length} // Total number of items currently loaded
-          next={fetchMoreData}        // Function to load more data
-          hasMore={hasMore}           // Whether there is more data to load
-          loader={<h4 className={styles.loader}>Loading...</h4>} // Loader UI while fetching
-          endMessage={
-            <p className={styles.endMessage}>
-              <b>You've seen all our featured watches!</b>
-            </p>
-          }
-        >
-          {/* Display the currently visible watches */}
-          <div className={styles.productGrid}>
-            {watches.slice(0, visibleWatches).map((watch) => (
-              <ProductCard key={watch._id} watch={watch} />
-            ))}
-          </div>
-        </InfiniteScroll>
-      </section>
+     {/* Featured Watches Section */}
+<section className={styles.featured}>
+  <h2 className={styles.sectionTitle}>Featured Watches</h2>
+  {/* הקרוסלה */}
+  <Slider {...carouselSettings}>
+    {/* מציג את המוצרים בתוך הקרוסלה */}
+    {watches.slice(0, visibleWatches).map((watch) => (
+      <div key={watch._id} className={styles.sliderItem}>
+        <ProductCard watch={watch} />
+      </div>
+    ))}
+  </Slider>
+</section>
+
     </div>
   );
 };
