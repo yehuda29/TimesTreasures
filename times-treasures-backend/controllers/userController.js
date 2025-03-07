@@ -301,10 +301,14 @@ exports.purchaseCart = asyncHandler(async (req, res, next) => {
 
 
 exports.updateProfile = asyncHandler(async (req, res, next) => {
-  const { name, addresses } = req.body;
+  // Destructure fields from the request body, including the new ones.
+  const { name, familyName, birthDate, sex, addresses } = req.body;
   const updates = {};
 
   if (name) updates.name = name;
+  if (familyName) updates.familyName = familyName;
+  if (birthDate) updates.birthDate = birthDate; // Ensure birthDate is in the proper format (or convert it to a Date)
+  if (sex) updates.sex = sex;
   if (addresses) updates.addresses = addresses;
 
   // Check if a new profile picture file is uploaded via req.files.profilePicture
@@ -326,6 +330,7 @@ exports.updateProfile = asyncHandler(async (req, res, next) => {
     updates.profilePicture = req.body.profilePicture;
   }
 
+  // Update the user document with the new information
   const updatedUser = await User.findByIdAndUpdate(
     req.user.id,
     { $set: updates },
@@ -341,6 +346,7 @@ exports.updateProfile = asyncHandler(async (req, res, next) => {
     data: updatedUser
   });
 });
+
 
 /**
  * @desc    Track an order by order number from the logged-in user's purchase history.

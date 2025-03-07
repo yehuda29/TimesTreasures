@@ -1,13 +1,9 @@
 // watch-shop-backend/controllers/authController.js
 // Purpose: Contains authentication logic including registration, login, and retrieving the current user.
 
-// Import the User model for interacting with the users collection in MongoDB.
 const User = require('../models/User');
-// Import jsonwebtoken to generate and verify JWT tokens.
 const jwt = require('jsonwebtoken');
-// Import asyncHandler to simplify error handling in async functions.
 const asyncHandler = require('express-async-handler');
-// Import validationResult from express-validator to check for validation errors in the request.
 const { validationResult } = require('express-validator');
 
 // -------------------------------------------------------------------------
@@ -27,13 +23,12 @@ exports.register = asyncHandler(async (req, res, next) => {
   // Validate the request body using express-validator.
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    // If there are validation errors, respond with a 400 status and an error message.
     res.status(400);
     throw new Error(errors.array().map(err => err.msg).join(', '));
   }
 
-  // Destructure the required fields from the request body.
-  const { name, email, password } = req.body;
+  // Destructure the required fields from the request body, including new fields.
+  const { name, familyName, birthDate, sex, email, password } = req.body;
 
   // Check if a user already exists with the provided email.
   const userExists = await User.findOne({ email });
@@ -45,6 +40,9 @@ exports.register = asyncHandler(async (req, res, next) => {
   // Create a new user with the provided details.
   const user = await User.create({
     name,
+    familyName,  // New: optional family name
+    birthDate,   // New: required birth date
+    sex,         // New: required sex (must be 'male' or 'female')
     email,
     password
   });
@@ -59,6 +57,9 @@ exports.register = asyncHandler(async (req, res, next) => {
     data: {
       id: user._id,
       name: user.name,
+      familyName: user.familyName,
+      birthDate: user.birthDate,
+      sex: user.sex,
       email: user.email,
       role: user.role
     }
@@ -80,15 +81,14 @@ exports.login = asyncHandler(async (req, res, next) => {
   // Destructure the email and password from the request body.
   const { email, password } = req.body;
 
-  // Find the user by email. Use .select('+password') to include the password field
-  // in the result since it's excluded by default in the User model.
+  // Find the user by email. Use .select('+password') to include the password field.
   const user = await User.findOne({ email }).select('+password');
   if (!user) {
     res.status(400);
     throw new Error('Invalid credentials');
   }
 
-  // Compare the entered password with the stored hashed password using the matchPassword method.
+  // Compare the entered password with the stored hashed password.
   const isMatch = await user.matchPassword(password);
   if (!isMatch) {
     res.status(400);
@@ -105,6 +105,9 @@ exports.login = asyncHandler(async (req, res, next) => {
     data: {
       id: user._id,
       name: user.name,
+      familyName: user.familyName,
+      birthDate: user.birthDate,
+      sex: user.sex,
       email: user.email,
       role: user.role
     }

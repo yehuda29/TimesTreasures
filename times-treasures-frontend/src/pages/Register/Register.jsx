@@ -1,97 +1,194 @@
-// src/pages/Register/Register.jsx
-
 import React, { useState, useContext } from 'react';
-// Import AuthContext to access authentication functions (e.g., register)
 import { AuthContext } from '../../context/AuthContext';
-// Import toast for displaying notifications
 import { toast } from 'react-toastify';
-// Import useNavigate for programmatic navigation and Link for routing links
 import { useNavigate, Link } from 'react-router-dom';
-// Import CSS module for styling the register page
-import styles from './Register.module.css'; 
+import styles from './Register.module.css';
 
 const Register = () => {
-  // Extract the register function from AuthContext
   const { register } = useContext(AuthContext);
-  // useNavigate hook allows redirection after registration
   const navigate = useNavigate();
 
-  // Local state to hold form data for registration (name, email, password)
+  // Manage the current step (1: Name, 2: Birth Date & Sex, 3: Email & Password)
+  const [step, setStep] = useState(1);
+
+  // Update state with all required fields
   const [formData, setFormData] = useState({
     name: '',
+    familyName: '',
+    birthDate: '',
+    sex: '',
     email: '',
     password: ''
   });
 
-  // Destructure the formData for easier access
-  const { name, email, password } = formData;
+  const { name, familyName, birthDate, sex, email, password } = formData;
 
-  // onChange handler updates the formData state as the user types in the form fields
-  const onChange = e => 
+  // Generic onChange handler for input fields
+  const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  // onSubmit handler for form submission
-  const onSubmit = async e => {
-    e.preventDefault(); // Prevent the default form submission behavior (page refresh)
+  // Handle moving to the next step with simple validations per step
+  const handleNext = (e) => {
+    e.preventDefault();
+    if (step === 1) {
+      if (!name.trim()) {
+        toast.error("Please enter your first name.");
+        return;
+      }
+      // familyName is optional
+    } else if (step === 2) {
+      if (!birthDate) {
+        toast.error("Please enter your birth date.");
+        return;
+      }
+      if (!sex) {
+        toast.error("Please select your sex.");
+        return;
+      }
+    }
+    setStep(step + 1);
+  };
+
+  // Handle going back to the previous step
+  const handleBack = (e) => {
+    e.preventDefault();
+    if (step > 1) {
+      setStep(step - 1);
+    }
+  };
+
+  // Final submission on the last step
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    // Final validations for step 3
+    if (!email.trim()) {
+      toast.error("Please enter your email.");
+      return;
+    }
+    if (!password) {
+      toast.error("Please enter your password.");
+      return;
+    }
     try {
-      // Call the register function from AuthContext with the form data
-      await register(name, email, password);
-      // Display a success notification if registration succeeds
-      toast.success('Registration successful');
-      // Navigate the user to the homepage after successful registration
+      // Adjust the register call to match your backend's expectations.
+      // Here we pass all fields collected.
+      await register(name, familyName, birthDate, sex, email, password);
+      toast.success("Registration successful");
       navigate('/');
     } catch (err) {
       console.error(err);
-      // Display an error notification if registration fails, showing a message if available
-      toast.error(err.response?.data?.message || 'Registration failed');
+      toast.error(err.response?.data?.message || "Registration failed");
     }
   };
 
   return (
     <div className={styles.registerContainer}>
-      {/* Heading for the registration page */}
       <h2>Register</h2>
-      {/* Registration form */}
-      <form onSubmit={onSubmit} className={styles.registerForm}>
-        {/* Form group for the Name input */}
-        <div className={styles.formGroup}>
-          <label htmlFor="name">Name:</label>
-          <input
-            type="text"
-            name="name"
-            value={name}
-            onChange={onChange}
-            required
-          />
+      <form
+        className={styles.registerForm}
+        onSubmit={step === 3 ? onSubmit : handleNext}
+      >
+        {step === 1 && (
+          <>
+            <div className={styles.formGroup}>
+              <label htmlFor="name">First Name:</label>
+              <input
+                type="text"
+                name="name"
+                value={name}
+                onChange={onChange}
+                required
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="familyName">Family Name (optional):</label>
+              <input
+                type="text"
+                name="familyName"
+                value={familyName}
+                onChange={onChange}
+              />
+            </div>
+          </>
+        )}
+        {step === 2 && (
+          <>
+            <div className={styles.formGroup}>
+              <label htmlFor="birthDate">Birth Date:</label>
+              <input
+                type="date"
+                name="birthDate"
+                value={birthDate}
+                onChange={onChange}
+                required
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label>Sex:</label>
+              <div className={styles.radioGroup}>
+                <label htmlFor="male">
+                  <input
+                    type="radio"
+                    id="male"
+                    name="sex"
+                    value="male"
+                    checked={sex === 'male'}
+                    onChange={onChange}
+                    required
+                  />
+                  Male
+                </label>
+                <label htmlFor="female">
+                  <input
+                    type="radio"
+                    id="female"
+                    name="sex"
+                    value="female"
+                    checked={sex === 'female'}
+                    onChange={onChange}
+                    required
+                  />
+                  Female
+                </label>
+              </div>
+            </div>
+          </>
+        )}
+        {step === 3 && (
+          <>
+            <div className={styles.formGroup}>
+              <label htmlFor="email">Email:</label>
+              <input
+                type="email"
+                name="email"
+                value={email}
+                onChange={onChange}
+                required
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="password">Password:</label>
+              <input
+                type="password"
+                name="password"
+                value={password}
+                onChange={onChange}
+                required
+              />
+            </div>
+          </>
+        )}
+        <div className={styles.buttonGroup}>
+          {step > 1 && (
+            <button onClick={handleBack} className={styles.backBtn}>
+              Back
+            </button>
+          )}
+          <button type="submit" className={styles.nextBtn}>
+            {step === 3 ? "Register" : "Next"}
+          </button>
         </div>
-        {/* Form group for the Email input */}
-        <div className={styles.formGroup}>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            name="email"
-            value={email}
-            onChange={onChange}
-            required
-          />
-        </div>
-        {/* Form group for the Password input */}
-        <div className={styles.formGroup}>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            name="password"
-            value={password}
-            onChange={onChange}
-            required
-          />
-        </div>
-        {/* Submit button to trigger registration */}
-        <button type="submit" className={styles.registerBtn}>
-          Register
-        </button>
       </form>
-      {/* Link to navigate to the login page if the user already has an account */}
       <p className={styles.loginMsg}>
         Already have an account? <Link to="/login">Login Here</Link>
       </p>

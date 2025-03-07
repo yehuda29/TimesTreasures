@@ -1,11 +1,10 @@
-// src/pages/AdminWatchUpdate/AdminWatchUpdate.jsx
-
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import styles from './AdminWatchUpdate.module.css';
 import { AuthContext } from '../../context/AuthContext';
+import { calculateFinalPrice } from '../../utils/priceUtil';
 
 const AdminWatchUpdate = () => {
   const { id } = useParams(); // Watch ID from URL
@@ -103,49 +102,80 @@ const AdminWatchUpdate = () => {
   return (
     <div className={styles.adminWatchUpdate}>
       <h2>Update Watch Details</h2>
+      
       {watch && (
-        <form onSubmit={handleUpdate} className={styles.updateForm}>
-          <div className={styles.formGroup}>
-            <label htmlFor="stock">Stock:</label>
-            <input
-              type="number"
-              id="stock"
-              value={stock}
-              onChange={(e) => setStock(e.target.value)}
-              min="0"
-            />
+        <>
+          {/* Price Display Section */}
+          <div className={styles.priceDisplay}>
+            <h3>Price</h3>
+            {(() => {
+              const finalPrice = calculateFinalPrice(watch);
+              const isDiscounted = finalPrice < Number(watch.price);
+              if (isDiscounted) {
+                return (
+                  <div className={styles.priceContainer}>
+                    <p className={styles.originalPrice}>
+                      <s>${Number(watch.price).toFixed(2)}</s>
+                    </p>
+                    <span className={styles.arrow}>→</span>
+                    <p className={styles.discountedPrice}>
+                      ${finalPrice.toFixed(2)}
+                    </p>
+                  </div>
+                );
+              } else {
+                return (
+                  <p className={styles.productPrice}>
+                    ${Number(watch.price).toFixed(2)}
+                  </p>
+                );
+              }
+            })()}
           </div>
-          <div className={styles.formGroup}>
-            <label htmlFor="discountPercentage">Discount Percentage:</label>
-            <input
-              type="number"
-              id="discountPercentage"
-              value={discountPercentage}
-              onChange={(e) => setDiscountPercentage(e.target.value)}
-              min="0"
-              max="100"
-            />
-          </div>
-          <div className={styles.formGroup}>
-            <label htmlFor="offerStart">Offer Start Date:</label>
-            <input
-              type="date"
-              id="offerStart"
-              value={offerStart}
-              onChange={(e) => setOfferStart(e.target.value)}
-            />
-          </div>
-          <div className={styles.formGroup}>
-            <label htmlFor="offerEnd">Offer End Date:</label>
-            <input
-              type="date"
-              id="offerEnd"
-              value={offerEnd}
-              onChange={(e) => setOfferEnd(e.target.value)}
-            />
-          </div>
-          <button type="submit" className={styles.updateBtn}>Update Watch</button>
-        </form>
+
+          <form onSubmit={handleUpdate} className={styles.updateForm}>
+            <div className={styles.formGroup}>
+              <label htmlFor="stock">Stock:</label>
+              <input
+                type="number"
+                id="stock"
+                value={stock}
+                onChange={(e) => setStock(e.target.value)}
+                min="0"
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="discountPercentage">Discount Percentage:</label>
+              <input
+                type="number"
+                id="discountPercentage"
+                value={discountPercentage}
+                onChange={(e) => setDiscountPercentage(e.target.value)}
+                min="0"
+                max="100"
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="offerStart">Offer Start Date:</label>
+              <input
+                type="date"
+                id="offerStart"
+                value={offerStart}
+                onChange={(e) => setOfferStart(e.target.value)}
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="offerEnd">Offer End Date:</label>
+              <input
+                type="date"
+                id="offerEnd"
+                value={offerEnd}
+                onChange={(e) => setOfferEnd(e.target.value)}
+              />
+            </div>
+            <button type="submit" className={styles.updateBtn}>Update Watch</button>
+          </form>
+        </>
       )}
     </div>
   );

@@ -34,7 +34,7 @@ const DiscountedWatches = lazy(() => import('./pages/DiscountedWatches/Discounte
 const AdminAnalytics = lazy(() => import('./pages/AdminAnalytics/AdminAnalytics.jsx'));
 const OrderTracking = lazy(() => import('./pages/OrderTracking/OrderTracking.jsx'));
 const SearchResults = lazy(() => import('./pages/SearchResults/SearchResults.jsx'));
-
+const UpdatePersonalInformation = lazy(() => import('./pages/UpdatePersonalInformation/UpdatePersonalInformation.jsx'));
 
 const App = () => {
   return (
@@ -65,6 +65,7 @@ const App = () => {
                     <Route path="/discounted-watches" element={<DiscountedWatches />} />
                     <Route path="/order-tracking" element={<OrderTracking />} />
                     <Route path="/search" element={<SearchResults />} />
+                    <Route path="/update-personal-info" element={<UpdatePersonalInformation />} />
                     <Route path="/admin/analytics" element={<AdminAnalytics />} />
                     <Route path="/admin" element={<AdminDashboard />} />
                     <Route path="*" element={<h2 style={{ textAlign: 'center', marginTop: '2rem' }}>Page Not Found</h2>} />

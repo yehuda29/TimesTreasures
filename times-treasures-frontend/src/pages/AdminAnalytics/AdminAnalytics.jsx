@@ -1,147 +1,254 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-// Material UI components for layout and styling
-import { Typography, Grid, CircularProgress, Paper } from '@mui/material';
-// Recharts components for the charts, including ResponsiveContainer for responsiveness
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
-// Import custom CSS module for additional styling
+import {
+  Container,
+  Grid,
+  Card,
+  CardContent,
+  CardHeader,
+  Typography,
+  Box,
+  CircularProgress
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell
+} from 'recharts';
 import styles from './AdminAnalytics.module.css';
 
-// Custom label function for the PieChart: shows percentage value within each slice
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
-  const RADIAN = Math.PI / 180;
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
-  return (
-    <text 
-      x={x} 
-      y={y} 
-      fill="white" 
-      textAnchor={x > cx ? 'start' : 'end'} 
-      dominantBaseline="central"
-      style={{ fontSize: '12px', fontWeight: 'bold' }}
-    >
-      {(percent * 100).toFixed(0)}%
-    </text>
-  );
+// Custom tooltip for the Top Selling Watches BarChart
+const CustomBarTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div
+        style={{
+          backgroundColor: '#f5f5f5',
+          borderRadius: 8,
+          padding: 10,
+          maxWidth: '300px',
+          wordWrap: 'break-word'
+        }}
+      >
+        <p style={{ margin: 0, fontWeight: 'bold' }}>{label}</p>
+        <p style={{ margin: 0, color: '#36a2eb' }}>{`Total Sold: ${payload[0].value}`}</p>
+      </div>
+    );
+  }
+  return null;
 };
 
+const CustomCard = styled(Card)(({ theme }) => ({
+  background: 'linear-gradient(135deg, #ffffff, #e0f7fa)',
+  boxShadow: '0px 6px 12px rgba(0,0,0,0.1)',
+  borderRadius: theme.spacing(2),
+  overflow: 'hidden',
+  marginBottom: theme.spacing(4)
+}));
+
 const AdminAnalytics = () => {
-  // State to handle loading, error and data from the backend
   const [loading, setLoading] = useState(true);
-  const [topSellingWatches, setTopSellingWatches] = useState([]);
+  const [topSelling, setTopSelling] = useState([]);
   const [brandSales, setBrandSales] = useState([]);
+  const [sexSales, setSexSales] = useState([]);
   const [error, setError] = useState(null);
 
-  // Function to fetch analytics from the backend admin endpoint
   const fetchSalesStats = async () => {
     try {
-      const token = localStorage.getItem("token"); // Retrieve admin token
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/admin/sales-stats`, {
-        headers: { Authorization: `Bearer ${token}` }
+      const token = localStorage.getItem('token');
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/admin/sales-stats`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-      // Set data into state variables
-      setTopSellingWatches(response.data.topSellingWatches);
-      setBrandSales(response.data.brandSales);
+      setTopSelling(res.data.topSellingWatches);
+      setBrandSales(res.data.brandSales);
+      setSexSales(res.data.sexSales);
       setLoading(false);
     } catch (err) {
       console.error(err);
-      setError("Failed to fetch sales stats");
+      setError('Failed to fetch analytics data');
       setLoading(false);
     }
   };
 
-  // Fetch data when component mounts
   useEffect(() => {
     fetchSalesStats();
   }, []);
 
-  // Define colors for the PieChart slices
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A28DFB', '#FF6666'];
+  const PIE_COLORS = ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0', '#9966ff', '#ff9f40'];
 
-  // Show loader if still fetching data
+  // Format the data for sexSales, capitalizing the sex label
+  const formattedSexSales = sexSales.map(item => ({
+    sex: item._id ? item._id.charAt(0).toUpperCase() + item._id.slice(1) : 'Unknown',
+    totalSold: item.totalSold
+  }));
+
   if (loading) {
     return (
-      <div className={styles.centered}>
-        <CircularProgress />
-      </div>
+      <Container className={styles.root}>
+        <Box textAlign="center" mt={4}>
+          <CircularProgress />
+        </Box>
+      </Container>
     );
   }
 
-  // Show error message if there's an error
   if (error) {
     return (
-      <div className={styles.centered}>
-        <Typography variant="h6" color="error">{error}</Typography>
-      </div>
+      <Container className={styles.root}>
+        <Typography variant="h6" color="error" align="center">
+          {error}
+        </Typography>
+      </Container>
     );
   }
 
   return (
-    <div className={styles.analyticsContainer}>
-      <Typography variant="h4" gutterBottom>
-        Sales Analytics
-      </Typography>
+    <Container maxWidth="lg" className={styles.root}>
+      <Box my={4}>
+        <Typography variant="h3" align="center" gutterBottom sx={{ color: 'black' }}>
+          Sales Analytics Dashboard
+        </Typography>
+      </Box>
       <Grid container spacing={4}>
-        {/* Bar Chart for Top Selling Watches */}
+        {/* Top Selling Watches Card */}
         <Grid item xs={12} md={6}>
-          <Paper className={styles.chartPaper}>
-            <Typography variant="h6" className={styles.chartTitle}>
-              Top Selling Watches
-            </Typography>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart
-                data={topSellingWatches}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          <CustomCard>
+            <CardHeader title="Top Selling Watches" />
+            <CardContent>
+              <ResponsiveContainer
+                width="100%"
+                height={300}
+                style={{ background: 'linear-gradient(135deg, #ffffff, #e0f7fa)' }}
               >
-                {/* Define linear gradient for a fancier bar effect */}
-                <defs>
-                  <linearGradient id="colorBar" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-                    <stop offset="95%" stopColor="#8884d8" stopOpacity={0.2} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip contentStyle={{ backgroundColor: '#f5f5f5', borderRadius: 8 }} />
-                <Legend />
-                <Bar dataKey="totalSold" fill="url(#colorBar)" barSize={40} />
-              </BarChart>
-            </ResponsiveContainer>
-          </Paper>
+                <BarChart
+                  data={topSelling}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 80 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="name"
+                    tick={{ fontSize: 12, angle: -30, textAnchor: 'end' }}
+                    tickMargin={20}
+                    label={{
+                      value: 'Watch Model',
+                      position: 'insideBottom',
+                      offset: -10,
+                      style: { fontSize: 14, fontWeight: 'bold' }
+                    }}
+                  />
+                  <YAxis
+                    label={{
+                      value: 'Units Sold',
+                      angle: -90,
+                      position: 'insideLeft',
+                      style: { fontSize: 14, fontWeight: 'bold' }
+                    }}
+                    tick={{ fontSize: 12 }}
+                  />
+                  <Tooltip content={<CustomBarTooltip />} />
+                  <Legend verticalAlign="bottom" align="left" wrapperStyle={{ fontSize: '12px', marginTop: 10 }} />
+                  <Bar dataKey="totalSold" name="Total Sold" fill="#36a2eb" barSize={40} />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </CustomCard>
         </Grid>
 
-        {/* Pie Chart for Sales by Brand */}
+        {/* Sales by Brand Card */}
         <Grid item xs={12} md={6}>
-          <Paper className={styles.chartPaper}>
-            <Typography variant="h6" className={styles.chartTitle}>
-              Sales by Brand
-            </Typography>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={brandSales}
-                  dataKey="totalSold"
-                  nameKey="_id"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={80}
-                  fill="#82ca9d"
-                  label={renderCustomizedLabel}
+          <CustomCard>
+            <CardHeader title="Sales by Brand" />
+            <CardContent>
+              <ResponsiveContainer
+                width="100%"
+                height={300}
+                style={{ background: 'linear-gradient(135deg, #ffffff, #e0f7fa)' }}
+              >
+                <PieChart>
+                  <Pie
+                    data={brandSales}
+                    dataKey="totalSold"
+                    nameKey="_id"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={100}
+                    innerRadius={40}
+                    label={({ payload, percent }) => {
+                      const brandName = payload._id
+                        ? payload._id.charAt(0).toUpperCase() + payload._id.slice(1)
+                        : '';
+                      return `${brandName} (${(percent * 100).toFixed(0)}%)`;
+                    }}
+                    labelLine={false}
+                  >
+                    {brandSales.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend verticalAlign="middle" align="right" layout="vertical" wrapperStyle={{ fontSize: 12 }} />
+                </PieChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </CustomCard>
+        </Grid>
+
+        {/* Purchases by Sex Card */}
+        <Grid item xs={12}>
+          <CustomCard>
+            <CardHeader title="Purchases by Sex" />
+            <CardContent>
+              <ResponsiveContainer
+                width="100%"
+                height={300}
+                style={{ background: 'linear-gradient(135deg, #ffffff, #e0f7fa)' }}
+              >
+                <BarChart
+                  data={formattedSexSales}
+                  layout="vertical"
+                  margin={{ top: 20, right: 30, left: 100, bottom: 20 }}
                 >
-                  {brandSales.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip contentStyle={{ backgroundColor: '#f5f5f5', borderRadius: 8 }} />
-              </PieChart>
-            </ResponsiveContainer>
-          </Paper>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    type="number"
+                    tick={{ fontSize: 12 }}
+                    label={{
+                      value: 'Total Purchased',
+                      position: 'insideBottom',
+                      offset: -5,
+                      style: { fontSize: 14, fontWeight: 'bold' }
+                    }}
+                  />
+                  <YAxis
+                    type="category"
+                    dataKey="sex"
+                    tick={{ fontSize: 12 }}
+                    label={{
+                      value: 'Sex',
+                      angle: -90,
+                      position: 'insideLeft',
+                      style: { fontSize: 14, fontWeight: 'bold' }
+                    }}
+                  />
+                  <Tooltip />
+                  <Legend verticalAlign="bottom" align="left" wrapperStyle={{ fontSize: '12px', marginTop: 10 }} />
+                  <Bar dataKey="totalSold" name="Total Purchased" fill="#ff4081" barSize={30} />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </CustomCard>
         </Grid>
       </Grid>
-    </div>
+    </Container>
   );
 };
 
