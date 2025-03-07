@@ -2,8 +2,7 @@
 
 // Import the express module to create a router
 const express = require('express');
-// Destructure the controller functions for watches from the watchController,
-// now including getUniqueBrands for fetching unique brands.
+// Import required functions from the watch controller
 const { 
   getAllWatches, 
   getWatch, 
@@ -11,7 +10,8 @@ const {
   updateWatch, 
   deleteWatch, 
   fetchAndStoreEbayWatches, 
-  getUniqueBrands 
+  getUniqueBrands,
+  searchWatches
 } = require('../controllers/watchController');
 // Import the authentication middleware functions: protect (to ensure the user is authenticated)
 // and authorize (to ensure the user has the proper role, e.g., 'admin')
@@ -30,6 +30,9 @@ const router = express.Router();
 // This route returns an array of unique brands (extracted from the category field)
 // so that the frontend (e.g., Navbar) can dynamically display them.
 router.get('/brands', getUniqueBrands);
+
+// URL example: /api/watches/search?query=rolex
+router.get('/search', searchWatches);
 
 // GET /api/watches
 // This route retrieves all watches with pagination, filtering, and sorting (if provided)

@@ -33,6 +33,8 @@ const AdminWatchUpdate = lazy(() => import('./pages/AdminWatchUpdate/AdminWatchU
 const DiscountedWatches = lazy(() => import('./pages/DiscountedWatches/DiscountedWatches.jsx'));
 const AdminAnalytics = lazy(() => import('./pages/AdminAnalytics/AdminAnalytics.jsx'));
 const OrderTracking = lazy(() => import('./pages/OrderTracking/OrderTracking.jsx'));
+const SearchResults = lazy(() => import('./pages/SearchResults/SearchResults.jsx'));
+
 
 const App = () => {
   return (
@@ -62,6 +64,7 @@ const App = () => {
                     <Route path="/admin/watch-update/:id" element={<AdminWatchUpdate />} />
                     <Route path="/discounted-watches" element={<DiscountedWatches />} />
                     <Route path="/order-tracking" element={<OrderTracking />} />
+                    <Route path="/search" element={<SearchResults />} />
                     <Route path="/admin/analytics" element={<AdminAnalytics />} />
                     <Route path="/admin" element={<AdminDashboard />} />
                     <Route path="*" element={<h2 style={{ textAlign: 'center', marginTop: '2rem' }}>Page Not Found</h2>} />
