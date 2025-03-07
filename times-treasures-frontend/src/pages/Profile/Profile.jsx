@@ -1,11 +1,8 @@
-// src/pages/Profile/Profile.jsx
-
 import React, { useContext, useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../context/AuthContext';
-// Material UI components
 import { 
   Avatar, 
   Card, 
@@ -32,6 +29,16 @@ const Profile = () => {
       setProfilePic(user.profilePicture);
     }
   }, [user]);
+
+  // Helper to calculate age from birthDate
+  const calculateAge = (birthDate) => {
+    if (!birthDate) return 'N/A';
+    const birth = new Date(birthDate);
+    const now = new Date();
+    const diff = now - birth;
+    const age = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+    return age;
+  };
 
   // Handle profile picture file changes and update profile via API
   const handleFileChange = async (e) => {
@@ -78,7 +85,7 @@ const Profile = () => {
           avatar={
             <Avatar
               src={profilePic}
-              sx={{ width: 100, height: 100 }} // Larger avatar size
+              sx={{ width: 100, height: 100 }}
             >
               {user?.name?.charAt(0)}
             </Avatar>
@@ -92,14 +99,35 @@ const Profile = () => {
           }
           title={
             <Typography variant="h5">
-              {user ? user.name : 'Guest'}
+              {user ? `${user.name} ${user.familyName}` : 'Guest'}
             </Typography>
           }
           subheader={user && user.email ? user.email : ''}
         />
         <CardContent>
-          {/* New section: Display User Addresses with labels */}
-          {user && user.addresses && user.addresses.length > 0 && (
+          {/* Personal Information Section */}
+          <Typography variant="h6" sx={{ mb: 1 }}>
+              Personal Information
+          </Typography>
+          <Box 
+            sx={{ 
+              mb: 3, 
+              p: 2, 
+              border: '1px solid #e0e0e0', 
+              borderRadius: 2, 
+              backgroundColor: '#fafafa' 
+            }}
+          >
+            <Typography variant="body1">
+              <strong>Full Name:</strong> {user ? `${user.name}${user.familyName ? ' ' + user.familyName : ''}` : 'N/A'}
+            </Typography>
+            <Typography variant="body1">
+              <strong>Age:</strong> {user ? calculateAge(user.birthDate) : 'N/A'}
+            </Typography>
+          </Box>
+
+          {/* Addresses Section */}
+          {user && user.addresses && user.addresses.length > 0 && user.role !== 'admin' && (
             <Box sx={{ mb: 3 }}>
               <Typography variant="h6" sx={{ mb: 1 }}>
                 Your Addresses
@@ -135,6 +163,7 @@ const Profile = () => {
               <Divider sx={{ mt: 2, mb: 2 }} />
             </Box>
           )}
+
           {/* Action Buttons */}
           <Grid container spacing={2} justifyContent="center">
             <Grid item xs={12} sm={6}>
@@ -155,6 +184,17 @@ const Profile = () => {
                 fullWidth
               >
                 Update Your Addresses
+              </Button>
+            </Grid>
+            {/* New button for updating personal information */}
+            <Grid item xs={12} sm={6}>
+              <Button 
+                component={Link} 
+                to="/update-personal-info" 
+                variant="outlined" 
+                fullWidth
+              >
+                Update PI
               </Button>
             </Grid>
             <Grid item xs={12} sm={6}>

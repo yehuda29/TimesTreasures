@@ -1,30 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { IconButton, Badge, Menu, MenuItem, ListItemText, Typography } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import styles from './NotificationBell.module.css';
+import { AuthContext } from '../../context/AuthContext';
 
 const NotificationBell = () => {
+  const { user } = useContext(AuthContext);
   const [notifications, setNotifications] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
 
-  // Function to fetch out-of-stock notifications
+  // Function to fetch out-of-stock notifications and add a prompt for incomplete profile info.
   const fetchNotifications = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/watches`);
       const outOfStock = response.data.data.filter(watch => Number(watch.inventory) === 0);
-      setNotifications(outOfStock);
+      let notificationsArray = [...outOfStock];
+      // If the user is logged in and is missing a birthDate or sex, add a profile prompt notification.
+      if (user && (!user.birthDate || !user.sex)) {
+        notificationsArray.unshift({
+          _id: "profile-incomplete",
+          message: "Your profile is incomplete. Please update your personal information (missing birth date or sex)."
+        });
+      }
+      setNotifications(notificationsArray);
     } catch (error) {
       console.error('Error fetching notifications:', error);
     }
   };
 
-  // Poll for new notifications every 60 seconds
+  // Re-fetch notifications on mount and every 30 seconds. Also re-run if user changes.
   useEffect(() => {
     fetchNotifications();
-    const interval = setInterval(fetchNotifications, 30000); // 30 seconds
-    return () => clearInterval(interval); // Cleanup on unmount
-  }, []);
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => clearInterval(interval);
+  }, [user]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -54,14 +64,27 @@ const NotificationBell = () => {
         }}
       >
         {notifications.length > 0 ? (
-          notifications.map((watch) => (
-            <MenuItem key={watch._id} onClick={handleClose}>
-              <ListItemText 
-                primary={`🚨 ${watch.name} is out of stock!`}
-                primaryTypographyProps={{ style: { whiteSpace: 'normal' } }}
-              />
-            </MenuItem>
-          ))
+          notifications.map((notification) => {
+            if (notification._id === "profile-incomplete") {
+              return (
+                <MenuItem key="profile-incomplete" onClick={handleClose}>
+                  <ListItemText 
+                    primary={`🔔 ${notification.message}`}
+                    primaryTypographyProps={{ style: { whiteSpace: 'normal' } }}
+                  />
+                </MenuItem>
+              );
+            } else {
+              return (
+                <MenuItem key={notification._id} onClick={handleClose}>
+                  <ListItemText 
+                    primary={`🚨 ${notification.name} is out of stock!`}
+                    primaryTypographyProps={{ style: { whiteSpace: 'normal' } }}
+                  />
+                </MenuItem>
+              );
+            }
+          })
         ) : (
           <MenuItem onClick={handleClose}>
             <Typography variant="body1">No new notifications</Typography>

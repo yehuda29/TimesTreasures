@@ -1,28 +1,6 @@
-/* Container styling for the analytics page */
-.analyticsContainer {
-    margin-top: 2rem;
-    padding: 1rem;
-    color: black;
-  }
-  
-  /* Style for each chart's Paper component */
-  .chartPaper {
-    padding: 16px;
-    border-radius: 8px;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
-  }
-  
-  /* Title styling for each chart */
-  .chartTitle {
-    margin-bottom: 16px;
-    font-weight: 600;
-    text-align: center;
-  }
-  
-  /* Centering for loader and error messages */
-  .centered {
-    text-align: center;
-    margin-top: 2rem;
-  }
-  
+/* AdminAnalytics.module.css */
+
+.root {
+  padding: 20px;
+  background-color: #e3f2fd;
+}

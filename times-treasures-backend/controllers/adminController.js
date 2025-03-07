@@ -1,10 +1,8 @@
-// times-treasures-backend/controllers/adminController.js
-
 const asyncHandler = require('express-async-handler');
 const User = require('../models/User');
 
 /**
- * @desc    Get sales statistics including top-selling watches and sales by brand.
+ * @desc    Get sales statistics including top-selling watches, sales by brand, and purchases by sex.
  * @route   GET /api/admin/sales-stats
  * @access  Private/Admin
  */
@@ -12,36 +10,32 @@ exports.getSalesStats = asyncHandler(async (req, res, next) => {
   // -------------------------------
   // Aggregate Top Selling Watches
   // -------------------------------
-  // - Unwind the purchaseHistory array from each user.
-  // - Group by the watch ID and sum the purchased quantities.
-  // - Join with the Watch collection to get watch details.
-  // - Add a "name" field from the joined data and sort by totalSold descending.
   const topSellingWatches = await User.aggregate([
     { $unwind: "$purchaseHistory" },
-    { 
+    {
       $group: {
         _id: "$purchaseHistory.watch",
         totalSold: { $sum: "$purchaseHistory.quantity" }
       }
     },
-    { 
+    {
       $lookup: {
-        from: "watches",            // The MongoDB collection name for watches
-        localField: "_id",          // The watch ID from purchaseHistory
-        foreignField: "_id",        // The _id field in the watches collection
+        from: "watches",
+        localField: "_id",
+        foreignField: "_id",
         as: "watchDetails"
       }
     },
     { $unwind: "$watchDetails" },
-    { 
-      $addFields: { 
-        name: "$watchDetails.name"  // Add a flat "name" field for easier access
+    {
+      $addFields: {
+        name: "$watchDetails.name"
       }
     },
-    { $sort: { totalSold: -1 } },   // Sort descending by quantity sold
-    { $limit: 10 },                 // Limit to the top 10 best-sellers
-    { 
-      $project: {                   // Only return necessary fields
+    { $sort: { totalSold: -1 } },
+    { $limit: 10 },
+    {
+      $project: {
         _id: 1,
         totalSold: 1,
         name: 1
@@ -52,11 +46,9 @@ exports.getSalesStats = asyncHandler(async (req, res, next) => {
   // -------------------------------
   // Aggregate Sales by Brand
   // -------------------------------
-  // - Unwind purchaseHistory and join with the Watch collection.
-  // - Group by the watch's category (which represents the brand) and sum quantities.
   const brandSales = await User.aggregate([
     { $unwind: "$purchaseHistory" },
-    { 
+    {
       $lookup: {
         from: "watches",
         localField: "purchaseHistory.watch",
@@ -65,19 +57,36 @@ exports.getSalesStats = asyncHandler(async (req, res, next) => {
       }
     },
     { $unwind: "$watchDetails" },
-    { 
+    {
       $group: {
-        _id: "$watchDetails.category",   // Group by the category field (brand)
+        _id: "$watchDetails.category",
         totalSold: { $sum: "$purchaseHistory.quantity" }
       }
     },
-    { $sort: { totalSold: -1 } }         // Sort descending by quantity sold
+    { $sort: { totalSold: -1 } }
   ]);
 
-  // Return the aggregated stats
+  // -------------------------------------
+  // Aggregate Purchases by Sex (Men/Women)
+  // -------------------------------------
+  // - Unwind purchaseHistory to get individual purchase records
+  // - Group by the user's sex (e.g., "male" or "female")
+  // - Sum up the quantity purchased
+  const sexSales = await User.aggregate([
+    { $unwind: "$purchaseHistory" },
+    {
+      $group: {
+        _id: "$sex",  // Groups by "male" or "female"
+        totalSold: { $sum: "$purchaseHistory.quantity" }
+      }
+    },
+    { $sort: { totalSold: -1 } }
+  ]);
+
   res.status(200).json({
     success: true,
     topSellingWatches,
-    brandSales
+    brandSales,
+    sexSales
   });
 });

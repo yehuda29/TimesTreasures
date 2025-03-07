@@ -1,59 +1,109 @@
-/* src/pages/Register/Register.module.css */
-
 .registerContainer {
-    max-width: 500px;
-    margin: 50px auto;
-    padding: 20px;
-    color: var(--primary-color);
-  }
-  
-  .registerForm {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .formGroup {
-    margin-bottom: 15px;
-  }
-  
-  .formGroup label {
-    margin-bottom: 5px;
-    display: block;
-  }
-  
-  .formGroup input {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-  }
-  
-  .registerBtn {
-    padding: 10px;
-    background-color: var(--primary-color);
-    color: #fff;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .registerBtn:hover {
-    background-color: #141e28;
-  }
-  
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 30px;
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
 
-  .loginMsg {
-    text-align: center;
-    font-size: 1.1rem;
-    color: var(--primary-color, #2c3e50);
-    margin-top: 2rem;
-  }
-  
-  .loginMsg a {
-    color: var(--secondary-color, #e74c3c);
-    text-decoration: none;
-    font-weight: bold;
-  }
-  
-  .loginMsg a:hover {
-    text-decoration: underline;
-  }
-  
+.registerContainer h2 {
+  color: white;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.registerForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--subtext-color);
+}
+
+.formGroup input,
+.formGroup input[type="date"],
+.formGroup input[type="email"],
+.formGroup input[type="password"] {
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background-color: var(--input-bg);
+  color: var(--subtext-color);
+  font-size: 1rem;
+}
+
+.radioGroup {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.radioGroup label {
+  color: var(--subtext-color);
+  font-size: 1rem;
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.backBtn,
+.nextBtn {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ffffff;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.backBtn {
+  background-color: var(--primary-color);
+  color: #ffffff;
+}
+
+.backBtn:hover {
+  background-color: #ffffff;
+  color: var(--primary-color);
+}
+
+.nextBtn {
+  background-color: var(--primary-color);
+  color: #ffffff;
+}
+
+.nextBtn:hover {
+  background-color: #ffffff;
+  color: var(--primary-color);
+}
+
+.loginMsg {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: var(--subtext-color);
+}
+
+.loginMsg a {
+  color: var(--secondary-color);
+  text-decoration: none;
+}
+
+.loginMsg a:hover {
+  text-decoration: underline;
+}
