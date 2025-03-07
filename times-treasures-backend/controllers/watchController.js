@@ -343,3 +343,39 @@ exports.getUniqueBrands = asyncHandler(async (req, res, next) => {
     data: brands
   });
 });
+
+/**
+ * @desc    Search watches by name based on a query parameter.
+ *          The function looks for watches that contain the search term in their name (case-insensitive).
+ *          If no matching watches are found, it returns an empty array.
+ * @route   GET /api/watches/search?query=yourSearchTerm
+ * @access  Public
+ */
+exports.searchWatches = asyncHandler(async (req, res, next) => {
+  // Extract the search query from the request query parameters.
+  // Expecting a URL like: /api/watches/search?query=rolex
+  const { query } = req.query;
+
+  // If no query is provided, send a 400 Bad Request response.
+  if (!query || query.trim() === '') {
+    return res.status(400).json({
+      success: false,
+      message: 'Search query is required'
+    });
+  }
+
+  // Create a regular expression to perform a case-insensitive partial match.
+  // This will match any watch name that contains the search term.
+  const searchRegex = new RegExp(query, 'i');
+
+  // Query the database to find watches whose name matches the regex.
+  const matchingWatches = await Watch.find({ name: searchRegex });
+
+  // Return the found watches.
+  // If no matches are found, matchingWatches will be an empty array.
+  return res.status(200).json({
+    success: true,
+    count: matchingWatches.length,
+    data: matchingWatches
+  });
+});

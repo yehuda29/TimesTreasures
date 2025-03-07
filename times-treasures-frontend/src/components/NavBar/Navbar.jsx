@@ -1,5 +1,3 @@
-// src/components/Navbar/Navbar.jsx
-
 import React, { useState, useEffect, useContext } from "react";
 import { FaSearch, FaShoppingCart } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
@@ -15,12 +13,11 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
-  const [brands, setBrands] = useState([]); // State to hold dynamic brands
+  const [brands, setBrands] = useState([]); // Dynamic brands fetched from the backend
+  const [searchQuery, setSearchQuery] = useState(""); // State for the search input
 
-  // Access user and logout from AuthContext
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
-
   const { cartItems } = useContext(CartContext);
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -31,7 +28,7 @@ const Navbar = () => {
     return () => window.removeEventListener("popstate", handleLocationChange);
   }, []);
 
-  // Fetch unique watch brands from the backend once and cache them in localStorage
+  // Fetch unique watch brands from the backend (with caching in localStorage)
   useEffect(() => {
     const fetchBrands = async () => {
       try {
@@ -39,7 +36,9 @@ const Navbar = () => {
         if (cachedBrands) {
           setBrands(JSON.parse(cachedBrands));
         } else {
-          const response = await axios.get(`${import.meta.env.VITE_API_URL}/watches/brands`);
+          const response = await axios.get(
+            `${import.meta.env.VITE_API_URL}/watches/brands`
+          );
           if (response.data && response.data.success) {
             setBrands(response.data.data);
             localStorage.setItem("brands", JSON.stringify(response.data.data));
@@ -78,6 +77,18 @@ const Navbar = () => {
     navigate("/");
   };
 
+  // Handle search submission by navigating to /search with the query parameter.
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    const trimmedQuery = searchQuery.trim();
+    if (trimmedQuery !== "") {
+      navigate(`/search?query=${encodeURIComponent(trimmedQuery)}`);
+      // Optionally clear the search input after submission:
+      // setSearchQuery("");
+      closeMenus();
+    }
+  };
+
   return (
     <nav className={styles.navbar}>
       {/* Logo */}
@@ -88,12 +99,18 @@ const Navbar = () => {
       </div>
 
       {/* Search Bar */}
-      <div className={styles.navbarSearch}>
-        <input type="text" placeholder="Search..." aria-label="Search" />
-        <button className={styles.searchBtn}>
+      <form className={styles.navbarSearch} onSubmit={handleSearchSubmit}>
+        <input
+          type="text"
+          placeholder="Search..."
+          aria-label="Search"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <button type="submit" className={styles.searchBtn}>
           <FaSearch />
         </button>
-      </div>
+      </form>
 
       {/* Hamburger Icon for Mobile */}
       <div
@@ -142,13 +159,13 @@ const Navbar = () => {
         </li>
         {/* Cart Link (only shown if user is logged in) */}
         {user && (
-        <li className={currentPath === "/cart" ? styles.active : ""}>
-          <Link to="/cart" onClick={closeMenus} className={styles.cartLink}>
-            <Badge badgeContent={totalItems} color="error" showZero overlap="circular">
-              <FaShoppingCart className={styles.cartIcon} />
-            </Badge>
-          </Link>
-        </li>
+          <li className={currentPath === "/cart" ? styles.active : ""}>
+            <Link to="/cart" onClick={closeMenus} className={styles.cartLink}>
+              <Badge badgeContent={totalItems} color="error" showZero overlap="circular">
+                <FaShoppingCart className={styles.cartIcon} />
+              </Badge>
+            </Link>
+          </li>
         )}
         <li className={currentPath === "/contact" ? styles.active : ""}>
           <Link to="/contact" onClick={closeMenus}>
@@ -190,9 +207,7 @@ const Navbar = () => {
         )}
         {user && (
           <>
-            <li className={styles.welcomeText}>
-              Welcome {user.name}!
-            </li>
+            <li className={styles.welcomeText}>Welcome {user.name}!</li>
             <li>
               <button className={styles.navbarBtn} onClick={handleLogout}>
                 Logout

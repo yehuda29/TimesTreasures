@@ -85,6 +85,8 @@ const Home = () => {
             if (updatedWatches.length >= totalWatches) {
               setHasMore(false);
             }
+
+            
             return updatedWatches;
           });
         } else {
@@ -101,19 +103,7 @@ const Home = () => {
     fetchWatches();
   }, [page, hasMore, limit, prevPage]);
 
-  // Function called by the InfiniteScroll component to load more data
-  const fetchMoreData = () => {
-    // If the number of visible watches is greater than or equal to total fetched, disable further fetching
-    if (visibleWatches >= watches.length) {
-      setHasMore(false);
-      return;
-    }
-    // Simulate a delay before showing more items (could be replaced by a real fetch)
-    setTimeout(() => {
-      setVisibleWatches((prev) => prev + 12);
-    }, 500);
-  };
-
+  
   // If an error occurred during data fetching, display an error message
   if (error) return <p className={styles.error}>{error}</p>;
 
@@ -124,7 +114,7 @@ const Home = () => {
 
      {/* Featured Watches Section */}
 <section className={styles.featured}>
-  <h2 className={styles.sectionTitle}>Featured Watches</h2>
+  <h2 className={styles.sectionTitle}>Discounted Watches</h2>
   {/* הקרוסלה */}
   <Slider {...carouselSettings}>
     {/* מציג את המוצרים בתוך הקרוסלה */}
