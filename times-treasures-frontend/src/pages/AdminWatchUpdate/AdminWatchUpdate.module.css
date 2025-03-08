@@ -1,103 +1,115 @@
+/* Container for the AdminWatchUpdate page */
 .adminWatchUpdate {
   max-width: 600px;
   margin: 2rem auto;
-  padding: 30px;
-  border: 2px solid var(--border-color);
-  border-radius: 10px;
-  background-color: var(--background-color);
-  color: var(--text-color);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 2rem;
+  background-color: #f8f9fa; /* Light background for good contrast */
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
+/* Title styling */
 .adminWatchUpdate h2 {
-  color: white;
+  color: var(--primary-color, #2c3e50);
+  margin-bottom: 1.5rem;
 }
 
 /* Price Display Section */
 .priceDisplay {
-  margin-bottom: 25px;
-  padding: 10px;
-  background-color: var(--primary-color);
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #f8f9fa; /* Matches the container background */
   border-radius: 5px;
   text-align: center;
 }
 
 .priceDisplay h3 {
-  margin-bottom: 12px;
+  margin-bottom: 0.75rem;
   font-size: 1.4rem;
-  color: var(--subtext-color);
+  color: var(--primary-color, #2c3e50);
 }
 
 .priceContainer {
+  /* Lay out all elements (original price, arrow, discounted price) in a row */
   display: flex;
-  align-items: center;
+  align-items: center;    /* center them vertically */
   justify-content: center;
+  gap: 0.5rem;           /* space between items */
 }
 
-.originalPrice {
-  margin-right: 10px;
-  color: rgba(236, 240, 241, 0.7);
-  font-size: 1.2rem;
-}
-
+/* Set a uniform font-size and line-height across the prices and arrow */
+.originalPrice,
+.discountedPrice,
 .arrow {
-  margin-right: 10px;
-  font-size: 2rem;
-  color: var(--secondary-color);
+  font-size: 1.4rem;
+  line-height: 1.4rem;
+  margin: 0;             /* remove default margins */
+  display: flex;         /* so align-items can work inside if needed */
+  align-items: center;
 }
 
+/* Old price color or styling */
+.originalPrice {
+  color: var(--primary-color, #2c3e50);
+  text-decoration: line-through;
+}
+
+/* Arrow styling */
+.arrow {
+  font-size: 2.5rem;
+  color: var(--secondary-color, #e74c3c);
+  /* Nudge arrow up or down to match the text’s baseline exactly */
+  transform: translateY(-0.05em); /* tweak this if needed */
+}
+
+/* Discounted price styling */
 .discountedPrice {
-  font-size: 1.4rem;
   font-weight: bold;
-  color: var(--text-color);
+  color: var(--primary-color);
 }
 
-.productPrice {
-  font-size: 1.4rem;
-  font-weight: bold;
-  color: var(--subtext-color);
-}
 
 /* Form Styling */
 .updateForm {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 1rem;
 }
 
 .formGroup {
   display: flex;
   flex-direction: column;
+  text-align: left;
 }
 
 .formGroup label {
-  margin-bottom: 6px;
-  font-weight: 600;
-  color: var(--subtext-color);
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: var(--primary-color, #2c3e50);
 }
 
 .formGroup input {
-  padding: 10px;
-  border: 1px solid var(--border-color);
-  border-radius: 5px;
-  background-color: var(--input-bg);
-  color: var(--subtext-color);
+  padding: 0.5rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background-color: #fff;
+  color: var(--primary-color, #2c3e50);
   font-size: 1rem;
 }
 
-/* Update Watch Button (matching the logout button style) */
+/* Update Watch Button */
 .updateBtn {
-  padding: 0.5rem 1rem;
-  background-color: var(--primary-color);
-  color: #ffffff;
-  border: 1px solid #ffffff;
-  border-radius: 5px;
-  cursor: pointer;
+  padding: 0.75rem;
+  background-color: var(--secondary-color, #e74c3c);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
   font-size: 1rem;
-  transition: background-color 0.3s, color 0.3s;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .updateBtn:hover {
-  background-color: #ffffff;
-  color: var(--primary-color);
+  background-color: #c0392b;
 }

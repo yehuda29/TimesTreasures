@@ -1,106 +1,97 @@
 .registerContainer {
   max-width: 600px;
   margin: 2rem auto;
-  padding: 30px;
-  border: 2px solid var(--border-color);
-  border-radius: 10px;
-  background-color: var(--background-color);
-  color: var(--text-color);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 2rem;
+  background-color: #f8f9fa; /* Light background for good contrast */
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
 .registerContainer h2 {
-  color: white;
-  text-align: center;
-  margin-bottom: 20px;
+  color: var(--primary-color, #2c3e50);
+  margin-bottom: 1.5rem;
 }
 
 .registerForm {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 1rem;
 }
 
 .formGroup {
   display: flex;
   flex-direction: column;
+  text-align: left;
 }
 
 .formGroup label {
-  margin-bottom: 6px;
-  font-weight: 600;
-  color: var(--subtext-color);
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: var(--primary-color, #2c3e50);
 }
 
+/* Apply consistent styling to all relevant input types */
 .formGroup input,
 .formGroup input[type="date"],
 .formGroup input[type="email"],
 .formGroup input[type="password"] {
-  padding: 10px;
-  border: 1px solid var(--border-color);
-  border-radius: 5px;
-  background-color: var(--input-bg);
-  color: var(--subtext-color);
+  padding: 0.5rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background-color: #fff;
+  color: var(--primary-color, #2c3e50);
   font-size: 1rem;
 }
 
 .radioGroup {
   display: flex;
-  gap: 20px;
+  gap: 1rem;
   align-items: center;
 }
 
 .radioGroup label {
-  color: var(--subtext-color);
+  color: var(--primary-color, #2c3e50);
   font-size: 1rem;
 }
 
 .buttonGroup {
   display: flex;
   justify-content: space-between;
-  margin-top: 10px;
+  margin-top: 1rem;
 }
 
+/* Buttons for navigating between steps */
 .backBtn,
 .nextBtn {
   padding: 0.5rem 1rem;
-  border: 1px solid #ffffff;
-  border-radius: 5px;
+  border: none;
+  border-radius: 4px;
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s;
+  background-color: var(--primary-color, #2c3e50);
+  color: #fff;
 }
 
-.backBtn {
-  background-color: var(--primary-color);
-  color: #ffffff;
-}
-
-.backBtn:hover {
-  background-color: #ffffff;
-  color: var(--primary-color);
-}
-
-.nextBtn {
-  background-color: var(--primary-color);
-  color: #ffffff;
-}
-
+.backBtn:hover,
 .nextBtn:hover {
-  background-color: #ffffff;
-  color: var(--primary-color);
+  background-color: #fff;
+  color: var(--primary-color, #2c3e50);
+  border: 1px solid var(--primary-color, #2c3e50);
 }
 
+/* Message & link styling for login prompt */
 .loginMsg {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 1rem;
   font-size: 0.9rem;
-  color: var(--subtext-color);
+  color: var(--primary-color);
 }
 
 .loginMsg a {
-  color: var(--secondary-color);
+  color: var(--secondary-color, #e74c3c);
   text-decoration: none;
 }
 
