@@ -1,5 +1,4 @@
 // src/pages/Checkout/Checkout.jsx
-
 import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { CartContext } from '../../context/CartContext';
@@ -12,7 +11,6 @@ import { calculateFinalPrice } from '../../utils/priceUtil';
 
 const Checkout = () => {
   const { user, token } = useContext(AuthContext);
-  // Destructure fetchCart from CartContext
   const { cartItems, clearCart, fetchCart } = useContext(CartContext);
   const navigate = useNavigate();
 
@@ -23,11 +21,11 @@ const Checkout = () => {
     }
   }, [user, token, fetchCart]);
 
-  // 'step' manages which stage of checkout we're on: address selection or review/payment
+  // 'step' manages the checkout process: 'address' or 'review'
   const [step, setStep] = useState('address');
-  // shippingAddress holds the address chosen or entered by the user
+  // shippingAddress will store the chosen address or pickup branch details
   const [shippingAddress, setShippingAddress] = useState(null);
-  // For new address entry if the user doesn't want to use their saved address
+  // For new address entry
   const [newAddress, setNewAddress] = useState({
     country: '',
     city: '',
@@ -37,22 +35,56 @@ const Checkout = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  // Helper for updating the new address form
+  // New state for branches (pickup option)
+  const [branches, setBranches] = useState([]);
+
+  // Fetch branches for pickup option
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/branches`);
+        if (response.data && response.data.success) {
+          setBranches(response.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching branches for pickup:", error);
+      }
+    };
+
+    fetchBranches();
+  }, []);
+
+  // Update new address state
   const handleAddressChange = (e) => {
     setNewAddress({ ...newAddress, [e.target.name]: e.target.value });
   };
 
-  // Calculate total price from cart items using the discounted (final) price.
+  // When a branch is selected, set it as the shipping address (pickup)
+  const handleSelectBranch = (branch) => {
+    // Map branch details to a shipping address structure.
+    setShippingAddress({
+      country: '', // Not applicable
+      city: '',    // Not applicable
+      homeAddress: branch.address || '',
+      zipcode: '', // Not applicable
+      phoneNumber: branch.phoneNumber,
+      pickupBranch: true,
+      branchName: branch.name,
+      branchId: branch._id
+    });
+    setStep('review');
+  };
+
+  // Calculate total price from cart items
   const totalPrice = cartItems.reduce((acc, item) => {
     const unitPrice = calculateFinalPrice(item.watch);
     return acc + unitPrice * item.quantity;
   }, 0);
 
-  // Handle payment success by calling the backend purchase endpoint.
+  // Handle payment success
   const handlePaymentSuccess = async (orderDetails) => {
     try {
       setLoading(true);
-      // Optionally, re-fetch the cart here again before processing payment
       await fetchCart(token);
 
       const response = await axios.post(
@@ -65,7 +97,6 @@ const Checkout = () => {
           }
         }
       );
-      // If the response contains a message about out-of-stock items, display it.
       if (response.data.message && response.data.message !== "Purchase completed successfully.") {
         toast.error(response.data.message);
       }
@@ -79,111 +110,139 @@ const Checkout = () => {
     }
   };
 
-  // Step 1: Render the address selection step.
-  const renderAddressStep = () => {
-    return (
-      <div className={styles.addressStep}>
-        <h2>Shipping Address</h2>
-        {user && user.addresses && user.addresses.length > 0 && (
-          <div>
-            <p>You have a saved address. Would you like to use it?</p>
-            <button onClick={() => { 
-              setShippingAddress(user.addresses[0]);
-              setStep('review');
-            }}>
-              Use Saved Address
-            </button>
-          </div>
-        )}
-        <h3>Or enter a new address</h3>
-        <form onSubmit={(e) => { 
-          e.preventDefault(); 
-          setShippingAddress(newAddress); 
-          setStep('review'); 
-        }}>
-          <input 
-            type="text" 
-            name="country" 
-            placeholder="Country" 
-            value={newAddress.country} 
-            onChange={handleAddressChange} 
-            required 
-          />
-          <input 
-            type="text" 
-            name="city" 
-            placeholder="City" 
-            value={newAddress.city} 
-            onChange={handleAddressChange} 
-            required 
-          />
-          <input 
-            type="text" 
-            name="homeAddress" 
-            placeholder="Home Address" 
-            value={newAddress.homeAddress} 
-            onChange={handleAddressChange} 
-            required 
-          />
-          <input 
-            type="text" 
-            name="zipcode" 
-            placeholder="Zipcode" 
-            value={newAddress.zipcode} 
-            onChange={handleAddressChange} 
-            pattern="\d+" 
-            title="Zipcode must contain numbers only"
-            required 
-          />
-          <input 
-            type="text" 
-            name="phoneNumber" 
-            placeholder="Phone Number" 
-            value={newAddress.phoneNumber} 
-            onChange={handleAddressChange} 
-            pattern="\d{10}" 
-            maxLength="10"
-            title="Phone number must be exactly 10 digits"
-            required 
-          />
-          <button type="submit">Use This Address</button>
-        </form>
-      </div>
-    );
-  };
 
-  // Step 2: Render the order review & payment step.
+// Inside Checkout.jsx
+const renderAddressStep = () => {
+  return (
+    <div className={styles.addressStep}>
+      <h2>Shipping Address</h2>
+      {/* Option 1: Use Saved Address */}
+      {user && user.addresses && user.addresses.length > 0 && (
+        <div className={styles.savedAddress}>
+          <p>You have a saved address. Would you like to use it?</p>
+          <button onClick={() => { 
+            setShippingAddress(user.addresses[0]);
+            setStep('review');
+          }}>
+            Use Saved Address
+          </button>
+        </div>
+      )}
+
+      {/* Option 2: Pickup at a Branch */}
+      <h3>Or pick up at a branch</h3>
+      <div className={styles.branchSelection}>
+        {branches.length > 0 ? (
+          branches.map((branch) => (
+            <div 
+              key={branch._id} 
+              className={styles.branchCard}
+              onClick={() => handleSelectBranch(branch)}
+            >
+              <p><strong>{branch.name}</strong></p>
+              {branch.address && <p>{branch.address}</p>}
+              <p>{branch.phoneNumber}</p>
+              <p>{branch.openingHour} - {branch.closingHour}</p>
+            </div>
+          ))
+        ) : (
+          <p>Loading branches...</p>
+        )}
+      </div>
+
+      {/* Option 3: Enter a New Address */}
+      <h3>Or enter a new address</h3>
+      <form onSubmit={(e) => { 
+        e.preventDefault(); 
+        setShippingAddress(newAddress); 
+        setStep('review'); 
+      }}>
+        <input 
+          type="text" 
+          name="country" 
+          placeholder="Country" 
+          value={newAddress.country} 
+          onChange={handleAddressChange} 
+          required 
+        />
+        <input 
+          type="text" 
+          name="city" 
+          placeholder="City" 
+          value={newAddress.city} 
+          onChange={handleAddressChange} 
+          required 
+        />
+        <input 
+          type="text" 
+          name="homeAddress" 
+          placeholder="Home Address" 
+          value={newAddress.homeAddress} 
+          onChange={handleAddressChange} 
+          required 
+        />
+        <input 
+          type="text" 
+          name="zipcode" 
+          placeholder="Zipcode" 
+          value={newAddress.zipcode} 
+          onChange={handleAddressChange} 
+          pattern="\d+" 
+          title="Zipcode must contain numbers only"
+          required 
+        />
+        <input 
+          type="text" 
+          name="phoneNumber" 
+          placeholder="Phone Number" 
+          value={newAddress.phoneNumber} 
+          onChange={handleAddressChange} 
+          pattern="\d{10}" 
+          maxLength="10"
+          title="Phone number must be exactly 10 digits"
+          required 
+        />
+        <button type="submit">Use This Address</button>
+      </form>
+    </div>
+  );
+};
+
+
+
+
+  // Render the review & payment step
   const renderReviewStep = () => {
     return (
       <div className={styles.reviewStep}>
         <h2>Order Summary</h2>
         <div>
           <h3>Shipping Address:</h3>
-          <p>Country/State: {shippingAddress.country}</p>
-          <p>City: {shippingAddress.city}</p>
-          <p>Home Address: {shippingAddress.homeAddress}</p>
-          <p>Zipcode: {shippingAddress.zipcode}</p>
-          <p>Phone Number: {shippingAddress.phoneNumber}</p>
+          {shippingAddress.pickupBranch ? (
+            <>
+              <p><strong>Pickup Branch:</strong> {shippingAddress.branchName}</p>
+              <p>{shippingAddress.homeAddress}</p>
+              <p>Phone: {shippingAddress.phoneNumber}</p>
+            </>
+          ) : (
+            <>
+              <p>Country/State: {shippingAddress.country}</p>
+              <p>City: {shippingAddress.city}</p>
+              <p>Home Address: {shippingAddress.homeAddress}</p>
+              <p>Zipcode: {shippingAddress.zipcode}</p>
+              <p>Phone Number: {shippingAddress.phoneNumber}</p>
+            </>
+          )}
         </div>
         <div>
           <h3>Items:</h3>
           <ul>
             {cartItems.map((item, index) => {
               const unitPrice = calculateFinalPrice(item.watch);
-              const isDiscounted = unitPrice < Number(item.watch.price);
               return (
                 <li key={index}>
                   {item.watch.name} x {item.quantity} - $ 
                   {(unitPrice * item.quantity).toFixed(2)}
-                  {isDiscounted && (
-                    <span className={styles.itemPriceDetail}>
-                      {' '}(
-                      <s>${(Number(item.watch.price) * item.quantity).toFixed(2)}</s> 
-                      <span className={styles.arrow}>→</span> 
-                      ${ (unitPrice * item.quantity).toFixed(2) }
-                      )
-                    </span>
-                  )}
                 </li>
               );
             })}
@@ -191,7 +250,9 @@ const Checkout = () => {
           <h3>Total: ${totalPrice.toFixed(2)}</h3>
         </div>
         <p className={styles.shippingTime}>
-          Estimated Shipping Time: 14 to 21 business days
+          {shippingAddress.pickupBranch 
+            ? "Please pick up your order at the selected branch."
+            : "Estimated Shipping Time: 14 to 21 business days"}
         </p>
         <div id="paypal-button-portal">
           <PaymentButton 

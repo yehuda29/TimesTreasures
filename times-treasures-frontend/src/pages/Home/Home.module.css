@@ -1,24 +1,14 @@
-
-/* Featured Watches Section */
+/* src/pages/Home/Home.module.css */
 .featured {
-  /* Space above the featured section for visual separation from the hero */
   margin-top: 40px;
-
-  /* Text color for watchers set to primary color */
   color: var(--primary-color);
-
-  /* Center align for titles/elements */
   text-align: center;
 }
 
-/* Example: If you have a class or an element for the featured section title */
 .sectionTitle {
   margin-bottom: 20px;
 }
 
-/* If you need a grid or layout for the watch cards,
-   you might have a .productGrid or similar in your JS code. 
-   Example for reference: */
 .productGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -26,27 +16,23 @@
   margin-top: 20px;
 }
 
-/* Error styling, if needed */
 .error {
-  color: red;
+  color: var(--accent-color);
   text-align: center;
   margin-top: 20px;
 }
 
-/* End-message or loader classes, if used */
 .endMessage,
 .loader {
   text-align: center;
   margin-top: 20px;
 }
 
-/* If you had a .noImages class previously */
 .noImages {
   text-align: center;
-  color: #555;
+  color: var(--subtext-color);
   font-size: 1.2rem;
 }
-
 
 .carousel {
   margin: 20px 0;
@@ -54,4 +40,20 @@
   justify-content: center;
   align-items: center;
   width: 100%;
+}
+
+.mapSection {
+  margin: 2rem auto;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background-color: var(--background-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.mapSection h1 {
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  color: var(--primary-color);
 }

@@ -15,7 +15,10 @@ const NotificationBell = () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/watches`);
       const outOfStock = response.data.data.filter(watch => Number(watch.inventory) === 0);
-      let notificationsArray = [...outOfStock];
+      let notificationsArray = [];
+      if (user.role === "admin") {
+        notificationsArray = [...outOfStock];
+      }
       // If the user is logged in and is missing a birthDate or sex, add a profile prompt notification.
       if (user && (!user.birthDate || !user.sex)) {
         notificationsArray.unshift({

@@ -1,29 +1,24 @@
-/* src/pages/NotificationBell/NotificationBell.module.css */
-
-/* Example: If you want to add a little extra padding or margin to the notification container */
+/* src/components/NotificationBell/NotificationBell.module.css */
 .notificationContainer {
   margin: 0;
   padding: 0;
 }
 
-/* Example: Customize the bell icon if needed */
 .bellIcon {
   font-size: 1.5rem;
   color: inherit;
 }
 
-/* Example: Customize the notification badge style */
 .notificationBadge {
-  background-color: red;
-  color: white;
+  background-color: var(--accent-color);
+  color: var(--secondary-color);
   font-size: 0.75rem;
   font-weight: bold;
 }
 
-/* Example: Customize the dropdown menu if not using Material UI's styling */
 .notificationDropdown {
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: var(--secondary-color);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }

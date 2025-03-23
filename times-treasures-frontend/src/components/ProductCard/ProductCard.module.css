@@ -2,20 +2,15 @@
 
 /* Product card styling */
 .productCard {
-  background-color: var(--primary-color);
-  border: 1px solid #eee;
+  background-color: var(--secondary-color); /* White background */
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 1rem;
   text-align: center;
-  color: #ecf0f1;
-  /* Remove the fixed width so the card doesn't stretch */
-  /* width: 100%; */
-  max-width: 300px; /* Limit the card width */
-  margin: 0.75rem; /* Optional: consistent margin */
+  color: var(--primary-color); /* Black text */
+  max-width: 300px;
+  margin: 0.75rem;
 }
-
-
-/* ... other rules remain unchanged ... */
 
 .imageLink {
   display: block;
@@ -43,7 +38,7 @@
 
 .productPrice {
   font-size: 1.1rem;
-  color: #ecf0f1; /* Use light text on dark background */
+  color: var(--primary-color);
   margin-bottom: 0.5rem;
   text-align: center;
 }
@@ -57,27 +52,28 @@
 }
 
 .originalPrice {
-  color: #bdc3c7; /* Lighter gray for struck-out price */
+  color: var(--border-color);
   font-size: 1rem;
   text-align: center;
+  text-decoration: line-through;
 }
 
 .arrow {
   font-size: 1.2rem;
-  color: #ecf0f1;
+  color: var(--primary-color);
   text-align: center;
 }
 
 .discountedPrice {
-  color: #e74c3c; /* Red for emphasis */
-  font-size: 1.1rem;
+  color: var(--primary-color);
   font-weight: bold;
+  font-size: 1.1rem;
   text-align: center;
 }
 
 .viewDetailsBtn {
-  background-color: var(--secondary-color); /* Updated for better contrast */
-  color: #fff;
+  background-color: var(--btn-bg);  /* Black */
+  color: var(--btn-text);             /* White */
   padding: 0.5rem 1rem;
   border-radius: 4px;
   text-decoration: none;
@@ -87,5 +83,5 @@
 }
 
 .viewDetailsBtn:hover {
-  background-color: var(--primary-color-dark);
+  color: var(--accent-color);
 }

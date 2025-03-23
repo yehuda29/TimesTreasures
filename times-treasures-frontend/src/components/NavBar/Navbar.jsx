@@ -32,25 +32,20 @@ const Navbar = () => {
   useEffect(() => {
     const fetchBrands = async () => {
       try {
-        const cachedBrands = localStorage.getItem("brands");
-        if (cachedBrands) {
-          setBrands(JSON.parse(cachedBrands));
-        } else {
-          const response = await axios.get(
-            `${import.meta.env.VITE_API_URL}/watches/brands`
-          );
-          if (response.data && response.data.success) {
-            setBrands(response.data.data);
-            localStorage.setItem("brands", JSON.stringify(response.data.data));
-          }
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/watches/brands`
+        );
+        if (response.data && response.data.success) {
+          setBrands(response.data.data);
         }
       } catch (error) {
         console.error("Error fetching brands:", error);
       }
     };
-
+  
     fetchBrands();
   }, []);
+  
 
   // Toggles for mobile menu and dropdown visibility
   const toggleMobileMenu = () => {
@@ -215,7 +210,7 @@ const Navbar = () => {
             </li>
           </>
         )}
-        {user && user.role === "admin" && <NotificationBell />}
+        {user && <NotificationBell />}
       </ul>
     </nav>
   );

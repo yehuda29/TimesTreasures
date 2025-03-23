@@ -1,15 +1,16 @@
+/* src/pages/Register/Register.module.css */
 .registerContainer {
   max-width: 600px;
   margin: 2rem auto;
   padding: 2rem;
-  background-color: #f8f9fa; /* Light background for good contrast */
+  background-color: var(--background-color);
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
 
 .registerContainer h2 {
-  color: var(--primary-color, #2c3e50);
+  color: var(--primary-color);
   margin-bottom: 1.5rem;
 }
 
@@ -28,19 +29,18 @@
 .formGroup label {
   margin-bottom: 0.5rem;
   font-weight: bold;
-  color: var(--primary-color, #2c3e50);
+  color: var(--primary-color);
 }
 
-/* Apply consistent styling to all relevant input types */
 .formGroup input,
 .formGroup input[type="date"],
 .formGroup input[type="email"],
 .formGroup input[type="password"] {
   padding: 0.5rem;
-  border: 1px solid #ced4da;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
-  background-color: #fff;
-  color: var(--primary-color, #2c3e50);
+  background-color: var(--input-bg);
+  color: var(--primary-color);
   font-size: 1rem;
 }
 
@@ -51,7 +51,7 @@
 }
 
 .radioGroup label {
-  color: var(--primary-color, #2c3e50);
+  color: var(--primary-color);
   font-size: 1rem;
 }
 
@@ -61,28 +61,23 @@
   margin-top: 1rem;
 }
 
-/* Buttons for navigating between steps */
 .backBtn,
 .nextBtn {
   padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
+  border: 2px solid var(--accent-color);
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
   font-size: 1rem;
-  font-weight: bold;
+  border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s;
-  background-color: var(--primary-color, #2c3e50);
-  color: #fff;
 }
 
 .backBtn:hover,
 .nextBtn:hover {
-  background-color: #fff;
-  color: var(--primary-color, #2c3e50);
-  border: 1px solid var(--primary-color, #2c3e50);
+  color: var(--accent-color);
 }
 
-/* Message & link styling for login prompt */
 .loginMsg {
   text-align: center;
   margin-top: 1rem;
@@ -91,7 +86,7 @@
 }
 
 .loginMsg a {
-  color: var(--secondary-color, #e74c3c);
+  color: var(--accent-color);
   text-decoration: none;
 }
 

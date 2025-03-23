@@ -1,92 +1,91 @@
 /* src/components/Footer/Footer.module.css */
 .footer {
-    background-color: var(--primary-color);
-    color: var(--text-color); 
-    padding: 2rem 1rem;
-    display: flex;
+  background-color: var(--primary-color); /* Black */
+  color: var(--secondary-color);           /* White */
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.footerTop {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1200px;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.footerSection {
+  flex: 1;
+  min-width: 200px;
+  margin: 1rem;
+}
+
+.sectionTitle {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: var(--secondary-color); /* White */
+}
+
+.linkList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.linkList li {
+  margin-bottom: 0.5rem;
+}
+
+.linkList li a {
+  color: var(--secondary-color); /* White */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.linkList li a:hover {
+  color: var(--accent-color); /* Gold on hover */
+}
+
+.socialMedia {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.socialMedia a {
+  color: var(--secondary-color); /* White */
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+.socialMedia a:hover {
+  color: var(--accent-color); /* Gold on hover */
+}
+
+.footerBottom {
+  border-top: 1px solid var(--border-color);
+  padding-top: 1rem;
+  text-align: center;
+  width: 100%;
+  max-width: 1200px;
+  color: var(--subtext-color);
+}
+
+@media (max-width: 768px) {
+  .footerTop {
     flex-direction: column;
     align-items: center;
   }
-  
-  .footerTop {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 1200px;
-    flex-wrap: wrap;
-    margin-bottom: 2rem;
-  }
-  
+
   .footerSection {
-    flex: 1;
-    min-width: 200px;
-    margin: 1rem;
-  }
-  
-  .sectionTitle {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    color: var(--secondary-color); /* Replace with your navbar/hero secondary color */
-  }
-  
-  .linkList {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .linkList li {
-    margin-bottom: 0.5rem;
-  }
-  
-  .linkList li a {
-    color: var(--text-color);
-    text-decoration: none;
-    transition: color 0.3s ease;
-  }
-  
-  .linkList li a:hover {
-    color: var(--hover-color); /* Define a hover color */
-  }
-  
-  .socialMedia {
-    margin-top: 1rem;
-    display: flex;
-    gap: 0.5rem;
-  }
-  
-  .socialMedia a {
-    color: var(--text-color);
-    font-size: 1.2rem;
-    transition: color 0.3s ease;
-  }
-  
-  .socialMedia a:hover {
-    color: var(--hover-color);
-  }
-  
-  .footerBottom {
-    border-top: 1px solid var(--border-color); /* Optional: Adds a top border */
-    padding-top: 1rem;
+    margin: 1rem 0;
     text-align: center;
-    width: 100%;
-    max-width: 1200px;
-    color: var(--subtext-color); /* Optional: Different color for footer bottom text */
   }
-  
-  @media (max-width: 768px) {
-    .footerTop {
-      flex-direction: column;
-      align-items: center;
-    }
-  
-    .footerSection {
-      margin: 1rem 0;
-      text-align: center;
-    }
-  
-    .socialMedia {
-      justify-content: center;
-    }
+
+  .socialMedia {
+    justify-content: center;
   }
-  
+}

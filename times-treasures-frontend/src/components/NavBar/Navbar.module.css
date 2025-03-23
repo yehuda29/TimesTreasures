@@ -1,3 +1,4 @@
+/* src/components/Navbar/Navbar.module.css */
 /*************************************
  * Navbar Layout
  *************************************/
@@ -6,7 +7,7 @@
   align-items: center;
   justify-content: space-between;
   background-color: var(--primary-color);
-  color: #ecf0f1;
+  color: var(--secondary-color);
   padding: 1rem 2rem;
   position: relative;
   z-index: 10;
@@ -18,6 +19,11 @@
   font-size: 1.5rem;
   font-weight: bold;
   color: var(--secondary-color);
+  transition: color 0.3s ease;
+}
+
+.navbarLogo a:hover {
+  color: var(--accent-color);
 }
 
 /*************************************
@@ -32,9 +38,10 @@
 .navbarSearch input {
   padding: 0.5rem;
   border-radius: 5px;
-  border: 1px solid #bdc3c7;
+  border: 1px solid var(--border-color);
   width: 200px;
   color: var(--primary-color);
+  background-color: var(--input-bg);
 }
 
 .searchBtn {
@@ -44,10 +51,11 @@
   color: var(--secondary-color);
   cursor: pointer;
   margin-left: 10px;
+  transition: color 0.3s ease;
 }
 
 .searchBtn:hover {
-  color: #c0392b;
+  color: var(--accent-color);
 }
 
 /*************************************
@@ -63,7 +71,7 @@
 .hamburgerLine {
   width: 25px;
   height: 3px;
-  background-color: #ecf0f1;
+  background-color: var(--secondary-color);
   transition: all 0.3s ease;
   border-radius: 2px;
 }
@@ -92,24 +100,21 @@
   padding: 0;
 }
 
-/* Active Link */
-.active a {
-  color: var(--secondary-color);
-  font-weight: bold;
-}
-
-/* Hover Effects */
 .navbarLinks a {
   text-decoration: none;
-  color: #ecf0f1;
-  font-weight: 100;
+  color: var(--secondary-color);
   font-size: 1rem;
-  transition: color 0.3s;
+  transition: color 0.3s ease;
 }
 
 .navbarLinks a:hover {
-  color: #c0392b;
+  color: var(--accent-color);
 }
+
+.active a {
+  color: var(--secondary-color); /* Keep it white */
+}
+
 
 .welcomeText {
   color: var(--secondary-color);
@@ -124,18 +129,17 @@
   position: relative;
 }
 
-/* Updated dropdownMenu styling with text-transform */
 .dropdownMenu {
   position: absolute;
   top: 100%;
   left: 0;
-  background: linear-gradient(180deg, var(--primary-color) 0%, #2c3e50 100%);
-  border: 1px solid rgba(236, 240, 241, 0.3);
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
   border-radius: 5px;
   box-shadow: 0 6px 8px rgba(0, 0, 0, 0.25);
   list-style: none;
   padding: 0.5rem 0;
-  min-width: 180px; /* increased width for better appearance */
+  min-width: 180px;
   opacity: 0;
   visibility: hidden;
   transform: translateY(10px);
@@ -157,26 +161,24 @@
   display: block;
   padding: 0.75rem 1rem;
   text-decoration: none;
-  color: #ecf0f1;
+  color: var(--secondary-color);
   font-size: 0.9rem;
-  /* Ensure the first letter of each word is uppercase */
   text-transform: capitalize;
   transition: background-color 0.3s, color 0.3s;
 }
 
 .dropdownMenu a:hover {
-  background-color: rgba(236, 240, 241, 0.2);
-  color: var(--secondary-color);
+  color: var(--accent-color);
 }
 
 /*************************************
- * Buttons (Inside navbarLinks)
+ * Navbar Buttons
  *************************************/
 .navbarBtn {
   padding: 0.5rem 1rem;
-  border: 1px solid #ecf0f1;
+  border: 1px solid var(--secondary-color);
   background-color: transparent;
-  color: #ecf0f1;
+  color: var(--secondary-color);
   font-size: 1rem;
   border-radius: 5px;
   cursor: pointer;
@@ -184,19 +186,7 @@
 }
 
 .navbarBtn:hover {
-  background-color: #ecf0f1;
-  color: var(--primary-color);
-}
-
-.navbarBtn.primary {
-  background-color: var(--secondary-color);
-  color: #ecf0f1;
-  border: none;
-}
-
-.navbarBtn.primary:hover {
-  background-color: #c0392b;
-  color: #ecf0f1;
+  color: var(--accent-color);
 }
 
 /*************************************
@@ -214,7 +204,7 @@
 
 .cartCount {
   font-size: 0.9rem;
-  color: #ecf0f1;
+  color: var(--secondary-color);
 }
 
 /*************************************
@@ -222,14 +212,13 @@
  *************************************/
 @media (max-width: 768px) {
   .navbarSearch {
-    display: none; /* Hide search bar on mobile if desired */
+    display: none;
   }
-
+  
   .navbarHamburger {
-    display: flex; /* Show hamburger icon on mobile */
+    display: flex;
   }
-
-  /* Hide nav links by default on mobile */
+  
   .navbarLinks {
     display: none;
     flex-direction: column;
@@ -241,15 +230,8 @@
     padding: 1rem 0;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   }
-
+  
   .navbarLinks.open {
     display: flex;
   }
-}
-
-.cartCount {
-  margin-left: 4px;
-  font-size: 0.9rem;
-  font-weight: bold;
-  color: #333;
 }
