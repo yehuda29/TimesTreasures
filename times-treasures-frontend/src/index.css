@@ -1,21 +1,36 @@
 /* src/index.css */
-
 :root {
-  --primary-color: #2c3e50; /* Dark blue for primary theme */
-  --primary-color-dark: #0056b3; /* Darker blue for highlights */
-  --secondary-color: #e74c3c; /* Red accent color */
-  --text-color: #ecf0f1; /* Light text */
-  --hover-color: #e74c3c; /* Same as secondary for hover effects */
-  --subtext-color: #ffffff; /* White text for contrast */
-  --border-color: #5555; /* Soft border color */
-  --background-color: #34495e; /* Darker background for contrast */
-  --input-bg: #2c3e50; /* Match primary theme */
+  /* Base Colors: Black & White */
+  --primary-color: #000000;        /* Black for primary elements */
+  --secondary-color: #ffffff;      /* White for backgrounds and contrast */
+
+  /* Accent (Only for hover states) */
+  --accent-color: #FFD700;         /* Gold for hover effects */
+
+  /* Text and Supporting Colors */
+  --text-color: #000000;           /* Main text (black) */
+  --subtext-color: #555555;        /* Dark grey for subtext */
+  --border-color: #CCCCCC;         /* Light grey for borders */
+  --background-color: #ffffff;     /* Overall background (white) */
+  --input-bg: #f0f0f0;             /* Light grey for input backgrounds */
+
+  /* Typography */
+  --font-family: 'Helvetica Neue', sans-serif;
+
+  /* Unified UI Variables for Elements */
+  --btn-bg: var(--primary-color);       /* Default button background (black) */
+  --btn-text: var(--secondary-color);     /* Default button text (white) */
+  --btn-hover-bg: var(--accent-color);    /* Button background on hover (gold) */
+  --btn-border: none;
+
+  --link-color: var(--secondary-color);   /* Default link color (white) */
+  --link-hover-color: var(--accent-color);  /* Link hover color (gold) */
 }
-  
-  body {
-    color: var(--text-color);
-    background-color: #f5f5f5;
-    margin: 0;
-    font-family: Arial, sans-serif;
-  }
-   
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+}

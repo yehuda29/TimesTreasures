@@ -1,24 +1,21 @@
-/* ProductDetail.module.css */
-
-/* Main container for product detail */
+/* src/components/ProductDetail/ProductDetail.module.css */
 .productDetail {
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
   padding: 2rem;
-  background-color: #fff;
+  background-color: var(--background-color);
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   margin: 2rem auto;
   max-width: 1200px;
-  color: black;
+  color: var(--text-color);
 }
 
-/* Product image styling */
 .productImage {
   width: 100%;
-  max-width: 366px; /* Reduced from 400px for a more compact look */
-  height: 500px; /* Fixed height for a more compact appearance */
+  max-width: 366px;
+  height: 500px;
   border-radius: 8px;
   object-fit: cover;
 }
@@ -27,42 +24,34 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  /* Remove any justify-content: flex-start to let margin-top push content down */
 }
 
-/* Product name style */
 .productName {
   font-size: 2rem;
   margin-bottom: 0.5rem;
-  color: #333;
-}
-
-/* Product price styling */
-.productPrice {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  /* Use primary color for pricing */
   color: var(--primary-color);
 }
 
-/* Product description styling */
+.productPrice {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+
 .productDescription {
   font-size: 1rem;
   margin-bottom: 1rem;
-  color: #555;
+  color: var(--subtext-color);
   line-height: 1.5;
 }
 
-/* Stock information styling */
 .stockInfo {
   font-size: 1rem;
   margin-bottom: 1rem;
-  /* Use secondary color for stock info */
-  color: var(--secondary-color);
+  color: var(--accent-color);
   font-weight: bold;
 }
 
-/* Quantity selector container */
 .quantitySelector {
   display: flex;
   align-items: center;
@@ -72,59 +61,55 @@
 .quantitySelector label {
   margin-right: 0.5rem;
   font-size: 1rem;
-  color: #333;
+  color: var(--primary-color);
 }
 
 .quantitySelector input {
   width: 60px;
   padding: 0.25rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   text-align: center;
 }
-
-/* Button group styling */
 
 .buttonGroup {
   display: flex;
   gap: 1rem;
   align-items: center;
   flex-wrap: wrap;
-  margin-top: auto; /* This pushes the button group to the bottom */
+  margin-top: auto;
 }
 
-/* Add to Cart button style */
 .addToCartBtn {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--accent-color);
   background-color: var(--primary-color);
-  color: #fff;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 4px;
+  color: var(--secondary-color);
+  font-size: 1rem;
+  border-radius: 5px;
   cursor: pointer;
-  transition: opacity 0.3s ease;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .addToCartBtn:hover {
-  opacity: 0.8;
+  color: var(--accent-color);
 }
 
-/* Delete button styling */
 .deleteBtn {
-  background-color: var(--secondary-color);
-  color: #fff;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--accent-color);
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  font-size: 1rem;
+  border-radius: 5px;
   cursor: pointer;
-  transition: opacity 0.3s ease;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .deleteBtn:hover {
-  opacity: 0.8;
+  color: var(--accent-color);
 }
 
-
-/* Loader styling */
 .loader {
   text-align: center;
   font-size: 1.5rem;
@@ -132,7 +117,6 @@
   color: var(--primary-color);
 }
 
-/* Price container and arrow styling */
 .priceContainer {
   display: flex;
   align-items: center;
@@ -140,51 +124,40 @@
 }
 
 .originalPrice {
-  color: #888;
+  color: var(--subtext-color);
 }
 
 .arrow {
   font-size: 1.2rem;
-  color: #333;
+  color: var(--primary-color);
 }
 
 .discountedPrice {
-  color: var(--primary-color);
+  color: var(--btn-bg);
   font-weight: bold;
 }
 
-/* Special offer badge styling */
 .specialOfferBadge {
-  background-color: var(--secondary-color);
-  color: #fff;
+  background-color: var(--accent-color);
+  color: var(--secondary-color);
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
   font-size: 0.9rem;
   margin-top: 0.5rem;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .productDetail {
-    flex-direction: column;
-    padding: 1rem;
-  }
-  .productImage {
-    max-width: 100%;
-  }
-}
-
 .adminUpdateBtn {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--accent-color);
   background-color: var(--primary-color);
-  color: #fff;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 4px;
+  color: var(--secondary-color);
+  font-size: 1rem;
+  border-radius: 5px;
   cursor: pointer;
-  transition: opacity 0.3s ease;
-  margin-left: auto; /* This pushes the button to the right in a flex container */
+  transition: background-color 0.3s, color 0.3s;
+  margin-left: auto;
 }
 
 .adminUpdateBtn:hover {
-  opacity: 0.8;
+  color: var(--accent-color);
 }

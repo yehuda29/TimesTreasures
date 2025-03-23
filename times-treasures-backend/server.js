@@ -11,6 +11,7 @@ const userRoutes = require('./routes/userRoutes');    // Routes for user-related
 const watchRoutes = require('./routes/watchRoutes');  // Routes for watch-related endpoints
 const paypalRoutes = require('./routes/paypalRoutes'); // Routes for PayPal REST API endpoints
 const adminRoutes = require('./routes/adminRoutes');   // Routes for admin-related endpoints
+const branchRoutes = require('./routes/branchRoutes');
 const path = require('path');                         // Module for working with file paths
 const fileUpload = require('express-fileupload'); // <-- Added file upload middleware
 const lusca = require('lusca');
@@ -104,6 +105,8 @@ app.use('/api/watches', watchRoutes);
 // Mount the admin routes under the /api/admin path
 app.use('/api/admin', adminRoutes);
 
+// Mount the branch routes under /api/branches
+app.use('/api/branches', branchRoutes);
 
 // -----------------------
 // Production: Serve Client Build

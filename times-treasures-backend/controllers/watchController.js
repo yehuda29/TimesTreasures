@@ -136,15 +136,6 @@ exports.uploadWatch = asyncHandler(async (req, res, next) => {
     });
   }
 
-  // Validate category against allowed values
-  const allowedCategories = ['men-watches', 'women-watches', 'luxury-watches', 'smartwatches'];
-  if (!allowedCategories.includes(category)) {
-    return res.status(400).json({
-      success: false,
-      message: `Invalid category. Allowed categories are: ${allowedCategories.join(', ')}`
-    });
-  }
-
   try {
     // Upload the image file to Cloudinary
     const result = await cloudinary.uploader.upload(req.files.image.tempFilePath, {

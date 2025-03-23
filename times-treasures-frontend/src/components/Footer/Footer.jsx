@@ -1,11 +1,28 @@
 // src/components/Footer/Footer.js
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './Footer.module.css';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
 
 const Footer = () => {
+  const [branches, setBranches] = useState([]);
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/branches`);
+        if (response.data.success) {
+          setBranches(response.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching branches for footer:", error);
+      }
+    };
+
+    fetchBranches();
+  }, []);
+
   return (
     <footer className={styles.footer}>
       <div className={styles.footerTop}>
@@ -15,37 +32,21 @@ const Footer = () => {
           <ul className={styles.linkList}>
             <li><Link to="/">Home</Link></li>
             <li><Link to="/shop">Shop</Link></li>
-            <li><Link to="/about">About Us</Link></li>
-            <li><Link to="/contact">Contact Us</Link></li>
-            <li><Link to="/faq">FAQ</Link></li>
+            <li><Link to="/contact">Contact</Link></li>
           </ul>
         </div>
 
-        {/* Information Section */}
+        {/* Information Section now only contains branch links */}
         <div className={styles.footerSection}>
           <h3 className={styles.sectionTitle}>Information</h3>
           <ul className={styles.linkList}>
-            <li>Time's Treasures</li>
-            <li>1234 Watch St.</li>
-            <li>City, State, ZIP</li>
-            <li>Email: info@watchshop.com</li>
-            <li>Phone: (123) 456-7890</li> {/* Filled in phone number */}
-          </ul>
-          <div className={styles.socialMedia}>
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer"><FaFacebookF /></a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer"><FaTwitter /></a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"><FaInstagram /></a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer"><FaLinkedinIn /></a>
-          </div>
-        </div>
-
-        {/* Legal Section */}
-        <div className={styles.footerSection}>
-          <h3 className={styles.sectionTitle}>Legal</h3>
-          <ul className={styles.linkList}>
-            <li><Link to="/terms">Terms of Service</Link></li>
-            <li><Link to="/privacy">Privacy Policy</Link></li>
-            <li><Link to="/return">Return Policy</Link></li>
+            {branches.map((branch) => (
+              <li key={branch._id}>
+                <Link to={`/display-branch/${encodeURIComponent(branch.name)}`}>
+                  {branch.name}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
       </div>

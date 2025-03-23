@@ -35,6 +35,9 @@ const AdminAnalytics = lazy(() => import('./pages/AdminAnalytics/AdminAnalytics.
 const OrderTracking = lazy(() => import('./pages/OrderTracking/OrderTracking.jsx'));
 const SearchResults = lazy(() => import('./pages/SearchResults/SearchResults.jsx'));
 const UpdatePersonalInformation = lazy(() => import('./pages/UpdatePersonalInformation/UpdatePersonalInformation.jsx'));
+const BranchCreation = lazy(() => import('./pages/BranchCreation/BranchCreation.jsx'));
+const DisplayBranch = lazy(() => import('./pages/DisplayBranch/DisplayBranch.jsx'));
+const Shop = lazy(() => import('./pages/Shop/Shop.jsx'));
 
 const App = () => {
   return (
@@ -65,8 +68,11 @@ const App = () => {
                     <Route path="/discounted-watches" element={<DiscountedWatches />} />
                     <Route path="/order-tracking" element={<OrderTracking />} />
                     <Route path="/search" element={<SearchResults />} />
+                    <Route path="/shop" element={<Shop />} />
                     <Route path="/update-personal-info" element={<UpdatePersonalInformation />} />
+                    <Route path="/display-branch/:branchName" element={<DisplayBranch />} />
                     <Route path="/admin/analytics" element={<AdminAnalytics />} />
+                    <Route path="/admin/branch-creation" element={<BranchCreation />} />
                     <Route path="/admin" element={<AdminDashboard />} />
                     <Route path="*" element={<h2 style={{ textAlign: 'center', marginTop: '2rem' }}>Page Not Found</h2>} />
                   </Routes>

@@ -1,8 +1,6 @@
 /* src/components/PaymentButton/PaymentButton.module.css */
-
 .paymentButtonContainer {
-    width: 100%;
-    max-width: 300px;
-    margin: 1rem auto;
-  }
-  
+  width: 100%;
+  max-width: 300px;
+  margin: 1rem auto;
+}

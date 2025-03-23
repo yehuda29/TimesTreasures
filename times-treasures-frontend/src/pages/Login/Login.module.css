@@ -1,59 +1,64 @@
 /* src/pages/Login/Login.module.css */
-
 .loginContainer {
-    max-width: 500px;
-    margin: 50px auto;
-    padding: 20px;
-    color: var(--primary-color);
-  }
-  
-  .loginForm {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .formGroup {
-    margin-bottom: 15px;
-  }
-  
-  .formGroup label {
-    margin-bottom: 5px;
-    display: block;
-  }
-  
-  .formGroup input {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-  }
-  
-  .loginBtn {
-    padding: 10px;
-    background-color: var(--primary-color);
-    color: #fff;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .loginBtn:hover {
-    background-color: #141e28;
-  }
-  
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 20px;
+  color: var(--primary-color);
+  background-color: var(--background-color);
+}
 
-  .registerMsg {
-    text-align: center;
-    font-size: 1.1rem;
-    color: var(--primary-color, #2c3e50);
-    margin-top: 2rem;
-  }
-  
-  .registerMsg a {
-    color: var(--secondary-color, #e74c3c);
-    text-decoration: none;
-    font-weight: bold;
-  }
-  
-  .registerMsg a:hover {
-    text-decoration: underline;
-  }
-  
+.loginForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup {
+  margin-bottom: 15px;
+}
+
+.formGroup label {
+  margin-bottom: 5px;
+  display: block;
+  color: var(--primary-color);
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  color: var(--primary-color);
+}
+
+.loginBtn {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--accent-color);
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.loginBtn:hover {
+  color: var(--accent-color);
+}
+
+.registerMsg {
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--primary-color);
+  margin-top: 2rem;
+}
+
+.registerMsg a {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.registerMsg a:hover {
+  text-decoration: underline;
+}

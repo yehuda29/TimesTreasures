@@ -6,23 +6,28 @@ const Carousel = ({ watchImages }) => {
   const [prevSlide, setPrevSlide] = useState(null);
 
   useEffect(() => {
-    // Switch slides every 10 seconds
     const interval = setInterval(() => {
-
       setPrevSlide(currentSlide);
-
-      // Move to next slide
       setCurrentSlide((prev) => (prev + 1) % watchImages.length);
-
     }, 10000);
-
     return () => clearInterval(interval);
   }, [currentSlide, watchImages.length]);
+
+  const handlePrev = () => {
+    setPrevSlide(currentSlide);
+    setCurrentSlide(
+      (currentSlide - 1 + watchImages.length) % watchImages.length
+    );
+  };
+
+  const handleNext = () => {
+    setPrevSlide(currentSlide);
+    setCurrentSlide((currentSlide + 1) % watchImages.length);
+  };
 
   return (
     <div className={styles.carousel}>
       {watchImages.map((img, index) => {
-        // Old slide
         if (index === prevSlide) {
           return (
             <div
@@ -32,7 +37,6 @@ const Carousel = ({ watchImages }) => {
             />
           );
         }
-        // Active slide
         if (index === currentSlide) {
           return (
             <div
@@ -42,7 +46,6 @@ const Carousel = ({ watchImages }) => {
             />
           );
         }
-        // Hidden slides
         return (
           <div
             key={`hidden-${index}`}
@@ -51,6 +54,12 @@ const Carousel = ({ watchImages }) => {
           />
         );
       })}
+      <button className={styles.prevButton} onClick={handlePrev}>
+        ‹
+      </button>
+      <button className={styles.nextButton} onClick={handleNext}>
+        ›
+      </button>
     </div>
   );
 };

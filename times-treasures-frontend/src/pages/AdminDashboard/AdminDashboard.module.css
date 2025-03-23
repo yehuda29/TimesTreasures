@@ -1,17 +1,17 @@
-
+/* src/components/AdminDashboard/AdminDashboard.module.css */
 
 .adminDashboard {
   max-width: 800px;
   margin: 40px auto;
   padding: 20px;
-  background: var(--background-color);
+  background: var(--background-color); /* White background */
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-h2 {
+.adminDashboard h2 {
   text-align: center;
-  color: var(--secondary-color);
+  color: var(--primary-color); /* Black heading */
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 20px;
@@ -26,7 +26,7 @@ h2 {
 
 label {
   font-weight: bold;
-  color: var(--subtext-color);
+  color: var(--primary-color); /* Black labels */
   font-size: 16px;
 }
 
@@ -34,24 +34,24 @@ input,
 select {
   padding: 12px;
   font-size: 16px;
-  border: 2px solid var(--primary-color-dark);
+  border: 2px solid var(--border-color); /* Light grey border */
   border-radius: 5px;
   background: var(--input-bg);
-  color: var(--text-color);
+  color: var(--primary-color);
   transition: all 0.3s ease-in-out;
 }
 
 input:focus,
 select:focus {
-  border-color: var(--hover-color);
+  border-color: var(--accent-color); /* Gold on focus */
   outline: none;
-  box-shadow: 0 0 5px var(--hover-color);
+  box-shadow: 0 0 5px var(--accent-color);
 }
 
-/* Fetch Button */
+/* Fetch Button: default black background with white text, turning gold on hover */
 .fetchEbayBtn {
-  background-color: var(--secondary-color);
-  color: var(--subtext-color);
+  background-color: var(--btn-bg); /* Black */
+  color: var(--btn-text);          /* White */
   padding: 12px 15px;
   font-size: 18px;
   font-weight: bold;
@@ -62,7 +62,7 @@ select:focus {
 }
 
 .fetchEbayBtn:hover {
-  background-color: var(--primary-color-dark);
+  color: var(--accent-color);
 }
 
 .fetchEbayBtn:disabled {
@@ -75,12 +75,12 @@ select:focus {
   .adminDashboard {
     padding: 15px;
   }
-
+  
   input,
   select {
     font-size: 14px;
   }
-
+  
   .fetchEbayBtn {
     font-size: 16px;
     padding: 10px;

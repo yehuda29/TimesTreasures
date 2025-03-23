@@ -10,6 +10,7 @@ import ProductCard from '../../components/ProductCard/ProductCard';
 import styles from './Home.module.css';
 // Import HeroSection component for the top banner area
 import HeroSection from '../../components/HeroSection/HeroSection';
+import ShopBranchesMap from '../../components/ShowBranchesMap/ShowBranchesMap';
 import Slider from "react-slick"
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -113,18 +114,23 @@ const Home = () => {
       <HeroSection />
 
      {/* Featured Watches Section */}
-<section className={styles.featured}>
-  <h2 className={styles.sectionTitle}>Discounted Watches</h2>
-  {/* הקרוסלה */}
-  <Slider {...carouselSettings}>
-    {/* מציג את המוצרים בתוך הקרוסלה */}
-    {watches.slice(0, visibleWatches).map((watch) => (
-      <div key={watch._id} className={styles.sliderItem}>
-        <ProductCard watch={watch} />
-      </div>
-    ))}
-  </Slider>
-</section>
+    <section className={styles.featured}>
+      <h2 className={styles.sectionTitle}>Discounted Watches</h2>
+      {/* הקרוסלה */}
+      <Slider {...carouselSettings}>
+        {/* מציג את המוצרים בתוך הקרוסלה */}
+        {watches.slice(0, visibleWatches).map((watch) => (
+          <div key={watch._id} className={styles.sliderItem}>
+            <ProductCard watch={watch} />
+          </div>
+          ))}
+      </Slider>
+    </section>
+    {/* Map Section for Shop Branches */}
+    <section className={styles.mapSection}>
+      <h1>Our Shop Branches</h1>
+      <ShopBranchesMap />
+    </section>
 
     </div>
   );

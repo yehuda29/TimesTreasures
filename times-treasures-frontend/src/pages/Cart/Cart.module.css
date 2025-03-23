@@ -1,10 +1,10 @@
 /* src/pages/Cart/Cart.module.css */
-
 .cartContainer {
   max-width: 800px;
   margin: 50px auto;
   padding: 20px;
-  color: var(--primary-color);
+  color: var(--primary-color);          /* Black text */
+  background-color: var(--background-color); /* White background */
 }
 
 .cartList {
@@ -15,7 +15,7 @@
 .cartItem {
   display: flex;
   gap: 20px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--border-color);
   padding: 15px 0;
 }
 
@@ -23,7 +23,7 @@
   width: 150px;
   height: 150px;
   object-fit: cover;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
 }
 
@@ -42,17 +42,20 @@
   margin: 10px 0;
 }
 
+/* Remove button styled as a unified button */
 .removeBtn {
-  background-color: #dc3545;
-  color: #fff;
-  border: none;
-  padding: 5px 10px;
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--accent-color);
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  font-size: 1rem;
+  border-radius: 5px;
   cursor: pointer;
-  border-radius: 4px;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .removeBtn:hover {
-  background-color: #c82333;
+  background-color: var(--btn-hover-bg); /* Gold on hover */
 }
 
 .cartSummary {
@@ -60,21 +63,21 @@
   margin-top: 20px;
 }
 
+/* Purchase button styled uniformly */
 .purchaseBtn {
   padding: 10px 15px;
-  background-color: #28a745;
-  color: #fff;
-  border: none;
+  background-color: var(--btn-bg);   /* Black */
+  color: var(--btn-text);             /* White */
+  border: var(--btn-border);
   cursor: pointer;
   border-radius: 4px;
+  transition: background-color 0.3s ease;
 }
 
 .purchaseBtn:hover {
-  background-color: #218838;
+  color: var(--accent-color);
 }
 
-
-/* Example CSS snippet for price container and arrow */
 .priceContainer {
   display: flex;
   align-items: center;
@@ -82,12 +85,12 @@
 }
 
 .originalPrice {
-  color: #888;
+  color: var(--subtext-color);
 }
 
 .arrow {
   font-size: 1.2rem;
-  color: #333;
+  color: var(--primary-color);
 }
 
 .discountedPrice {
@@ -95,12 +98,26 @@
   font-weight: bold;
 }
 
-/* You can similarly add .specialOfferBadge styles */
 .specialOfferBadge {
-  background-color: var(--secondary-color);
-  color: #fff;
+  background-color: var(--btn-hover-bg);  /* Gold */
+  color: var(--secondary-color);          /* White */
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
   font-size: 0.9rem;
   margin-top: 0.5rem;
+}
+
+.checkoutBtn {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--accent-color);
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.checkoutBtn:hover {
+  color: var(--accent-color);
 }
