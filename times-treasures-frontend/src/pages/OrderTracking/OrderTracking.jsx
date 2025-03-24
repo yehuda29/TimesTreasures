@@ -1,27 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Container, Button, Typography, Paper, Box, TextField } from '@mui/material';
+import { Container, Button, Typography, Paper, Box, TextField, Grid, Divider } from '@mui/material';
 import { ProgressBar } from 'react-bootstrap';
 import Confetti from 'react-confetti';
 
-// 21 days in ms
 const TOTAL_21_DAYS_MS = 21 * 24 * 60 * 60 * 1000;
 
 const OrderTracking = () => {
-  // Basic states
   const [orderNumber, setOrderNumber] = useState('');
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Countdown & confetti
   const [timeLeftMs, setTimeLeftMs] = useState(null);
   const [showConfetti, setShowConfetti] = useState(false);
-
-  // Real shipping progress, 0..100
   const [progressValue, setProgressValue] = useState(0);
 
-  // Submit the order number
   const handleTrackOrder = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -47,14 +41,12 @@ const OrderTracking = () => {
     }
   };
 
-  // arrival date = purchaseDate + 21 days
   const getArrivalDate = (purchaseDateString) => {
     const purchaseDate = new Date(purchaseDateString);
     purchaseDate.setDate(purchaseDate.getDate() + 21);
     return purchaseDate;
   };
 
-  // Shipping countdown once we have an order
   useEffect(() => {
     if (!order) return;
 
@@ -63,7 +55,6 @@ const OrderTracking = () => {
     const initialDiff = arrivalDate - now;
 
     if (initialDiff <= 0) {
-      // Already arrived
       setTimeLeftMs(0);
       setProgressValue(100);
       setShowConfetti(true);
@@ -90,7 +81,6 @@ const OrderTracking = () => {
     return () => clearInterval(intervalId);
   }, [order]);
 
-  // Format timeLeftMs as "DD:HH:MM:SS"
   const renderTimer = () => {
     if (timeLeftMs == null) return null;
     if (timeLeftMs <= 0) return '00:00:00:00';
@@ -117,7 +107,6 @@ const OrderTracking = () => {
           Order Tracking
         </Typography>
 
-        {/* Input order number */}
         <form onSubmit={handleTrackOrder}>
           <TextField
             label="Enter Order Number"
@@ -128,7 +117,22 @@ const OrderTracking = () => {
             required
             sx={{ marginBottom: '1rem' }}
           />
-          <Button type="submit" variant="contained" color="primary">
+          <Button 
+            type="submit"
+            sx={{
+              padding: '0.5rem 1rem',
+              border: '2px solid var(--accent-color)',
+              backgroundColor: 'var(--primary-color)',
+              color: 'var(--secondary-color)',
+              fontSize: '1rem',
+              borderRadius: '5px',
+              cursor: 'pointer',
+              transition: 'background-color 0.3s, color 0.3s',
+              '&:hover': {
+                color: 'var(--accent-color)',
+              }
+            }}
+          >
             Track Order
           </Button>
         </form>
@@ -163,7 +167,6 @@ const OrderTracking = () => {
 
             {timeLeftMs > 0 ? (
               <>
-                {/* react-bootstrap animated progress bar */}
                 <Box sx={{ marginY: '1.5rem' }}>
                   <ProgressBar
                     now={progressValue}
@@ -197,6 +200,6 @@ const OrderTracking = () => {
       </Paper>
     </Container>
   );
-}
+};
 
 export default OrderTracking;
