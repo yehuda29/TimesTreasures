@@ -34,7 +34,7 @@ const sendReceiptEmail = async (userEmail, purchaseDetails) => {
     <p>City: ${purchaseDetails.shippingAddress.city}</p>
     <p>Home Address: ${purchaseDetails.shippingAddress.homeAddress}</p>
     <p>Zipcode: ${purchaseDetails.shippingAddress.zipcode}</p>
-    <p>Phone Number: ${purchaseDetails.shippingAddress.phoneNumber}</p>
+    <p>Phone Number: ${purchaseDetails.phoneNumber}</p>
     <h3>Items Purchased:</h3>
     <ul>
       ${purchaseDetails.items.map(item => `<li>${item.name} x ${item.quantity} - $${Number(item.price).toFixed(2)}</li>`).join('')}
@@ -277,7 +277,8 @@ exports.purchaseCart = asyncHandler(async (req, res, next) => {
   const purchaseDetails = {
     shippingAddress,
     items,
-    total
+    total,
+    phoneNumber: user.phoneNumber
   };
 
   // Asynchronously send the receipt email (not awaited to avoid delaying the response)
@@ -302,7 +303,7 @@ exports.purchaseCart = asyncHandler(async (req, res, next) => {
 
 exports.updateProfile = asyncHandler(async (req, res, next) => {
   // Destructure fields from the request body, including the new ones.
-  const { name, familyName, birthDate, sex, addresses } = req.body;
+  const { name, familyName, birthDate, sex, addresses, phoneNumber } = req.body;
   const updates = {};
 
   if (name) updates.name = name;
@@ -310,6 +311,7 @@ exports.updateProfile = asyncHandler(async (req, res, next) => {
   if (birthDate) updates.birthDate = birthDate; // Ensure birthDate is in the proper format (or convert it to a Date)
   if (sex) updates.sex = sex;
   if (addresses) updates.addresses = addresses;
+  if (phoneNumber) updates.phoneNumber = phoneNumber;
 
   // Check if a new profile picture file is uploaded via req.files.profilePicture
   if (req.files && req.files.profilePicture) {

@@ -25,15 +25,15 @@ const ProductCard = ({ watch }) => {
         {isDiscounted ? (
           <div className={styles.priceContainer}>
             <p className={styles.originalPrice}>
-              <s>${Number(watch.price).toFixed(2)}</s>
+            <s>₪{(Number(watch.price)).toFixed(2)}</s>
             </p>
             <span className={styles.arrow}>→</span>
             <p className={styles.discountedPrice}>
-              ${finalPrice.toFixed(2)}
+               ₪{(finalPrice).toFixed(2)} 
             </p>
           </div>
         ) : (
-          <p className={styles.productPrice}>${Number(watch.price).toFixed(2)}</p>
+          <p className={styles.productPrice}>₪{(Number(watch.price)).toFixed(2)}</p>
         )}
         <Link to={`/product/${watch._id}`} className={styles.viewDetailsBtn}>
           View Details

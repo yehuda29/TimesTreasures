@@ -126,19 +126,6 @@ const SetAddress = () => {
             title="Zipcode must contain only numbers"
           />
         </div>
-        <div className={styles.formGroup}>
-          <label htmlFor="phoneNumber">Phone Number:</label>
-          <input
-            type="tel"
-            id="phoneNumber"
-            name="phoneNumber"
-            value={formData.phoneNumber}
-            placeholder={initialAddress.phoneNumber || "Phone Number"}
-            onChange={onChange}
-            pattern="\d{10}"
-            title="Phone number must be exactly 10 digits"
-          />
-        </div>
         <button type="submit" className={styles.submitBtn}>
           Update Address
         </button>

@@ -90,3 +90,6 @@ exports.getSalesStats = asyncHandler(async (req, res, next) => {
     sexSales
   });
 });
+
+
+// get all users ---->

@@ -14,7 +14,8 @@ const UpdatePersonalInformation = () => {
     name: '',
     familyName: '',
     birthDate: '',
-    sex: ''
+    sex: '',
+    phoneNumber: ''
   });
 
   // Populate the form with existing user data when available
@@ -24,7 +25,8 @@ const UpdatePersonalInformation = () => {
         name: user.name || '',
         familyName: user.familyName || '',
         birthDate: user.birthDate ? new Date(user.birthDate).toISOString().substr(0, 10) : '',
-        sex: user.sex || ''
+        sex: user.sex || '',
+        phoneNumber: user.phoneNumber || ''
       });
     }
   }, [user]);
@@ -122,6 +124,19 @@ const UpdatePersonalInformation = () => {
               Female
             </label>
           </div>
+        </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="phoneNumber">Phone Number:</label>
+            <input
+              type="tel"
+              id="phoneNumber"
+              name="phoneNumber"
+              value={formData.phoneNumber}
+              onChange={onChange}
+              pattern="\d{10}"
+              title="Phone number must be exactly 10 digits"
+              required
+            />
         </div>
         <button type="submit" className={styles.submitBtn}>Update</button>
       </form>

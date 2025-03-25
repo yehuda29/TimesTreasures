@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import axios from 'axios';
-
-// Import marker images using ES module syntax
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+import styles from './ShowBranchesMap.module.css';
 
-// Fix default marker icons in Leaflet
+// Fix default marker icons for React environments
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x,
@@ -18,9 +17,16 @@ L.Icon.Default.mergeOptions({
 });
 
 const ShowBranchesMap = () => {
-  const [branches, setBranches] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
+  // Default center set to Tel Aviv coordinates
+  const defaultPosition = [32.0853, 34.7818];
 
+  // State for branch filtering and fetched branches
+  const [filter, setFilter] = useState('');
+  const [branches, setBranches] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch branches from the server
   useEffect(() => {
     const fetchBranches = async () => {
       try {
@@ -28,77 +34,71 @@ const ShowBranchesMap = () => {
         if (response.data && response.data.success) {
           setBranches(response.data.data);
         }
-      } catch (error) {
-        console.error("Error fetching branches:", error);
+      } catch (err) {
+        console.error('Error fetching branches:', err);
+        setError('Failed to load branches.');
+      } finally {
+        setLoading(false);
       }
     };
-
     fetchBranches();
   }, []);
 
-  // Filter branches based on the search query (case-insensitive)
+  // Filter branches based on the filter input (by name or address)
   const filteredBranches = branches.filter(branch =>
-    branch.name.toLowerCase().includes(searchQuery.toLowerCase())
+    branch.name.toLowerCase().includes(filter.toLowerCase()) ||
+    (branch.address && branch.address.toLowerCase().includes(filter.toLowerCase()))
   );
 
-  // Use filteredBranches if searchQuery exists; otherwise, use the full list
-  const displayBranches = searchQuery.trim() ? filteredBranches : branches;
+  if (loading) {
+    return <p>Loading branches...</p>;
+  }
 
-  // Set default center to the first branch in the display list, or fallback to a preset coordinate
-  const defaultCenter = displayBranches.length > 0
-    ? [displayBranches[0].position.lat, displayBranches[0].position.lng]
-    : [40.7549, -73.9840];
+  if (error) {
+    return <p>{error}</p>;
+  }
 
   return (
-    <div>
-      {/* Search Input */}
-      <div style={{ marginBottom: '1rem', textAlign: 'center' }}>
+    <div className={styles.mapWrapper}>
+      <div className={styles.filterContainer}>
         <input
           type="text"
-          placeholder="Search for branch..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          style={{
-            padding: '0.5rem',
-            width: '80%',
-            maxWidth: '400px',
-            borderRadius: '4px',
-            border: '1px solid #ccc'
-          }}
+          placeholder="Filter branches..."
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          className={styles.filterInput}
         />
       </div>
-
-      {/* Map Container */}
-      <MapContainer
-        center={defaultCenter}
-        zoom={12}
-        style={{ height: '500px', width: '100%' }}
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        {displayBranches.map((branch, index) => {
-          const branchPosition = [branch.position.lat, branch.position.lng];
-          return (
-            <Marker key={index} position={branchPosition}>
-              <Popup>
-                <strong>{branch.name}</strong>
-                {branch.address && (
-                  <>
-                    <br />
-                    {branch.address}
-                  </>
-                )}
-                <br />
-                Phone: {branch.phoneNumber}
-                <br />
-                Hours: {branch.openingHour} - {branch.closingHour}
-              </Popup>
-            </Marker>
-          );
-        })}
-      </MapContainer>
+      <div className={styles.mapContainer}>
+        <MapContainer center={defaultPosition} zoom={12} style={{ height: '400px', width: '100%' }}>
+          <TileLayer
+            attribution="&copy; OpenStreetMap contributors"
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          {filteredBranches.map(branch => {
+            // Use branch position if available, otherwise fall back to default (Tel Aviv)
+            const branchPosition = branch.position
+              ? [branch.position.lat, branch.position.lng]
+              : defaultPosition;
+            return (
+              <Marker key={branch._id} position={branchPosition}>
+                <Popup>
+                  <div>
+                    <h3>{branch.name}</h3>
+                    {branch.address && <p>{branch.address}</p>}
+                    {branch.phoneNumber && <p>Phone: {branch.phoneNumber}</p>}
+                    {(branch.openingHour || branch.closingHour) && (
+                      <p>
+                        Hours: {branch.openingHour || 'N/A'} - {branch.closingHour || 'N/A'}
+                      </p>
+                    )}
+                  </div>
+                </Popup>
+              </Marker>
+            );
+          })}
+        </MapContainer>
+      </div>
     </div>
   );
 };
