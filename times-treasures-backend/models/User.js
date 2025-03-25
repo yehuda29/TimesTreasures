@@ -57,10 +57,6 @@ const addressSchema = new mongoose.Schema({
   zipcode: {
     type: String,
     required: [true, 'Please provide a zipcode']
-  },
-  phoneNumber: {
-    type: String,
-    required: [true, 'Please provide a phone number']
   }
 }, { _id: false });
 
@@ -97,6 +93,10 @@ const userSchema = new mongoose.Schema({
   birthDate: {
     type: Date,
     required: [true, 'Please provide your birth date']
+  },
+  phoneNumber: {
+    type: String,
+    required: [true, 'Please provide a phone number']
   },
   sex: {
     type: String,

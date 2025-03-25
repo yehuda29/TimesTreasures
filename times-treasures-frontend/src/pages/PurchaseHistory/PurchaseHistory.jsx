@@ -79,7 +79,7 @@ const PurchaseHistory = () => {
                 <p>Order Number: {purchase.orderNumber}</p>
                 <p>Quantity: {purchase.quantity}</p>
                 <p>
-                  Total Price: $
+                  Total Price: ₪
                   {purchase.totalPrice !== undefined
                     ? Number(purchase.totalPrice).toFixed(2)
                     : '0.00'}

@@ -38,7 +38,7 @@ router.post(
       purchase_units: [
         {
           amount: {
-            currency_code: 'USD', // Use USD as the currency.
+            currency_code: 'ILS', // Use ILS as the currency.
             value: amount,        // Set the amount to be charged.
           },
         },

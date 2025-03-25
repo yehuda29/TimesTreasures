@@ -216,11 +216,11 @@ const ProductDetail = () => {
             {isDiscounted ? (
               <div className={styles.priceContainer}>
                 <p className={styles.originalPrice}>
-                  <s>${watch.price ? Number(watch.price).toFixed(2) : "0.00"}</s>
+                  <s>₪{watch.price ? (Number(watch.price)).toFixed(2) : "0.00"}</s>
                 </p>
                 <span className={styles.arrow}>→</span>
                 <p className={styles.discountedPrice}>
-                  ${finalPrice.toFixed(2)}
+                  ₪{(finalPrice).toFixed(2)}
                 </p>
                 <p className={styles.specialOfferBadge}>
                   {watch.specialOffer?.discountPercentage || 0}% OFF!
@@ -228,7 +228,7 @@ const ProductDetail = () => {
               </div>
             ) : (
               <p className={styles.productPrice}>
-                ${watch.price ? Number(watch.price).toFixed(2) : "0.00"}
+                ₪{watch.price ? (Number(watch.price)).toFixed(2) : "0.00"}
               </p>
             )}
   

@@ -241,13 +241,13 @@ const renderAddressStep = () => {
               const unitPrice = calculateFinalPrice(item.watch);
               return (
                 <li key={index}>
-                  {item.watch.name} x {item.quantity} - $ 
+                  {item.watch.name} x {item.quantity} - ₪ 
                   {(unitPrice * item.quantity).toFixed(2)}
                 </li>
               );
             })}
           </ul>
-          <h3>Total: ${totalPrice.toFixed(2)}</h3>
+          <h3>Total: ₪{(totalPrice).toFixed(2)}</h3>
         </div>
         <p className={styles.shippingTime}>
           {shippingAddress.pickupBranch 

@@ -55,21 +55,21 @@ const Cart = () => {
                     {isDiscounted ? (
                       <div className={styles.priceContainer}>
                         <p className={styles.originalPrice}>
-                          <s>${Number(item.watch.price).toFixed(2)}</s>
+                          <s>₪{(Number(item.watch.price)).toFixed(2)}</s>
                         </p>
                         <span className={styles.arrow}>→</span>
                         <p className={styles.discountedPrice}>
-                          ${unitPrice.toFixed(2)}
+                          ₪{(unitPrice).toFixed(2)}
                         </p>
                       </div>
                     ) : (
-                      <p>Price: ${Number(item.watch.price).toFixed(2)}</p>
+                      <p>Price: ₪{(Number(item.watch.price)).toFixed(2)}</p>
                     )}
                     <div className={styles.quantity}>
                       <label>Quantity:</label>
                       <span>{item.quantity}</span>
                     </div>
-                    <p>Subtotal: ${(unitPrice * item.quantity).toFixed(2)}</p>
+                    <p>Subtotal: ₪{(unitPrice * item.quantity).toFixed(2)}</p>
                     <button
                       onClick={() => removeFromCart(getWatchId(item), token)}
                       className={styles.removeBtn}
@@ -82,7 +82,7 @@ const Cart = () => {
             })}
           </ul>
           <div className={styles.cartSummary}>
-            <h3>Total: ${totalPrice.toFixed(2)}</h3>
+            <h3>Total: ₪{(totalPrice).toFixed(2)}</h3>
             <Link to="/checkout">
               <button className={styles.checkoutBtn}>Proceed to Checkout</button>
             </Link>
