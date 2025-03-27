@@ -278,7 +278,7 @@ const Profile = () => {
                 <Grid item xs={12} sm={6}>
                   <Button 
                     component={Link} 
-                    to= "/admin/users/table" 
+                    to= "/admin/users-table" 
                     variant="outlined" 
                     fullWidth
                     sx={{

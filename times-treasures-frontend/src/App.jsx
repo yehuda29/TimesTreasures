@@ -76,7 +76,7 @@ const App = () => {
                     <Route path="/admin/analytics" element={<AdminAnalytics />} />
                     <Route path="/admin/branch-creation" element={<BranchCreation />} />
                     <Route path="/admin" element={<AdminDashboard />} />
-                    <Route path="/admin/users/table" element={<AdminUsersTable />} />
+                    <Route path="/admin/users-table" element={<AdminUsersTable />} />
                     <Route path="*" element={<h2 style={{ textAlign: 'center', marginTop: '2rem' }}>Page Not Found</h2>} />
                   </Routes>
                 </Suspense>
