@@ -22,7 +22,7 @@ const AdminUsersTable = () => {
             },
           }
         );
-        const allusers = res.data.users;
+        const allusers = res.data.data;
         setUsers(allusers);
       } catch (error) {
         toast.error('Error fetching users');
