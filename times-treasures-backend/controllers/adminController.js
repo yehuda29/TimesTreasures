@@ -1,6 +1,26 @@
 const asyncHandler = require('express-async-handler');
 const User = require('../models/User');
 
+/*
+req (short for request):
+      Represents the HTTP request object.
+      Contains information about the incoming request such as headers, query parameters, 
+      body data (for POST/PUT requests), and URL parameters.
+res (short for response):
+      Represents the HTTP response object.
+      Used to send data back to the client—for example, sending JSON, HTML, or other types of responses.
+      Provides methods like res.status(), res.json(), res.send(), etc.
+
+next (short for “next middleware”):
+      A function that, when called, moves the request handling process to the next middleware
+      or next route handler in the chain.
+      Often used for error handling—if you pass an error to next(), 
+      Express knows to move on to the error-handling middleware.
+
+
+ */
+
+
 /**
  * @desc    Get sales statistics including top-selling watches, sales by brand, and purchases by sex.
  * @route   GET /api/admin/sales-stats
