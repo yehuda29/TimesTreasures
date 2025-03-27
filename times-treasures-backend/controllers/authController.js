@@ -6,6 +6,27 @@ const jwt = require('jsonwebtoken');
 const asyncHandler = require('express-async-handler');
 const { validationResult } = require('express-validator');
 
+/*
+req (short for request):
+      Represents the HTTP request object.
+      Contains information about the incoming request such as headers, query parameters, 
+      body data (for POST/PUT requests), and URL parameters.
+res (short for response):
+      Represents the HTTP response object.
+      Used to send data back to the client—for example, sending JSON, HTML, or other types of responses.
+      Provides methods like res.status(), res.json(), res.send(), etc.
+
+next (short for “next middleware”):
+      A function that, when called, moves the request handling process to the next middleware
+      or next route handler in the chain.
+      Often used for error handling—if you pass an error to next(), 
+      Express knows to move on to the error-handling middleware.
+
+
+ */
+
+
+
 // -------------------------------------------------------------------------
 // Helper Function: generateToken
 // Purpose: Generate a JWT token for a given user ID, using a secret and an expiration time from environment variables.
