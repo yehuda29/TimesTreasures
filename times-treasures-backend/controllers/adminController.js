@@ -112,4 +112,18 @@ exports.getSalesStats = asyncHandler(async (req, res, next) => {
 });
 
 
+// פונקציה חדשה לשליפת כל המשתמשים
+exports.getAllUsers = asyncHandler(async (req, res, next) => {
+  try {
+    const users = await User.find().select('-password');
+    console.log(users);  // הצגת המשתמשים בקונסול
+    res.status(200).json({
+      success: true,
+      users
+    });
+}catch (error) {
+  next(error);
+}
+});
+
 // get all users ---->

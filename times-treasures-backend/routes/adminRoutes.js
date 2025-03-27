@@ -2,11 +2,13 @@
 
 const express = require('express');
 const router = express.Router();
-const { getSalesStats } = require('../controllers/adminController');
+const { getSalesStats, getAllUsers } = require('../controllers/adminController');
 const { protect, authorize } = require('../middleware/auth');
 
 // GET /api/admin/sales-stats
 // This route is protected and only accessible to admin users.
 router.get('/sales-stats', protect, authorize('admin'), getSalesStats);
+
+router.get('/users', protect, authorize('admin'), getAllUsers);
 
 module.exports = router;
