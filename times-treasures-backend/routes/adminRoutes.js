@@ -11,4 +11,5 @@ router.get('/sales-stats', protect, authorize('admin'), getSalesStats);
 
 router.get('/users', protect, authorize('admin'), getAllUsers);
 
+
 module.exports = router;
