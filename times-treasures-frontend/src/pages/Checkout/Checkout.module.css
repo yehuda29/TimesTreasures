@@ -164,15 +164,18 @@
 }
 
 .branchCard {
-  background: linear-gradient(135deg, #e8f4fd, #f2f9ff);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 1rem;
+  background: #fff;
+  border: 1px solid var(--accent-color);
+  border-radius: 6px;
+  padding: 0.75rem;         /* increased internal padding */
+  margin-left: 6%;            /* reduced horizontal margin */
+  font-size: 1rem;          /* slightly larger text */
+  max-width: 320px;         /* bigger card */
+  box-sizing: border-box;
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
+
 
 .branchCard:hover {
   transform: translateY(-3px);

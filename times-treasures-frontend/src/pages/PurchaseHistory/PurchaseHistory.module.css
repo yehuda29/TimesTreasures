@@ -88,3 +88,30 @@
 .loginMessage a:hover {
   text-decoration: underline;
 }
+
+
+/* Container around the next/prev buttons, for layout */
+.paginationControls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem; /* space between elements */
+  margin-top: 1rem; /* spacing above */
+}
+
+/* Style the pagination buttons with your requested design */
+.paginationBtn {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--accent-color);
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Optional hover/focus styling */
+.paginationBtn:hover {
+  color: var(--accent-color);
+}

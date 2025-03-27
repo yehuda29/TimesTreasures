@@ -152,16 +152,6 @@ const Navbar = () => {
             </ul>
           )}
         </li>
-        {/* Cart Link (only shown if user is logged in) */}
-        {user && (
-          <li className={currentPath === "/cart" ? styles.active : ""}>
-            <Link to="/cart" onClick={closeMenus} className={styles.cartLink}>
-              <Badge badgeContent={totalItems} color="error" showZero overlap="circular">
-                <FaShoppingCart className={styles.cartIcon} />
-              </Badge>
-            </Link>
-          </li>
-        )}
         <li className={currentPath === "/contact" ? styles.active : ""}>
           <Link to="/contact" onClick={closeMenus}>
             Contact
@@ -200,6 +190,7 @@ const Navbar = () => {
             </li>
           </>
         )}
+
         {user && (
           <>
             <li className={styles.welcomeText}>Welcome {user.name}!</li>
@@ -209,6 +200,16 @@ const Navbar = () => {
               </button>
             </li>
           </>
+        )}
+        {/* Cart Link (only shown if user is logged in) */}
+        {user && (
+          <li className={currentPath === "/cart" ? styles.active : ""}>
+            <Link to="/cart" onClick={closeMenus} className={styles.cartLink}>
+              <Badge badgeContent={totalItems} color="error" showZero overlap="circular">
+                <FaShoppingCart className={styles.cartIcon} />
+              </Badge>
+            </Link>
+          </li>
         )}
         {user && <NotificationBell />}
       </ul>

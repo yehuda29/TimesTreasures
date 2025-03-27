@@ -13,7 +13,7 @@ const PurchaseHistory = () => {
 
   // NEW: Track the current page and items per page
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3;
+  const itemsPerPage = 2;
 
   useEffect(() => {
     // Only fetch purchase history if a user is logged in.
