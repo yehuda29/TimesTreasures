@@ -3,7 +3,7 @@ import React, { useState, useEffect, useContext} from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../context/AuthContext';
-import styles from './AdminUsersTable.module.css'; // הקובץ שמכיל את הסגנונות של AdminUsersTable
+import styles from './AdminUsersTable.module.css';
 
 const AdminUsersTable = () => {
   const { token, user } = useContext(AuthContext);
@@ -22,7 +22,7 @@ const AdminUsersTable = () => {
             },
           }
         );
-        const allusers = res.data.data;
+        const allusers = res.data.users;
         setUsers(allusers);
       } catch (error) {
         toast.error('Error fetching users');
@@ -41,15 +41,29 @@ const AdminUsersTable = () => {
 
         <table className={styles.table}>
           <thead>
-            <tr>
-              <th>ID</th>
+          <tr>
+              <th>Name</th>
+              <th>Family Name</th>
+              <th>Email</th>
+              <th>Birth Date</th>
+              <th>Sex</th>
+              <th>Role</th>
+              <th>Created At</th>
             </tr>
           </thead>
           <tbody>
-            {users.map((u) => (
-              <tr>
-                <td>{u._id}</td>
-                </tr>
+          {users.map((u) => (
+              <tr key={u._id}>
+                <td>{u.name}</td>
+                <td>{u.familyName || "None"}</td>
+                <td>{u.email}</td>
+                <td>
+                  {new Date(u.birthDate).toLocaleDateString()} {/* format if desired */}
+                </td>
+                <td>{u.sex || "Invalid"}</td>
+                <td>{u.role}</td>
+                <td>{new Date(u.createdAt).toLocaleDateString()}</td>
+              </tr>
             ))}
     
           </tbody>
