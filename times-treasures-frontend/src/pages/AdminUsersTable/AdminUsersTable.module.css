@@ -1,0 +1,46 @@
+/* AdminUsersTable.module.css */
+
+/* סטייל עבור כל הטבלה */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 16px;
+  }
+  
+  /* סטייל עבור כל שורה בטבלה */
+  .tableRow {
+    border-bottom: 1px solid #ddd;
+  }
+  
+  /* סטייל עבור תאים בתוך שורה */
+  .tableCell {
+    padding: 10px;
+    text-align: left;
+  }
+  
+  /* סטייל עבור כותרת הטבלה */
+  .tableHeader {
+    background-color: #f4f4f4;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* סטייל עבור כפתורים */
+  .button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  /* הוספת Hover לכפתורים */
+  .button:hover {
+    background-color: #45a049;
+  }

@@ -26,7 +26,6 @@ next (short for “next middleware”):
       Often used for error handling—if you pass an error to next(), 
       Express knows to move on to the error-handling middleware.
 
-
  */
 
 

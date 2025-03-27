@@ -274,6 +274,25 @@ const Profile = () => {
                     Discounted Watches
                   </Button>
                 </Grid>
+
+                <Grid item xs={12} sm={6}>
+                  <Button 
+                    component={Link} 
+                    to= "/admin/users/table" 
+                    variant="outlined" 
+                    fullWidth
+                    sx={{
+                      color: 'var(--primary-color)',
+                      borderColor: 'var(--primary-color)',
+                      "&:hover": {
+                        color: 'var(--accent-color)',
+                      }
+                    }}
+                  >
+                    Users Table
+                  </Button>
+                </Grid>
+
                 <Grid item xs={12} sm={6}>
                   <Button 
                     component={Link} 
