@@ -119,7 +119,7 @@ exports.getAllUsers = asyncHandler(async (req, res, next) => {
     console.log(users);  // הצגת המשתמשים בקונסול
     res.status(200).json({
       success: true,
-      users
+      data: users
     });
 }catch (error) {
   next(error);
