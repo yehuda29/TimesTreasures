@@ -12,4 +12,12 @@ router.get('/sales-stats', protect, authorize('admin'), getSalesStats);
 router.get('/users', protect, authorize('admin'), getAllUsers);
 
 
+//This Routers for deleting and editing users
+
+const { deleteUser, updateUser } = require('../controllers/adminController');
+
+router.delete('/users/:id', protect, authorize('admin'), deleteUser);
+router.put('/users/:id', protect, authorize('admin'), updateUser);
+
+
 module.exports = router;
