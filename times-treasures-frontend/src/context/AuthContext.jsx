@@ -54,10 +54,10 @@ export const AuthProvider = ({ children }) => {
 
   // Updated register function to accept additional fields:
   // name, familyName, birthDate, sex, email, and password
-  const register = async (name, familyName, birthDate, sex, email, password) => {
+  const register = async (name, familyName, birthDate, sex, email, password, phoneNumber) => {
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/auth/register`,
-      { name, familyName, birthDate, sex, email, password }
+      { name, familyName, birthDate, sex, email, password, phoneNumber }
     );
     const { token: receivedToken, data } = response.data;
     setToken(receivedToken);

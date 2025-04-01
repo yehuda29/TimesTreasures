@@ -20,10 +20,10 @@ const NotificationBell = () => {
         notificationsArray = [...outOfStock];
       }
       // If the user is logged in and is missing a birthDate or sex, add a profile prompt notification.
-      if (user && (!user.birthDate || !user.sex)) {
+      if (user && (!user.birthDate || !user.sex || !user.addresses || user.addresses.length === 0)) {
         notificationsArray.unshift({
           _id: "profile-incomplete",
-          message: "Your profile is incomplete. Please update your personal information (missing birth date or sex)."
+          message: "Your profile is incomplete. Please update your personal information (missing Personal Information or Addresses)."
         });
       }
       setNotifications(notificationsArray);

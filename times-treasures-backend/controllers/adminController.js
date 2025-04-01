@@ -142,14 +142,33 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
 });
 
 // עריכת משתמש לפי ID
+/**
+ * Updates a user without replacing existing required fields.
+ *
+ * This function finds the user by ID, then updates only the fields provided in req.body.
+ * Required fields such as phoneNumber and purchaseHistory.orderNumber remain intact if not updated.
+ *
+ * @route   PUT /api/admin/users/:id
+ * @access  Private/Admin
+ */
 exports.updateUser = asyncHandler(async (req, res, next) => {
-  try {
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
-    }
-    res.status(200).json({ success: true, data: user });
-  } catch (error) {
-    next(error);
+  // 1. Find the existing user
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    return res.status(404).json({ success: false, message: 'User not found' });
   }
+
+  // 2. Apply only the fields in req.body
+  Object.keys(req.body).forEach((key) => {
+    user[key] = req.body[key];
+  });
+
+  // 3. Save, validating only the modified fields.
+  //    This avoids requiring phoneNumber or orderNumber if they were missing from old data.
+  const updatedUser = await user.save({
+    runValidators: true,
+    validateModifiedOnly: true
+  });
+
+  res.status(200).json({ success: true, data: updatedUser });
 });

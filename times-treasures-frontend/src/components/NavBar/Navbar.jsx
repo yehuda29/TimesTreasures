@@ -164,13 +164,6 @@ const Navbar = () => {
             </Link>
           </li>
         )}
-        {user && user.role === "admin" && (
-          <li className={currentPath === "/admin" ? styles.active : ""}>
-            <Link to="/admin" onClick={closeMenus}>
-              Admin
-            </Link>
-          </li>
-        )}
         {/* Authentication Links */}
         {!user && (
           <>

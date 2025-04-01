@@ -49,7 +49,7 @@ exports.register = asyncHandler(async (req, res, next) => {
   }
 
   // Destructure the required fields from the request body, including new fields.
-  const { name, familyName, birthDate, sex, email, password } = req.body;
+  const { name, familyName, birthDate, sex, email, password, phoneNumber } = req.body;
 
   // Check if a user already exists with the provided email.
   const userExists = await User.findOne({ email });
@@ -65,7 +65,8 @@ exports.register = asyncHandler(async (req, res, next) => {
     birthDate,   // New: required birth date
     sex,         // New: required sex (must be 'male' or 'female')
     email,
-    password
+    password,
+    phoneNumber
   });
 
   // Generate a JWT token for the newly created user.
@@ -82,7 +83,8 @@ exports.register = asyncHandler(async (req, res, next) => {
       birthDate: user.birthDate,
       sex: user.sex,
       email: user.email,
-      role: user.role
+      role: user.role,
+      phoneNumber: user.phoneNumber
     }
   });
 });
@@ -130,7 +132,8 @@ exports.login = asyncHandler(async (req, res, next) => {
       birthDate: user.birthDate,
       sex: user.sex,
       email: user.email,
-      role: user.role
+      role: user.role,
+      phoneNumber: user.phoneNumber
     }
   });
 });

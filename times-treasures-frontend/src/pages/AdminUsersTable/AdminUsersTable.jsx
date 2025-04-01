@@ -1,3 +1,5 @@
+// src/pages/AdminUsersTable/AdminUsersTable.jsx
+
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -17,9 +19,10 @@ const AdminUsersTable = () => {
     const fetchUsers = async () => {
       if (!user || user.role !== 'admin') return;
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/admin/users`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/admin/users`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
         setUsers(res.data.data);
       } catch (error) {
         toast.error('Error fetching users');
@@ -43,15 +46,23 @@ const AdminUsersTable = () => {
     }
   };
 
-  const openEditModal = (user) => {
-    setEditUserData(user);
+  const openEditModal = (userObj) => {
+    setEditUserData(userObj);
   };
 
   const saveEditUser = async () => {
     try {
-      const res = await axios.put(`${import.meta.env.VITE_API_URL}/admin/users/${editUserData._id}`, editUserData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      // Omit fields like purchaseHistory, cart, addresses, etc. 
+      // so you don’t accidentally overwrite them or trigger full validation on missing data:
+      const { purchaseHistory, cart, addresses, ...updatableFields } = editUserData;
+
+      const res = await axios.put(
+        `${import.meta.env.VITE_API_URL}/admin/users/${editUserData._id}`,
+        updatableFields,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      // Update local state with the server’s response
       setUsers(users.map((u) => (u._id === editUserData._id ? res.data.data : u)));
       toast.success('User updated successfully');
       setEditUserData(null);
@@ -91,26 +102,43 @@ const AdminUsersTable = () => {
                   <td>{u.name}</td>
                   <td>{u.familyName || 'None'}</td>
                   <td>{u.email}</td>
-                  <td>{u.birthDate ? new Date(u.birthDate).toLocaleDateString() : 'N/A'}</td>
+                  <td>
+                    {u.birthDate ? new Date(u.birthDate).toLocaleDateString() : 'N/A'}
+                  </td>
                   <td>{u.sex || 'Invalid'}</td>
                   <td>{u.role}</td>
-                  <td>{u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'N/A'}</td>
                   <td>
-                    <FaEdit className={styles.icon} onClick={() => openEditModal(u)} />
-                    <FaTrash className={styles.icon} onClick={() => deleteUser(u._id)} />
+                    {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'N/A'}
+                  </td>
+                  <td>
+                    <FaEdit
+                      className={styles.icon}
+                      onClick={() => openEditModal(u)}
+                    />
+                    <FaTrash
+                      className={styles.icon}
+                      onClick={() => deleteUser(u._id)}
+                    />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
 
-          {/* פאגינציה */}
           <div className={styles.pagination}>
-            <button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+            >
               Previous
             </button>
-            <span>Page {currentPage} of {totalPages}</span>
-            <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>
+            <span>
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
               Next
             </button>
           </div>
@@ -121,17 +149,41 @@ const AdminUsersTable = () => {
         <div className={styles.modal}>
           <div className={styles.modalContent}>
             <h3>Edit User</h3>
+
             <label>Name:</label>
-            <input type="text" value={editUserData.name} onChange={(e) => setEditUserData({ ...editUserData, name: e.target.value })} />
+            <input
+              type="text"
+              value={editUserData.name}
+              onChange={(e) =>
+                setEditUserData({ ...editUserData, name: e.target.value })
+              }
+            />
 
             <label>Family Name:</label>
-            <input type="text" value={editUserData.familyName || ''} onChange={(e) => setEditUserData({ ...editUserData, familyName: e.target.value })} />
+            <input
+              type="text"
+              value={editUserData.familyName || ''}
+              onChange={(e) =>
+                setEditUserData({ ...editUserData, familyName: e.target.value })
+              }
+            />
 
             <label>Email:</label>
-            <input type="email" value={editUserData.email} onChange={(e) => setEditUserData({ ...editUserData, email: e.target.value })} />
+            <input
+              type="email"
+              value={editUserData.email}
+              onChange={(e) =>
+                setEditUserData({ ...editUserData, email: e.target.value })
+              }
+            />
 
             <label>Role:</label>
-            <select value={editUserData.role} onChange={(e) => setEditUserData({ ...editUserData, role: e.target.value })}>
+            <select
+              value={editUserData.role}
+              onChange={(e) =>
+                setEditUserData({ ...editUserData, role: e.target.value })
+              }
+            >
               <option value="user">User</option>
               <option value="admin">Admin</option>
             </select>
