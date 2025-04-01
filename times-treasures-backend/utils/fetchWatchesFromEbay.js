@@ -78,7 +78,7 @@ const fetchWatchesFromEbay = async (query = "wrist watch", brand = "", limit = 1
         price: priceValue > 0 ? priceValue : null,
         image: item.image?.imageUrl || null,
         // Use the enhanced extractBrand function by passing the admin-specified brand.
-        category: extractBrand(item.title, brand),
+        category: extractBrand(item.title, brand).toLocaleLowerCase(),
         description,
         // Set a random inventory for demo purposes; adjust as needed.
         inventory: Math.floor(Math.random() * 10) + 1,

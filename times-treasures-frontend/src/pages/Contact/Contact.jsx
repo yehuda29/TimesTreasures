@@ -1,101 +1,100 @@
 // src/pages/Contact/Contact.jsx
-
 import React, { useState } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 import styles from './Contact.module.css';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    message: '',
+    message: ''
   });
-  
-  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
+  // Update the formData state whenever a field changes
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Here you can handle form submission, e.g., send data to a backend
-    console.log(formData);
-    setSubmitted(true);
-    // Reset form
     setFormData({
-      name: '',
-      email: '',
-      message: '',
+      ...formData,
+      [e.target.name]: e.target.value
     });
   };
 
+  // Form submission handler
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      // Send POST request to your backend endpoint for contact
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/users/contact`,
+        formData
+      );
+
+      // If successful, clear the form and show a toast
+      if (response.data.success) {
+        toast.success('Message sent successfully!');
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        toast.error(response.data.message || 'Failed to send message.');
+      }
+    } catch (error) {
+      toast.error('An error occurred while sending your message.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className={styles.contact}>
-      <h2 className={styles.title}>Contact Us</h2>
-      
-      <div className={styles.contactContainer}>
-        {/* Contact Information */}
-        <div className={styles.contactInfo}>
-          <h3>Get in Touch</h3>
-          <p><strong>Address:</strong> 1234 Watch St., City, State, ZIP</p>
-          <p><strong>Email:</strong> info@watchshop.com</p>
-          <p><strong>Phone:</strong> (123) 456-7890</p>
-          
-          {/* Optional: Embed Google Map */}
-          <iframe
-            title="Store Location"
-            src="https://www.google.com/maps/embed?pb=!1m18!..." // Replace with your store's embed link
-            width="100%"
-            height="200"
-            allowFullScreen=""
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            className={styles.map}
-          ></iframe>
+    <div className={styles.contactContainer}>
+      <h1>Contact Us</h1>
+      <p>
+        Have questions, feedback, or just want to say hello? 
+        Send us a message below. We’d love to hear from you!
+      </p>
+
+      <form onSubmit={handleSubmit} className={styles.contactForm}>
+        <div className={styles.formGroup}>
+          <label htmlFor="name">Name:</label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
         </div>
-        
-        {/* Contact Form */}
-        <div className={styles.contactForm}>
-          <h3>Send Us a Message</h3>
-          {submitted ? (
-            <p className={styles.thankYou}>Thank you for contacting us!</p>
-          ) : (
-            <form onSubmit={handleSubmit}>
-              <label htmlFor="name">Name:</label>
-              <input 
-                type="text" 
-                id="name" 
-                name="name" 
-                value={formData.name}
-                onChange={handleChange}
-                required 
-              />
 
-              <label htmlFor="email">Email:</label>
-              <input 
-                type="email" 
-                id="email" 
-                name="email" 
-                value={formData.email}
-                onChange={handleChange}
-                required 
-              />
-
-              <label htmlFor="message">Message:</label>
-              <textarea 
-                id="message" 
-                name="message" 
-                value={formData.message}
-                onChange={handleChange}
-                required 
-              ></textarea>
-
-              <button type="submit" className={styles.submitBtn}>Submit</button>
-            </form>
-          )}
+        <div className={styles.formGroup}>
+          <label htmlFor="email">Email:</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
         </div>
-      </div>
+
+        <div className={styles.formGroup}>
+          <label htmlFor="message">Message:</label>
+          <textarea
+            id="message"
+            name="message"
+            rows="5"
+            value={formData.message}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <button type="submit" disabled={loading} className={styles.submitBtn}>
+          {loading ? 'Sending...' : 'Send Message'}
+        </button>
+      </form>
     </div>
   );
 };

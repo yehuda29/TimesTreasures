@@ -7,7 +7,8 @@ const express = require('express');
 // - getCart: Retrieves the user's persistent cart.
 // - updateCart: Updates the user's persistent cart.
 // - purchaseCart: Processes the purchase for all items in the cart and clears it.
-const { getPurchaseHistory, getCart, updateCart, purchaseCart, updateProfile, trackOrder } = require('../controllers/userController');
+const { getPurchaseHistory, getCart, updateCart, purchaseCart,
+     updateProfile, trackOrder, sendContactMessage } = require('../controllers/userController');
 // Import the protect middleware to ensure that only authenticated users can access these endpoints.
 const { protect } = require('../middleware/auth');
 
@@ -44,5 +45,9 @@ router.post('/purchase', protect, purchaseCart);
 router.put('/profile', protect, updateProfile);
 
 router.get('/track-order/:orderNumber', protect, trackOrder);
+
+// Public route for sending contact form data
+router.post('/contact', protect, sendContactMessage);
+
 
 module.exports = router;

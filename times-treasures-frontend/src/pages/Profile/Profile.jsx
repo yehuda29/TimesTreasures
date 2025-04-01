@@ -310,6 +310,23 @@ const Profile = () => {
                     Admin Analytics
                   </Button>
                 </Grid>
+                <Grid item xs={12} sm={7}>
+                  <Button 
+                    component={Link} 
+                    to="/admin" 
+                    variant="outlined" 
+                    fullWidth
+                    sx={{
+                      color: 'var(--primary-color)',
+                      borderColor: 'var(--primary-color)',
+                      "&:hover": {
+                        color: 'var(--accent-color)',
+                      }
+                    }}
+                  >
+                    Admin Watch Fetching Interface
+                  </Button>
+                </Grid>
               </>
             )}
           </Grid>

@@ -18,10 +18,11 @@ const Register = () => {
     birthDate: '',
     sex: '',
     email: '',
-    password: ''
+    password: '',
+    phoneNumber: ''
   });
 
-  const { name, familyName, birthDate, sex, email, password } = formData;
+  const { name, familyName, birthDate, sex, email, password, phoneNumber } = formData;
 
   // Generic onChange handler for input fields
   const onChange = (e) =>
@@ -72,7 +73,7 @@ const Register = () => {
     try {
       // Adjust the register call to match your backend's expectations.
       // Here we pass all fields collected.
-      await register(name, familyName, birthDate, sex, email, password);
+      await register(name, familyName, birthDate, sex, email, password, phoneNumber);
       toast.success("Registration successful");
       navigate('/');
     } catch (err) {
@@ -151,6 +152,19 @@ const Register = () => {
                   Female
                 </label>
               </div>
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="phoneNumber">Phone Number:</label>
+                <input
+                  type="tel"
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={onChange}
+                  pattern="\d{10}"
+                  title="Phone number must be exactly 10 digits"
+                  required
+                />
             </div>
           </>
         )}

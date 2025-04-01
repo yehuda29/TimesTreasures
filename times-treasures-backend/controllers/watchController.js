@@ -41,11 +41,11 @@ exports.getAllWatches = asyncHandler(async (req, res, next) => {
 
   // Convert page and limit to integers; set default values if not provided
   page = parseInt(page, 10) || 1;  // Default to page 1
-  limit = parseInt(limit, 10) || 20; // Default to 20 items per page
+  limit = parseInt(limit, 10) || 6; // Default to 20 items per page
 
   // Ensure page and limit are at least 1
   if (page < 1) page = 1;
-  if (limit < 1) limit = 20;
+  if (limit < 1) limit = 6;
 
   // Calculate the number of documents to skip for pagination
   const skip = (page - 1) * limit;
