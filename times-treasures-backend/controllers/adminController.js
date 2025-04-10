@@ -172,3 +172,64 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({ success: true, data: updatedUser });
 });
+
+
+
+/**
+ * @desc   Search for users by name (matches first name or family name) and return basic info.
+ * @route  GET /api/admin/users/search?name=SEARCH_TERM
+ * @access Private/Admin
+ */
+exports.getUsersByName = asyncHandler(async (req, res, next) => {
+  // Retrieve the search term from the query parameters
+  const nameQuery = req.query.name;
+  
+  // If no search term is provided, return an error
+  if (!nameQuery) {
+    return res.status(400).json({ success: false, message: "Name query parameter is required" });
+  }
+  
+  // Use a case-insensitive regex to search in both 'name' and 'familyName'
+  const users = await User.find({
+    $or: [
+      { name: { $regex: nameQuery, $options: 'i' } },
+      { familyName: { $regex: nameQuery, $options: 'i' } }
+      //I used regular expressions (regex) in the query to provide a flexible, 
+      // case-insensitive search for user names.
+    ]
+  }).select('name familyName _id'); // Return only the needed fields
+  
+  // Return the list of matching users
+  res.status(200).json({
+    success: true,
+    data: users
+  });
+});
+
+
+/**
+ * @desc   Get purchase history for a specific user by their ID.
+ *         This endpoint populates the 'watch' field in each purchase record.
+ * @route  GET /api/admin/purchase-history/:userId
+ * @access Private/Admin
+ */
+exports.getUserPurchaseHistory = asyncHandler(async (req, res, next) => {
+  const userId = req.params.userId;
+  
+  // Find the user by ID and populate the purchaseHistory's watch details
+  const user = await User.findById(userId).populate('purchaseHistory.watch');
+  
+  // If the user is not found, send a 404 error
+  if (!user) {
+    return res.status(404).json({ success: false, message: "User not found" });
+  }
+  
+  // Optionally, filter out any purchase history records if a watch has been removed/deleted
+  const purchaseHistory = user.purchaseHistory.filter(purchase => purchase.watch !== null);
+  
+  // Return the user's purchase history
+  res.status(200).json({
+    success: true,
+    data: purchaseHistory
+  });
+});

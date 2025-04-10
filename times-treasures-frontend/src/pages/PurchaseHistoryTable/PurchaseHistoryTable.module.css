@@ -1,0 +1,121 @@
+/* PurchaseHistoryTable.module.css */
+
+/* Container wrapping the entire page */
+.container {
+    padding: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  /* Style for both the search and history sections */
+  .searchSection,
+  .historySection {
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+    border-radius: 5px;
+    margin-top: 1rem;
+  }
+  
+  /* Page header */
+  h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  /* Search form container: horizontal layout with gap */
+  .searchForm {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  
+  /* Input styling: light background with border and padding */
+  .searchInput {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+  }
+  
+  /* Search button using the primary button styles */
+  .searchButton {
+    padding: 0.5rem 1rem;
+    border: var(--btn-border);
+    background-color: var(--btn-bg);
+    color: var(--btn-text);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .searchButton:hover {
+    color: var(--btn-hover-bg);
+  }
+  
+  /* Container for search results, with margin for separation */
+  .results {
+    margin-top: 1rem;
+  }
+  
+  /* Unstyled list for user results */
+  .userList {
+    list-style: none;
+    padding: 0;
+  }
+  
+  /* Each user item with padding and a bottom border */
+  .userItem {
+    padding: 0.5rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  /* Hover effect on user item: change background to accent color */
+  .userItem:hover {
+    color: var(--btn-hover-bg);
+  }
+  
+  /* Back button for returning to search */
+  .backButton {
+    background-color: var(--btn-bg);
+    color: var(--btn-text);
+    border: var(--btn-border);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 1rem;
+  }
+  
+  .backButton:hover {
+    color: var(--btn-hover-bg);
+  }
+  
+  /* Purchase history table styling */
+  .historyTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  
+  .historyTable th,
+  .historyTable td {
+    border: 1px solid var(--border-color);
+    padding: 0.5rem;
+    text-align: left;
+  }
+  
+  /* Table header uses primary color and inverted text */
+  .historyTable th {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+  }
+  
+  /* Alternate row coloring for better readability */
+  .historyTable tr:nth-child(even) {
+    background-color: var(--input-bg);
+  }
+  

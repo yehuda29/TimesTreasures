@@ -2,7 +2,8 @@
 
 const express = require('express');
 const router = express.Router();
-const { getSalesStats, getAllUsers, deleteUser, updateUser  } = require('../controllers/adminController');
+const { getSalesStats, getAllUsers, deleteUser, updateUser,   getUsersByName, getUserPurchaseHistory }
+ = require('../controllers/adminController');
 const { protect, authorize } = require('../middleware/auth');
 
 // GET /api/admin/sales-stats
@@ -14,6 +15,12 @@ router.get('/users', protect, authorize('admin'), getAllUsers);
 router.delete('/users/:id', protect, authorize('admin'), deleteUser);
 
 router.put('/users/:id', protect, authorize('admin'), updateUser);
+
+// Route to search for users by name; expects a query parameter ?name=...
+router.get('/users/search', protect, authorize('admin'), getUsersByName);
+
+// Route to get the purchase history for a selected user by user ID.
+router.get('/purchase-history/:userId', protect, authorize('admin'), getUserPurchaseHistory);
 
 
 module.exports = router;
