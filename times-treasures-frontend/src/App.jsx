@@ -39,7 +39,7 @@ const BranchCreation = lazy(() => import('./pages/BranchCreation/BranchCreation.
 const DisplayBranch = lazy(() => import('./pages/DisplayBranch/DisplayBranch.jsx'));
 const Shop = lazy(() => import('./pages/Shop/Shop.jsx'));
 const AdminUsersTable = lazy(() => import('./pages/AdminUsersTable/AdminUsersTable.jsx'));
-
+const PurchaseHistoryTable = lazy(() => import('./pages/PurchaseHistoryTable/PurchaseHistoryTable.jsx'));
 
 const App = () => {
   return (
@@ -77,6 +77,7 @@ const App = () => {
                     <Route path="/admin/branch-creation" element={<BranchCreation />} />
                     <Route path="/admin" element={<AdminDashboard />} />
                     <Route path="/admin/users-table" element={<AdminUsersTable />} />
+                    <Route path="/admin/purchase-history-table" element={<PurchaseHistoryTable />} />
                     <Route path="*" element={<h2 style={{ textAlign: 'center', marginTop: '2rem' }}>Page Not Found</h2>} />
                   </Routes>
                 </Suspense>

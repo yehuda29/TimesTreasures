@@ -170,23 +170,27 @@ const Profile = () => {
             </Box>
           )}
           <Grid container spacing={2} justifyContent="center">
-            <Grid item xs={12} sm={6}>
-              <Button 
-                component={Link} 
-                to="/purchase-history" 
-                variant="outlined" 
-                fullWidth
-                sx={{
-                  color: 'var(--primary-color)',
-                  borderColor: 'var(--primary-color)',
-                  "&:hover": {
-                    color: 'var(--accent-color)',
-                  }
-                }}
-              >
-                Purchase History
-              </Button>
-            </Grid>
+          {user && user.role !== 'admin' && (
+            <>
+              <Grid item xs={12} sm={6}>
+                <Button 
+                  component={Link} 
+                  to="/purchase-history" 
+                  variant="outlined" 
+                  fullWidth
+                  sx={{
+                    color: 'var(--primary-color)',
+                    borderColor: 'var(--primary-color)',
+                    "&:hover": {
+                      color: 'var(--accent-color)',
+                    }
+                  }}
+                >
+                  Purchase History
+                </Button>
+              </Grid>
+            </>
+          )}
             <Grid item xs={12} sm={6}>
               <Button 
                 component={Link} 
@@ -255,6 +259,23 @@ const Profile = () => {
                     }}
                   >
                     Create Branch
+                  </Button>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Button 
+                    component={Link} 
+                    to="/admin/purchase-history-table" 
+                    variant="outlined" 
+                    fullWidth
+                    sx={{
+                      color: 'var(--primary-color)',
+                      borderColor: 'var(--primary-color)',
+                      "&:hover": {
+                        color: 'var(--accent-color)',
+                      }
+                    }}
+                  >
+                    Purchase History Table
                   </Button>
                 </Grid>
                 <Grid item xs={12} sm={6}>
