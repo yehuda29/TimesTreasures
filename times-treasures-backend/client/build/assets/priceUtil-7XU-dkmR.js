@@ -1,1 +1,0 @@
-function s(e){if(!e)return 0;const r=Number(e.price)||0;if(e.specialOffer&&Number(e.specialOffer.discountPercentage)>0&&e.specialOffer.offerStart&&e.specialOffer.offerEnd){const f=new Date,n=new Date(e.specialOffer.offerStart),i=new Date(e.specialOffer.offerEnd);if(f>=n&&f<=i)return r*(1-Number(e.specialOffer.discountPercentage)/100)}return r}export{s as c};
