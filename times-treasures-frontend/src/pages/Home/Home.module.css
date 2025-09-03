@@ -1,0 +1,59 @@
+/* src/pages/Home/Home.module.css */
+.featured {
+  margin-top: 40px;
+  color: var(--primary-color);
+  text-align: center;
+}
+
+.sectionTitle {
+  margin-bottom: 20px;
+}
+
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.error {
+  color: var(--accent-color);
+  text-align: center;
+  margin-top: 20px;
+}
+
+.endMessage,
+.loader {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.noImages {
+  text-align: center;
+  color: var(--subtext-color);
+  font-size: 1.2rem;
+}
+
+.carousel {
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.mapSection {
+  margin: 2rem auto;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background-color: var(--background-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.mapSection h1 {
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  color: var(--primary-color);
+}
