@@ -1,0 +1,117 @@
+/* src/pages/PurchaseHistory/PurchaseHistory.module.css */
+.purchaseHistoryContainer {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: var(--background-color);
+  border: 2px solid var(--primary-color);
+  border-radius: 8px;
+  color: var(--primary-color);
+}
+
+.purchaseHistoryContainer h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+
+.refreshBtn {
+  display: block;
+  margin: 0 auto 1rem auto;
+  padding: 0.5rem 1rem;
+  background-color: var(--accent-color);
+  color: var(--secondary-color);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.refreshBtn:hover {
+  background-color: var(--btn-hover-bg);
+}
+
+.purchaseList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.purchaseItem {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--primary-color);
+  padding: 1rem 0;
+}
+
+.purchaseItem:last-child {
+  border-bottom: none;
+}
+
+.watchImage {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border: 2px solid var(--primary-color);
+  border-radius: 4px;
+  margin-right: 1rem;
+}
+
+.purchaseDetails {
+  flex: 1;
+}
+
+.purchaseDetails h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--primary-color);
+}
+
+.purchaseDetails p {
+  margin: 0.25rem 0;
+  font-size: 0.95rem;
+}
+
+.loginMessage {
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--primary-color);
+  margin-top: 2rem;
+}
+
+.loginMessage a {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.loginMessage a:hover {
+  text-decoration: underline;
+}
+
+
+/* Container around the next/prev buttons, for layout */
+.paginationControls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem; /* space between elements */
+  margin-top: 1rem; /* spacing above */
+}
+
+/* Style the pagination buttons with your requested design */
+.paginationBtn {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--accent-color);
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Optional hover/focus styling */
+.paginationBtn:hover {
+  color: var(--accent-color);
+}

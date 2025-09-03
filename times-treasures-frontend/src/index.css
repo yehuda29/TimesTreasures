@@ -1,0 +1,36 @@
+/* src/index.css */
+:root {
+  /* Base Colors: Black & White */
+  --primary-color: #000000;        /* Black for primary elements */
+  --secondary-color: #ffffff;      /* White for backgrounds and contrast */
+
+  /* Accent (Only for hover states) */
+  --accent-color: #FFD700;         /* Gold for hover effects */
+
+  /* Text and Supporting Colors */
+  --text-color: #000000;           /* Main text (black) */
+  --subtext-color: #555555;        /* Dark grey for subtext */
+  --border-color: #CCCCCC;         /* Light grey for borders */
+  --background-color: #ffffff;     /* Overall background (white) */
+  --input-bg: #f0f0f0;             /* Light grey for input backgrounds */
+
+  /* Typography */
+  --font-family: 'Helvetica Neue', sans-serif;
+
+  /* Unified UI Variables for Elements */
+  --btn-bg: var(--primary-color);       /* Default button background (black) */
+  --btn-text: var(--secondary-color);     /* Default button text (white) */
+  --btn-hover-bg: var(--accent-color);    /* Button background on hover (gold) */
+  --btn-border: none;
+
+  --link-color: var(--secondary-color);   /* Default link color (white) */
+  --link-hover-color: var(--accent-color);  /* Link hover color (gold) */
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+}

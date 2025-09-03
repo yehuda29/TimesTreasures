@@ -1,0 +1,163 @@
+/* src/components/ProductDetail/ProductDetail.module.css */
+.productDetail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 2rem;
+  background-color: var(--background-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 2rem auto;
+  max-width: 1200px;
+  color: var(--text-color);
+}
+
+.productImage {
+  width: 100%;
+  max-width: 366px;
+  height: 500px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.productInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.productName {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: var(--primary-color);
+}
+
+.productPrice {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+
+.productDescription {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: var(--subtext-color);
+  line-height: 1.5;
+}
+
+.stockInfo {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+.quantitySelector {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.quantitySelector label {
+  margin-right: 0.5rem;
+  font-size: 1rem;
+  color: var(--primary-color);
+}
+
+.quantitySelector input {
+  width: 60px;
+  padding: 0.25rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  text-align: center;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.addToCartBtn {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--accent-color);
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.addToCartBtn:hover {
+  color: var(--accent-color);
+}
+
+.deleteBtn {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--accent-color);
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.deleteBtn:hover {
+  color: var(--accent-color);
+}
+
+.loader {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  color: var(--primary-color);
+}
+
+.priceContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.originalPrice {
+  color: var(--subtext-color);
+}
+
+.arrow {
+  font-size: 1.2rem;
+  color: var(--primary-color);
+}
+
+.discountedPrice {
+  color: var(--btn-bg);
+  font-weight: bold;
+}
+
+.specialOfferBadge {
+  background-color: var(--accent-color);
+  color: var(--secondary-color);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.adminUpdateBtn {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--accent-color);
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  margin-left: auto;
+}
+
+.adminUpdateBtn:hover {
+  color: var(--accent-color);
+}
